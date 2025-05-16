@@ -1,0 +1,123 @@
+.title_area {
+    display: flex;
+    justify-content: space-between;
+}
+
+h1 {
+    width: 31.5%;
+    font-size: 25px;
+}
+
+.card_perfil {
+    width: 100%;
+    height: 550px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: var(--branco);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 30px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.15);
+}
+
+.background_perfil {
+    width: 100%;
+    height: 30%;
+    background-color: gray;
+    border-radius: 10px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    margin-bottom: 35px;
+}
+
+.foto_perfil {
+    width: 120px;
+    border-radius: 200px;
+    border: #124C50 5px solid;
+    position: absolute;
+    transform: translate(20px, 90px);
+}
+
+.icon_perfil {
+    width: 100%;
+    cursor: pointer;
+}
+    
+.camera_perfil {
+    width: 40px;
+    background-color: #124C50;
+    padding: 15px;
+    border-radius: 200px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    transform: translate(110px, 170px);
+}
+
+.icon_background_perfil {
+    width: 2%;
+    height: auto;
+    margin: 15px;
+}
+
+.usuario_perfil, .saldo_perfil {
+    font-size: 30px;
+}
+
+.info_perfil {
+    width: 100%;
+    padding: 0px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.email_perfil, .nasc_perfil {
+    font-size: 20px;
+}
+
+.dinheiro_perfil {
+    color: green;
+    font-size: 20px;
+}
+
+.botao_sair_perfil {
+    background-color: #DC2626;
+    border-radius: 5px;
+    color: white;
+    border: none;
+    height: 40px;
+    cursor: pointer;
+    font-weight: bolder;
+}
+
+.botao_sair_perfil:hover {
+    background-color: #c62525;
+}
+
+.botao_editar_perfil {
+    background-color: #dcc126;
+    border-radius: 5px;
+    color: rgb(0, 0, 0);
+    border: none;
+    height: 40px;
+    cursor: pointer;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bolder;
+}
+
+.botao_editar_perfil:hover {
+    background-color: #d4a91d;
+}
+
+.title_butao_perfil {
+    display: flex;
+    justify-content: space-between;
+}

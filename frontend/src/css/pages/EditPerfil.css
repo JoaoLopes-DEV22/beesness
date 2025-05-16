@@ -1,0 +1,147 @@
+.screen {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f4f7fa;
+}
+
+.left_area {
+    flex: 0 0 auto;
+}
+
+.right_area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.title_area {
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.title_area h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1a202c;
+}
+
+.back_button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+.back_button:hover .back_icon {
+    color: #3182ce;
+}
+
+.back_icon {
+    font-size: 1.5rem;
+    color: #4a5568;
+}
+
+.card_perfil {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+}
+
+.profile_form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #4a5568;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus {
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+.form-group input[type="date"] {
+    color: #4a5568;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.form-group input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+    filter: invert(40%);
+}
+
+.save_button {
+    background: linear-gradient(90deg, #3182ce, #2b6cb0);
+    color: #ffffff;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    align-self: flex-end;
+}
+
+.save_button:hover {
+    background: linear-gradient(90deg, #2b6cb0, #2c5282);
+    transform: translateY(-1px);
+}
+
+.save_button:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    main {
+        padding: 1rem;
+    }
+
+    .card_perfil {
+        padding: 1.5rem;
+    }
+
+    .title_area h1 {
+        font-size: 1.5rem;
+    }
+
+    .back_icon {
+        font-size: 1.25rem;
+    }
+}
