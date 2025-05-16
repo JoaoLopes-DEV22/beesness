@@ -67,7 +67,7 @@ function Login() {
                         <img src='/assets/profiles/img_profile.png' alt="Profile" />
                     </div>
 
-                    <h1 style={{ textAlign: 'center', width: '100%' }}></h1>
+                    <h1 style={{ textAlign: 'center', width: '100%' }}>Login</h1>
 
                     <form className="login-form" onSubmit={handleSubmit}>
                         <div className="form-group">
