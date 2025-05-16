@@ -6,7 +6,7 @@
 
 .card {
     width: 31.5%;
-    height: 140px;
+    height: 120px;
     padding: 20px;
     border-radius: 10px;
     background-color: var(--branco);
@@ -50,24 +50,10 @@
     align-items: center;
 }
 
-.t_card_group-dash {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .switch_filter {
     display: flex;
     gap: 15px;
     background-color: var(--cinza-bg);
-    padding: 8px;
-    border-radius: 5px;
-    align-items: center;
-}
-
-.switch_filter-account {
-    display: flex;
-    gap: 15px;
     padding: 8px;
     border-radius: 5px;
     align-items: center;
@@ -88,17 +74,5 @@
 
 .on {
     background-color: var(--branco);
-    border-radius: 3px;
-}
-
-.on-dash,
-.off-dash {
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.on-dash {
-    background-color: var(--cinza-bg);
     border-radius: 3px;
 }

@@ -88,7 +88,7 @@ function EditProfile() {
                         </button>
                         <h1>Configurações da Conta</h1>
                     </div>
-                    <div className="card_perfil">
+                    <div className="card_perfil_edit">
                         <form onSubmit={handleSave} className="profile_form">
                             <div className="form-group">
                                 <label htmlFor="name">Nome</label>

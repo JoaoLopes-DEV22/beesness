@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../css/pages/Login.css';
@@ -67,7 +68,7 @@ function Login() {
                         <img src='/assets/profiles/img_profile.png' alt="Profile" />
                     </div>
 
-                    <h1 style={{ textAlign: 'center', width: '100%' }}>Login</h1>
+                    <h1>Login</h1>
 
                     <form className="login-form" onSubmit={handleSubmit}>
                         <div className="form-group">

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('sunflowers_account', 11, 2)->default(0);
             $table->unsignedBigInteger('fk_user');
 
-            $table->foreign('fk_user')->references('id')->on('users');
+            $table->foreign('fk_user')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

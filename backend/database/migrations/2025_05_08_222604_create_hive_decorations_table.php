@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id('id_hive_decoration');
             $table->enum('position_hive_decoration', ['right', 'left', 'none']);
             $table->unsignedBigInteger('fk_cosmetic_status');
-            $table->foreign('fk_cosmetic_status')->references('id_cosmetic_status')->on('cosmetic_status');
+            $table->foreign('fk_cosmetic_status')->references('id_cosmetic_status')->on('cosmetic_status')->onDelete('cascade');
 
             $table->unsignedBigInteger('fk_decoration');
-            $table->foreign('fk_decoration')->references('id_decoration')->on('decorations');
+            $table->foreign('fk_decoration')->references('id_decoration')->on('decorations')->onDelete('cascade');
 
             $table->unsignedBigInteger('fk_account');
-            $table->foreign('fk_account')->references('id_account')->on('accounts');
+            $table->foreign('fk_account')->references('id_account')->on('accounts')->onDelete('cascade');
 
             $table->timestamps();
         });

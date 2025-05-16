@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Account; // Adicione esta linha no início do arquivo
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -103,6 +105,7 @@ class UserController extends Controller
         }
 
         try {
+            // Cria o usuário
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -112,18 +115,118 @@ class UserController extends Controller
                 'banner_picture' => '/assets/banners/img_banner.png',
             ]);
 
+            // Cria a conta associada ao usuário
+            $account = Account::create([
+                'incomes_account' => 0,
+                'expenses_account' => 0,
+                'balance_account' => 0,
+                'sunflowers_account' => 0,
+                'fk_user' => $user->id // Usa o ID do usuário recém-criado
+            ]);
+
+            $categories = [
+            [
+                'title_category' => 'sem categoria',
+                'color_category' => '#818B92',
+                'fk_type' => '2',
+                'fk_account' => $account->id_account,
+            ],
+            [
+                'title_category' => 'alimentação',
+                'color_category' => '#818B92',
+                'fk_type' => '2',
+                'fk_account' => $account->id_account,
+            ],
+            [
+                'title_category' => 'lazer',
+                'color_category' => '#818B92',
+                'fk_type' => '2',
+                'fk_account' => $account->id_account,
+            ],
+            [
+                'title_category' => 'moradia',
+                'color_category' => '#818B92',
+                'fk_type' => '2',
+                'fk_account' => $account->id_account,
+            ],
+            [
+                'title_category' => 'transporte',
+                'color_category' => '#818B92',
+                'fk_type' => '2',
+                'fk_account' => $account->id_account,
+            ],
+            [
+                'title_category' => 'saúde',
+                'color_category' => '#818B92',
+                'fk_type' => '2',
+                'fk_account' => $account->id_account,
+            ],
+            [
+                'title_category' => 'educação',
+                'color_category' => '#818B92',
+                'fk_type' => '2',
+                'fk_account' => $account->id_account,
+            ],
+            [
+                'title_category' => 'vestuário',
+                'color_category' => '#818B92',
+                'fk_type' => '2',
+                'fk_account' => $account->id_account,
+            ],
+            [
+                'title_category' => 'serviços',
+                'color_category' => '#818B92',
+                'fk_type' => '2',
+                'fk_account' => $account->id_account,
+            ],
+            [
+                'title_category' => 'sem categoria',
+                'color_category' => '#818B92',
+                'fk_type' => '1',
+                'fk_account' => $account->id_account,
+            ],
+            [
+                'title_category' => 'salário',
+                'color_category' => '#818B92',
+                'fk_type' => '1',
+                'fk_account' => $account->id_account,
+            ],
+            [
+                'title_category' => 'freelance',
+                'color_category' => '#818B92',
+                'fk_type' => '1',
+                'fk_account' => $account->id_account,
+            ],
+            [
+                'title_category' => 'venda',
+                'color_category' => '#818B92',
+                'fk_type' => '1',
+                'fk_account' => $account->id_account,
+            ],
+            [
+                'title_category' => 'aposentadoria',
+                'color_category' => '#818B92',
+                'fk_type' => '1',
+                'fk_account' => $account->id_account,
+            ],
+        ];
+
+        DB::table('categories')->insert($categories);
+
             return response()->json([
                 'status' => true,
-                'message' => 'Usuário cadastrado com sucesso!',
+                'message' => 'Usuário registrado com sucesso!',
                 'data' => $user
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Erro ao cadastrar usuário: ' . $e->getMessage()
+                'message' => 'Erro ao registrar usuário: ' . $e->getMessage()
             ], 500);
         }
     }
+    
+
 
     public function logout(Request $request)
     {

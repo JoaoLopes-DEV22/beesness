@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('level_bee')->default(0);
             $table->unsignedBigInteger('fk_account');
 
-            $table->foreign('fk_account')->references('id_account')->on('accounts');
+            $table->foreign('fk_account')->references('id_account')->on('accounts')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('bee_accessories', function (Blueprint $table) {
             $table->id('id_bee_accessories');
             $table->unsignedBigInteger('fk_cosmetic_status');
-            $table->foreign('fk_cosmetic_status')->references('id_cosmetic_status')->on('cosmetic_status');
+            $table->foreign('fk_cosmetic_status')->references('id_cosmetic_status')->on('cosmetic_status')->onDelete('cascade');
 
             $table->unsignedBigInteger('fk_bee');
-            $table->foreign('fk_bee')->references('id_bee')->on('bees');
+            $table->foreign('fk_bee')->references('id_bee')->on('bees')->onDelete('cascade');
 
             $table->unsignedBigInteger('fk_accessory');
-            $table->foreign('fk_accessory')->references('id_accessory')->on('accessories');
+            $table->foreign('fk_accessory')->references('id_accessory')->on('accessories')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -20,18 +20,43 @@
 
 .latest_transactions {
     width: 65.5%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px
 }
+
+/* .transactions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+} */
 
 .transactions {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    max-height: 260px; /* Defina a altura máxima */
+    overflow-y: auto; /* Adiciona a scrollbar quando necessário */
 }
 
 .l_transaction_title {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.transactions_date_btn {
+    display: flex;
+    gap: 10px;
+}
+
+.transactions_date_btn input {
+    padding: 10px;
+    background-color: var(--cinza-bg);
+    border: none;
+    border-radius: 10px;
+    outline-style: none;
+    font-weight: bold;
 }
 
 .latest_transactions button, .form_transaction button {
@@ -49,7 +74,7 @@
 }
 
 
-.date_transaction_group {
+/* .date_transaction_group {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -58,7 +83,7 @@
 .p_date {
     font-size: 16px !important;
     color: var(--cinza-texto);
-}
+} */
 
 .transaction_card {
     background-color: var(--cinza-bg);
@@ -150,6 +175,7 @@
 .radios_area {
     display: flex;
     gap: 10px;
+    text-transform: capitalize;
 }
 
 .radio_item {

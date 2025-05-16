@@ -18,16 +18,16 @@ return new class extends Migration
             $table->date('deadline_pending')->nullable();
 
             $table->unsignedBigInteger('fk_type');
-            $table->foreign('fk_type')->references('id_type')->on('types');
+            $table->foreign('fk_type')->references('id_type')->on('types')->onDelete('cascade');
 
             $table->unsignedBigInteger('fk_category');
-            $table->foreign('fk_category')->references('id_category')->on('categories');
+            $table->foreign('fk_category')->references('id_category')->on('categories')->onDelete('cascade');
 
             $table->unsignedBigInteger('fk_account');
-            $table->foreign('fk_account')->references('id_account')->on('accounts');
+            $table->foreign('fk_account')->references('id_account')->on('accounts')->onDelete('cascade');
 
             $table->unsignedBigInteger('fk_condition');
-            $table->foreign('fk_condition')->references('id_condition')->on('conditions');
+            $table->foreign('fk_condition')->references('id_condition')->on('conditions')->onDelete('cascade');
             $table->timestamps();
         });
     }

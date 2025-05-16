@@ -1,0 +1,370 @@
+.title_area {
+    display: flex;
+    justify-content: space-between;
+}
+
+.scroll {
+    overflow-y: scroll;
+}
+
+.colmeia_h1 {
+    width: 31.5%;
+    font-size: 25px;
+}
+
+.title_area input,
+.title_area select {
+    width: 31.5%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.15);
+    font-weight: bold;
+    outline-style: none;
+}
+
+.financial_cards {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.hive-card {
+    width: 100%;
+    height: 365px;
+    background-image: url("../../../public/assets/hive_bg.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 10px;
+    border: 10px solid var(--branco);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0% 3%;
+}
+
+.card {
+    width: 31.5%;
+    height: 120px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: var(--branco);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 30px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.15);
+}
+
+.hive_info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    width: 100%;
+}
+
+.account_level_text{
+     color: var(--branco);
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.sunflower_info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--branco);
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.hive_main {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+.right_decoration,
+.left_decoration {
+    width: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.add_button{
+    width: 100%;
+    height: 100%;
+}
+
+.bee_area{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.name_area{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit_icon{
+    color: var(--branco);
+}
+
+.bee_area input{
+    border: none;
+    background-color: transparent;
+    border-bottom: 3px solid var(--branco);
+    color: var(--branco);
+    font-weight: bold;
+    width: 50%;
+    font-size: 20px;
+}
+
+.main_bee {
+    width: 175px;
+}
+
+.hive_xp{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.xp_quant{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.xp{
+    color: var(--branco);
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.quant_progress{
+    color: var(--branco);
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.progress_bar_total{
+    width: 100%;
+    height: 20px;
+    background-color: var(--branco);
+    border-radius: 30px;
+}
+
+.progress_bar{
+    width: 85%;
+    height: 20px;
+    background-color: var(--amarelo);
+    border-radius: 30px;
+}
+
+/* Filtros */
+
+.filters {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 5px;
+}
+
+.left_filters {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 50%;
+    gap: 25px;
+}
+
+.hive-select {
+    background-color: var(--branco);
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    outline-style: none;
+    box-shadow: 0px 2.5px 4px 0px rgba(0, 0, 0, 0.2);
+    width: 25%;
+    height: 45px;
+    font-weight: bold;
+
+}
+
+.switch_filter_hive {
+    background-color: var(--branco);
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: 43px;
+    border-radius: 5px;
+    box-shadow: 0px 2.5px 4px 0px rgba(0, 0, 0, 0.2);
+}
+
+.switch_filter_hive p {
+    font-weight: bold;
+    font-size: 12px;
+    text-align: center;
+    padding: 5px;
+    border-radius: 3px;
+
+}
+
+.on_gray {
+    background-color: var(--cinza-bg);
+}
+
+.off_gray {
+    background-color: var(--branco);
+}
+
+.right_filters {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 25px;
+    width: 50%;
+}
+
+.pagination_item {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--branco);
+    font-weight: bold;
+    border-radius: 5px;
+    box-shadow: 0px 2.5px 4px 0px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    color: var(--verde-receita);
+}
+
+.selected {
+    background-color: var(--verde-receita) !important;
+    color: var(--branco) !important;
+}
+
+
+
+/* Shop area */
+
+.shop_area {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.shop_card {
+    width: 30%;
+    height: 150px;
+    background-color: var(--branco);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    gap: 20%;
+    padding: 0px 20px;
+    margin: 0px 20px 20px;
+}
+
+.title_shop_card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.accessory_icon {
+    font-size: 25px;
+}
+
+.accessory_title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.accessory_level {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--cinza-bg);
+    color: var(--preto);
+    font-weight: bold;
+    border-radius: 30px;
+    padding: 10px;
+    width: 35%;
+}
+
+.content_shop_card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
+}
+
+.accessory_price {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: bold;
+}
+
+.sunflower_icon {
+    width: 30px;
+    height: 30px;
+}
+
+.buy_button {
+    background-color: var(--amarelo);
+    border: none;
+    border-radius: 30px;
+    width: 50%;
+    height: 40px;
+    font-weight: bold;
+    font-size: 18px;
+    color: var(--amarelo-texto);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}

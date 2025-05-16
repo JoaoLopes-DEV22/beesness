@@ -253,34 +253,42 @@ function Dashboard() {
   const pendenciasConcluidas = 5;
   const pendenciasPendentes = 7;
 
+  const [selectedMonth, setSelectedMonth] = useState('2025-05'); // Estado para o mês selecionado
+  const handleMonthChange = (event) => {
+    setSelectedMonth(event.target.value); // Atualiza o mês selecionado
+  };
+
+
   return (
     <div className="screen-dash">
-      <div className={`left_area-dash ${isSidebarOpen ? 'open' : 'closed'}`}>
-        <Sidebar />
-      </div>
-      <div className="right_area-dash">
+      {isSidebarOpen &&
+                <div class="left_area-dash">
+                    <Sidebar />
+                </div>
+            }
+      <div className="right_area">
         <Header toggleSidebar={toggleSidebar} />
         <main className="dashboard-main">
           <div className="title_area">
             <div className="data-account">
-              <h1>Dados da Conta</h1>
+              <h1 id='h1_title'>Dashboard</h1>
               <div className="card-data-account">
                 <div className="t_card_group-dash">
-                  <div className="switch_filter-account">
-                    <p className={isMonthly ? 'off-dash' : 'on-dash'} onClick={toggleSwitch}>
+                  <div className="switch_filter_account">
+                    <p className={isMonthly ? 'on-dash' : 'off-dash'} onClick={toggleSwitch}>
                       Mensal
                     </p>
-                    <p className={isMonthly ? 'on-dash' : 'off-dash'} onClick={toggleSwitch}>
+                    <p className={isMonthly ? 'off-dash' : 'on-dash'} onClick={toggleSwitch}>
                       Anual
                     </p>
                   </div>
                 </div>
               </div>
             </div>
-            <input type="month" value="2025-04" aria-label="Mês de referência" />
+            <input className='input_month' type="month" value={selectedMonth} onChange={handleMonthChange} aria-label="Mês de referência" />
           </div>
 
-          <AccountData />
+          <AccountData selectedMonth={selectedMonth} />
 
           <div className="charts_grid">
             <div className="chart_container chart_centered">
@@ -321,22 +329,22 @@ function Dashboard() {
                 <div className="total">
                   <p className="receitas">
                     <span className="icon"></span>Total de Receitas Pendentes
-                    <span className="value-red">R$ 7.050,63</span>
+                    <span className="value-receita">R$ 7.050,63</span>
                   </p>
                   <p className="receitas">
                     <span className="icon"></span>Total de Despesas Pendentes
-                    <span className="value-green">R$ 10.000,00</span>
+                    <span className="value-despesa">R$ 10.000,00</span>
                   </p>
                 </div>
                 <div className="row"></div>
                 <div className="total">
                   <p className="positive">
-                    <span className="icon">✔</span> Pendências Concluídas: <br />
-                    {pendenciasConcluidas}
+                    <span className="icon">✔</span> Pendências Concluídas: <br /> <br />
+                    <span className="value-receita">{pendenciasConcluidas}</span>
                   </p>
                   <p className="warning">
-                    <span className="icon">⏳</span> Pendências Pendentes: <br />
-                    {pendenciasPendentes}
+                    <span className="icon">⏳</span> Pendências Pendentes: <br /> <br />
+                    <span className="value-pendencia">{pendenciasPendentes}</span>
                   </p>
                 </div>
               </div>

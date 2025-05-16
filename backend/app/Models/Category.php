@@ -12,11 +12,18 @@ class Category extends Model
         'title_category',
         'color_category',
         'fk_type',
+        'fk_account',
     ];
     public function type()
     {
         return $this->belongsTo(Type::class, 'fk_type', 'id_type');
     }
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class, 'fk_account', 'id_account');
+    }
+
     public function transaction()
     {
         return $this->hasMany(Transaction::class, 'fk_category', 'id_category');
