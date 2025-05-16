@@ -1,0 +1,104 @@
+.financial_cards {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.card {
+    width: 31.5%;
+    height: 140px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: var(--branco);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 30px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.15);
+}
+
+#balance {
+    gap: 20px !important;
+}
+
+.card .title_card {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.card:not(#balance) {
+    padding-top: 32px !important;
+}
+
+.card .value_card_g,
+.card .value_card_r {
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.card .value_card_g {
+    color: var(--verde-receita);
+}
+
+.card .value_card_r {
+    color: var(--vermelho-despesa);
+}
+
+.t_card_group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.t_card_group-dash {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.switch_filter {
+    display: flex;
+    gap: 15px;
+    background-color: var(--cinza-bg);
+    padding: 8px;
+    border-radius: 5px;
+    align-items: center;
+}
+
+.switch_filter-account {
+    display: flex;
+    gap: 15px;
+    padding: 8px;
+    border-radius: 5px;
+    align-items: center;
+}
+
+.switch_filter p {
+    font-weight: bold;
+    font-size: 10px;
+    text-align: center;
+}
+
+.on,
+.off {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.on {
+    background-color: var(--branco);
+    border-radius: 3px;
+}
+
+.on-dash,
+.off-dash {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.on-dash {
+    background-color: var(--cinza-bg);
+    border-radius: 3px;
+}

@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+@font-face {
+    font-family: 'Quicksand-Bold';
+    src: url('assets/fonts/static/Quicksand-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'Quicksand-Medium';
+    src: url('assets/fonts/static/Quicksand-Medium.ttf');
+}
+
+@font-face {
+    font-family: 'Quicksand';
+    src: url('assets/fonts/static/Quicksand-Regular.ttf');
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Quicksand';
+}
+
+html,
+body,
+#root {
+    width: 100%;
+    height: 100%;
+}
+
+:root {
+    --branco: #FFF;
+    --preto: #000;
+
+    --cinza-bg: #E6EFF5;
+
+    --verde-escuro: #124C50;
+    --verde-medio: #127070;
+    --verde-claro: #35CC86;
+    --amarelo: #E2C637;
+
+    --verde-receita: #189253;
+    --vermelho-despesa: #DC2626;
+
+    --verde-bg-tipo: #ADECCC;
+    --vermelho-bg-tipo: #F8C5C5;
+
+
+    --amarelo-texto: #6B5D15;
+    --cinza-texto: #818B92;
+    --cinza-placeholder: #B6B7B8;
+
+    --verde-texto-status: #0F6F3E;
+}
+
+.screen {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    background-color: var(--cinza-bg);
+}
+
+.right_area {
+    width: 100%;
+}
+
+main {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}

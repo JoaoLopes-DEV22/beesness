@@ -1,0 +1,183 @@
+.categories_area {
+    display: flex;
+    justify-content: space-between;
+}
+
+.categories_list,
+.new_category {
+    height: 350px;
+    padding: 14px 20px;
+    border-radius: 10px;
+    background-color: var(--branco);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.15);
+}
+
+.categories_list p,
+.new_category p {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.categories_list {
+    width: 65.5%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.categories {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.categories_title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.categories_list button,
+.form_category button {
+    padding: 12px 20px;
+    background-color: var(--amarelo);
+    color: var(--amarelo-texto);
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.new_category {
+    width: 31.5%;
+}
+
+
+.category_cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+
+.category_card {
+    background-color: var(--cinza-bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 10px;
+}
+
+.card_left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.type_circle_g,
+.type_circle_r {
+    padding: 10px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.type_circle_g {
+    background-color: var(--verde-bg-tipo);
+    color: var(--verde-receita);
+}
+
+.type_circle_r {
+    background-color: var(--vermelho-bg-tipo);
+    color: var(--vermelho-despesa);
+}
+
+.content_title {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--cinza-texto);
+}
+
+.content_category {
+    color: var(--cinza-texto);
+    font-weight: bold;
+}
+
+
+.form_category {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.form_category button {
+    margin-top: 5px !important;
+}
+
+.form_category label,
+.categories_filter label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.input_group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input_group input,
+.input_group select,
+.categories_list select {
+    background-color: var(--cinza-bg);
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    outline-style: none;
+}
+
+.radios_area {
+    display: flex;
+    gap: 10px;
+}
+
+.icon_despesa {
+    color: var(--vermelho-despesa);
+}
+
+.icon_receita {
+    color: var(--verde-receita);
+}
+
+#input_color {
+    width: 100%;
+    height: 40px;
+    padding: 0 !important;
+    border: 2px solid var(--cinza-bg);
+    border-radius: 5px !important;
+}
+
+.categories_filter {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.category_actions {
+    display: flex;
+    font-size: 30px;
+    color: var(--cinza-texto);
+    gap: 5px;
+}
+
+.edit_icon, .delete_icon {
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.edit_icon:hover, .delete_icon:hover {
+    color: var(--preto);
+}
