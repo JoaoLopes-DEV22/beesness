@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('account_achievements', function (Blueprint $table) {
             $table->id('id_account_achievement');
             $table->unsignedBigInteger('fk_account');
-            $table->foreign('fk_account')->references('id_account')->on('accounts');
+            $table->foreign('fk_account')->references('id_account')->on('accounts')->onDelete('cascade');
 
             $table->unsignedBigInteger('fk_achievements');
-            $table->foreign('fk_achievements')->references('id_achievement')->on('achievements');
+            $table->foreign('fk_achievements')->references('id_achievement')->on('achievements')->onDelete('cascade');
 
             $table->unsignedBigInteger('fk_condition');
-            $table->foreign('fk_condition')->references('id_condition')->on('conditions');
+            $table->foreign('fk_condition')->references('id_condition')->on('conditions')->onDelete('cascade');
             $table->timestamps();
         });
     }

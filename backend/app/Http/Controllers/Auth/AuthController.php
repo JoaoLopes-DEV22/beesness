@@ -17,7 +17,7 @@ class AuthController extends Controller
         ], [
             'email.required' => 'Campo email é obrigatório',
             'email.email' => 'E-mail inválido',
-            'password.required' => 'Campo senha é obrigatório'
+            'password' => 'Campo senha é obrigatório'
         ]);
 
         if ($validator->fails()) {

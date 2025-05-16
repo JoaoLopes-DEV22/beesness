@@ -10,33 +10,39 @@ function Home() {
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [mode, setMode] = useState('transactions');
+    const [selectedMonth, setSelectedMonth] = useState('2025-05'); // Estado para o mês selecionado
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
     const handleModeChange = (event) => {
         setMode(event.target.value);
     };
+    const handleMonthChange = (event) => {
+        setSelectedMonth(event.target.value); // Atualiza o mês selecionado
+    };
 
 
     return (
         <div class="screen">
-            <div class="left_area">
-                {isSidebarOpen && <Sidebar />}
-            </div>
+            {isSidebarOpen &&
+                <div class="left_area">
+                    <Sidebar />
+                </div>
+            }
             <div class="right_area">
                 <Header toggleSidebar={toggleSidebar} />
                 <main>
 
                     <div class="title_area">
-                        <h1>Dados da Conta</h1>
+                        <h1 className='home_h1'>Dados da Conta</h1>
                         <select id='home_mode' onChange={handleModeChange} value={mode}>
                             <option value="transactions">Transações</option>
                             <option value="categories">Categorias</option>
                         </select>
-                        <input type="month" value={'2025-04'}></input>
+                        <input className='input_month' type="month" value={selectedMonth} onChange={handleMonthChange} />
                     </div>
 
-                    <AccountData />
+                    <AccountData selectedMonth={selectedMonth} />
 
                     {mode === 'transactions' ? <Transactions /> : <Categories />}
 

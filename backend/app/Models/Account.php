@@ -23,4 +23,9 @@ class Account extends Model
     {
         return $this->belongsTo(User::class, 'fk_user', 'id');
     }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'fk_account', 'id_account');
+    }
 }

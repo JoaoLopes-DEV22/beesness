@@ -8,6 +8,7 @@ import EditProfile from "./pages/EditProfile.js";
 import AllTransactions from "./pages/AllTransactions.js";
 import Dashboard from "./pages/Dashboard.js";
 import Perfil from "./pages/Perfil.js";
+import Hive from "./pages/Hive.js";
 
 function App() {
   return (
@@ -39,6 +40,11 @@ function App() {
         <Route path="/edit-profile" element={
           <ProtectedRoute>
             <EditProfile />
+          </ProtectedRoute>
+        } />
+        <Route path="/hive" element={
+          <ProtectedRoute>
+            <Hive />
           </ProtectedRoute>
         } />
       </Routes>

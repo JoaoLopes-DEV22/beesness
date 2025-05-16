@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import api from '../api';
 import { useEffect, useState } from 'react';
 
-function Header() {
+function Header({toggleSidebar}) {
     const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [name, setName] = useState('');
@@ -71,7 +71,7 @@ function Header() {
             />
             <header>
                 <div className="left_items">
-                    <TbLayoutSidebarFilled id="sb_icon" />
+                    <TbLayoutSidebarFilled id="sb_icon" onClick={toggleSidebar} />
                 </div>
                 <div className="right_items">
                     <div className="notification_area">

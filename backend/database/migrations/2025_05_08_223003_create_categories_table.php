@@ -16,11 +16,11 @@ return new class extends Migration
             $table->string('title_category', 100);
             $table->string('color_category', 7)->default('#818B92');
 
-            $table->unsignedBigInteger('fk_type')->nullable();
-            $table->foreign('fk_type')->references('id_type')->on('types');
+            $table->unsignedBigInteger('fk_type');
+            $table->foreign('fk_type')->references('id_type')->on('types')->onDelete('cascade');
 
             $table->unsignedBigInteger('fk_account')->nullable();
-            $table->foreign('fk_account')->references('id_account')->on('accounts');
+            $table->foreign('fk_account')->references('id_account')->on('accounts')->onDelete('cascade');
 
             $table->timestamps();
         });

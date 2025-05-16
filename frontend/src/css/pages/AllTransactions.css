@@ -57,14 +57,39 @@ button {
     gap: 10px;
 }
 
+.all_transactions {
+    max-height: 400px; /* Defina a altura máxima desejada */
+    overflow-y: auto; /* Adiciona a barra de rolagem vertical */
+}
+
+/* Para navegadores WebKit (Chrome, Safari) */
+.all_transactions::-webkit-scrollbar {
+    width: 8px; /* Largura da barra de rolagem */
+}
+
+.all_transactions::-webkit-scrollbar-thumb {
+    background-color: #888; /* Cor do "thumb" da barra de rolagem */
+    border-radius: 10px; /* Arredonda os cantos do "thumb" */
+}
+
+.all_transactions::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Cor do "thumb" ao passar o mouse */
+}
+
+/* Para Firefox */
+.all_transactions {
+    scrollbar-width: thin; /* Largura da barra de rolagem */
+    scrollbar-color: #888 #f1f1f1; /* Cor do "thumb" e do fundo */
+}
+
+
 .all_transaction_title {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.latest_transactions button,
-.form_transaction button {
+.latest_transactions button, .form_transaction button {
     padding: 12px 20px;
     background-color: var(--amarelo);
     color: var(--amarelo-texto);
@@ -121,7 +146,7 @@ button {
 }
 
 .type_circle_r {
-    background-color: var(--vermelho-bg-tipo);
+        background-color: var(--vermelho-bg-tipo);
     color: var(--vermelho-despesa);
 }
 
@@ -156,10 +181,31 @@ button {
     align-items: center;
 }
 
-.transactions_filter select {
+.transactions_filter select, .input_date_filter {
     background-color: var(--cinza-bg);
     border: none;
     border-radius: 10px;
     padding: 10px;
     outline-style: none;
+}
+
+.input_date_filter p {
+    font-size: 14px !important;
+    font-weight: normal !important;
+}
+
+.input_date_filter {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.input_date_filter input {
+    background-color: transparent;
+    border: none;
+    outline-style: none;
+}
+
+.transactions_filter label {
+    font-weight: bold;
 }

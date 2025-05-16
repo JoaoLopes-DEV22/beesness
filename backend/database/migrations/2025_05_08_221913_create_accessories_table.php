@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name_accessory', 100);
             $table->decimal('price_accessory', 11, 2);
             $table->string('icon_accessory', 255);
+            $table->string('img_accessory', 255);
             $table->integer('level_accessory');
             $table->enum('type_accessory', ['head', 'face', 'body']);
             $table->timestamps();

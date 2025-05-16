@@ -18,14 +18,23 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+
+    protected $table = 'users';
+    protected $primaryKey = 'id';
+
     protected $fillable = [
         'name',
         'email',
-        'password',
         'birth',
+        'password',
         'profile_picture',
-        'banner_picture'
+        'banner_picture',
     ];
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class, 'fk_user', 'id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.

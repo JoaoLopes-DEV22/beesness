@@ -97,7 +97,7 @@
 .content_title {
     font-size: 20px;
     font-weight: bold;
-    color: var(--cinza-texto);
+    /* color: var(--cinza-texto); */
 }
 
 .content_category {
@@ -142,6 +142,7 @@
 .radios_area {
     display: flex;
     gap: 10px;
+    text-transform: capitalize;
 }
 
 .icon_despesa {
@@ -173,11 +174,50 @@
     gap: 5px;
 }
 
-.edit_icon, .delete_icon {
+.edit_icon_category, .delete_icon {
     cursor: pointer;
     transition: 0.3s;
 }
 
-.edit_icon:hover, .delete_icon:hover {
+.edit_icon_category:hover, .delete_icon:hover {
     color: var(--preto);
+}
+
+/* .pagination {
+    text-align: center;
+    margin-top: 10px;
+} */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    background-color: var(--amarelo);
+    color: var(--amarelo-texto);
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    color: var(--branco);
+    cursor: not-allowed;
+}
+
+.pagination span {
+    margin: 0 10px;
+    font-weight: bold;
+}
+
+.radio_item {
+    display: flex;
+    align-items: center;
 }

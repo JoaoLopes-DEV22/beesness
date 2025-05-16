@@ -70,10 +70,11 @@ function Perfil() {
                 <Header toggleSidebar={toggleSidebar} />
                 <main>
                     <div class="title_area">
-                        <h1>Perfil</h1>
+                        <h1 className='perfil_h1'>Perfil</h1>
                     </div>
 
                     <div class="card_perfil">
+
                         <div class="background_perfil">
                             <img src="/assets/camera.png" class="icon_background_perfil"></img>
                         </div>
@@ -84,21 +85,25 @@ function Perfil() {
                             <img src="/assets/camera.png" class="icon_perfil"></img>
                         </div>
 
-                        <div class="info_perfil">
-                            <div class="title_butao_perfil">
-                                <h1 class="usuario_perfil">Usuário</h1>
-                                <button class="botao_editar_perfil" onClick={redirectPageEdit}>Editar perfil</button>
+
+
+                        <div className="content_perfil">
+                            <div class="info_perfil">
+                                <div class="title_butao_perfil">
+                                    <h1 class="usuario_perfil">Usuário</h1>
+                                    <button class="botao_editar_perfil" onClick={redirectPageEdit}>Editar perfil</button>
+                                </div>
+                                <h1 class="email_perfil">Email: {email}</h1>
+                                <h1 class="nasc_perfil">Data de Nascimento: {reformatarData(birth)} </h1>
                             </div>
-                            <h1 class="email_perfil">Email: {email}</h1>
-                            <h1 class="nasc_perfil">Data de Nascimento: {reformatarData(birth)} </h1>
-                        </div>
 
-                        <div class="info_perfil">
-                            <h1 class="saldo_perfil">Saldo Total</h1>
-                            <h1 class="dinheiro_perfil">R$ 7.050,63</h1>
-                        </div>
+                            <div class="info_perfil">
+                                <h1 class="saldo_perfil">Saldo Total</h1>
+                                <h1 class="dinheiro_perfil">R$ 7.050,63</h1>
+                            </div>
 
-                        <button onClick={handleLogout} class="botao_sair_perfil">Sair da conta</button>
+                            <button onClick={handleLogout} class="botao_sair_perfil">Sair da conta</button>
+                        </div>
                     </div>
                 </main>
             </div>
