@@ -90,7 +90,8 @@ class TransactionController extends Controller
         $endDate = \Carbon\Carbon::createFromFormat('Y-m', $month)->endOfMonth();
 
         $query = Transaction::where('fk_account', $userId)
-            ->whereBetween('created_at', [$startDate, $endDate]);
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->with('category');
 
         if ($type) {
             $query->where('fk_type', $type);
@@ -103,5 +104,46 @@ class TransactionController extends Controller
         });
 
         return response()->json(['transactions' => $transactions]);
+    }
+
+    public function show($id)
+    {
+        try {
+            $transaction = Transaction::with('category', 'type')->findOrFail($id);
+            return response()->json($transaction);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Transação não encontrada'], 404);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'title_transaction' => 'required|string|max:100',
+            'value_transaction' => 'required|numeric',
+            'fk_type' => 'required|exists:types,id_type',
+            'fk_category' => 'required|exists:categories,id_category',
+        ]);
+
+        try {
+            $transaction = Transaction::findOrFail($id);
+            $transaction->update($request->all());
+            return response()->json($transaction);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erro ao atualizar transação: ' . $e->getMessage()], 500);
+        }
+    }
+
+    // TransactionController.php
+
+    public function destroy($id)
+    {
+        try {
+            $transaction = Transaction::findOrFail($id);
+            $transaction->delete();
+            return response()->json(['message' => 'Transação excluída com sucesso']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erro ao excluir transação: ' . $e->getMessage()], 500);
+        }
     }
 }
