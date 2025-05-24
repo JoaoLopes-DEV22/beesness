@@ -56,3 +56,30 @@ Branches permitem que você desenvolva novas funcionalidades de forma isolada da
 ```bash
 git checkout -b nome-da-branch
 ```
+📍 Após criar, você será automaticamente movido para ela. Confirme o nome da branch ativa no canto inferior esquerdo do VS Code.
+
+## 🔄 Navegar entre branches
+```bash
+git checkout nome-da-branch
+```
+
+## 📝 Commitando e Monitorando Alterações
+Ao editar arquivos, o Git os marca:
+
+🟡 Amarelo → Modificado
+
+🟢 Verde → Novo arquivo adicionado
+
+Verifique as alterações no ícone de source control no VS Code (barra lateral esquerda).
+
+## 🔄 Atualizando sua Branch com a Main
+Para manter sua branch sincronizada com a main, estando na sua branch:
+```bash
+git merge main
+```
+⚠️ Resolva eventuais conflitos manualmente e faça um commit após o merge.
+
+## 💡 Dicas Úteis
+✅ Sempre atualize sua branch antes de criar um pull request
+
+✍️ Use commits descritivos como: feat: adiciona tela de login, fix: corrige bug no carrinho
