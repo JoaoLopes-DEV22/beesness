@@ -213,6 +213,16 @@ class UserController extends Controller
 
         DB::table('categories')->insert($categories);
 
+        // Cria a abelha padrão do usuário
+        DB::table('bees')->insert([
+            'name_bee' => 'Mel',
+            'experience_bee' => 0,
+            'level_bee' => 0,
+            'fk_account' => $account->id_account,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
             return response()->json([
                 'status' => true,
                 'message' => 'Usuário registrado com sucesso!',

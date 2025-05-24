@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             TypesSeeder::class,
             CategorySeeder::class,
             ConditionSeeder::class,
+            AccessoriesSeeder::class,
+            CosmeticStatusSeeder::class,
         ]);
     }
 }

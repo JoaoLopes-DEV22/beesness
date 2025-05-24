@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\AccessoryController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\BeeAccessoryController;
+use App\Http\Controllers\BeeController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AuthenticateAPI;
 use Illuminate\Http\Request;
@@ -24,6 +27,10 @@ Route::get('/transactions/last', [TransactionController::class, 'getLastTransact
 Route::get('/transactions/monthly', [TransactionController::class, 'getMonthlyTransactions']);
 Route::get('/transactions/monthly/type', [TransactionController::class, 'getMonthlyTransactionsByType']);
 
+Route::get('/bee', [BeeController::class, 'showBee'])->middleware('auth:sanctum');
+Route::get('/accessories', [AccessoryController::class, 'index']);
+Route::post('/bee-accessories/buy', [BeeAccessoryController::class, 'store'])->middleware('auth:sanctum');
+Route::put('/bee-accessories/{id}/toggle-equip', [BeeAccessoryController::class, 'toggleEquip'])->middleware('auth:sanctum');
 
 Route::get('/transactions/{id}', [TransactionController::class, 'show']); // Mostrar uma transação específica
 Route::put('/transactions/{id}', [TransactionController::class, 'update']); // Atualizar uma transação
