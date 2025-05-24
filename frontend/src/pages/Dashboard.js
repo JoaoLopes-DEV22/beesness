@@ -302,13 +302,13 @@ function Dashboard() {
               <div className="card-dash-gasto">
                 <div className="expense-row positive">
                   <span className="arrow-icon">▲</span>
-                  <GiHamburger className="category-icon" />
+                  {/* <GiHamburger className="category-icon" /> */}
                   <span className="category-text">{maiorGasto.categoria}</span>
                   <span className="value">{formatCurrency(maiorGasto.valor)}</span>
                 </div>
                 <div className="expense-row negative">
                   <span className="arrow-icon">▼</span>
-                  <FaBus className="category-icon" />
+                  {/* <FaBus className="category-icon" /> */}
                   <span className="category-text">{menorGasto.categoria}</span>
                   <span className="value">{formatCurrency(menorGasto.valor)}</span>
                 </div>
@@ -339,11 +339,11 @@ function Dashboard() {
                 <div className="row"></div>
                 <div className="total">
                   <p className="positive">
-                    <span className="icon">✔</span> Pendências Concluídas: <br /> <br />
+                    <span className="icon">✔</span> Pendências Concluídas <br /> <br />
                     <span className="value-receita">{pendenciasConcluidas}</span>
                   </p>
                   <p className="warning">
-                    <span className="icon">⏳</span> Pendências Pendentes: <br /> <br />
+                    <span className="icon">⏳</span> Pendências Pendentes <br /> <br />
                     <span className="value-pendencia">{pendenciasPendentes}</span>
                   </p>
                 </div>

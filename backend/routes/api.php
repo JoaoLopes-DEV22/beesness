@@ -25,9 +25,13 @@ Route::get('/transactions/monthly', [TransactionController::class, 'getMonthlyTr
 Route::get('/transactions/monthly/type', [TransactionController::class, 'getMonthlyTransactionsByType']);
 
 
-Route::get('/transactions/{id}', [TransactionController::class, 'show']); // Mostrar uma transação específica
-Route::put('/transactions/{id}', [TransactionController::class, 'update']); // Atualizar uma transação
-Route::delete('/transactions/{id}', [TransactionController::class, 'destroy']); // Deletar uma transação
+Route::get('/transactions/{id}', [TransactionController::class, 'show']); 
+Route::put('/transactions/{id}', [TransactionController::class, 'update']); 
+Route::delete('/transactions/{id}', [TransactionController::class, 'destroy']); 
+
+Route::get('/categories/{id}', [CategoryController::class, 'show']); 
+Route::put('/categories/{id}', [CategoryController::class, 'update']);
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy']); 
 
 Route::middleware(AuthenticateAPI::class)->group(function () {
     // Route::get('/user', function () {

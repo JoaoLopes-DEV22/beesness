@@ -7,10 +7,6 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    // public function index()
-    // {
-    //     return Category::all();
-    // }
 
     public function index(Request $request)
     {
@@ -39,6 +35,46 @@ class CategoryController extends Controller
             return response()->json($category, 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Erro ao criar categoria: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function show($id)
+    {
+        try {
+            $category = Category::findOrFail($id);
+            return response()->json($category);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Categoria não encontrada'], 404);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'title_category' => 'required|string|max:100',
+            'color_category' => 'required|string|max:7',
+            'fk_type' => 'required|exists:types,id_type'
+        ]);
+
+        try {
+            $category = Category::findOrFail($id);
+            $category->update($request->all());
+            return response()->json($category);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erro ao atualizar categoria: ' . $e->getMessage()], 500);
+        }
+    }
+
+    // CategoryController.php
+
+    public function destroy($id)
+    {
+        try {
+            $category = Category::findOrFail($id);
+            $category->delete();
+            return response()->json(['message' => 'Categoria excluída com sucesso']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erro ao excluir categoria: ' . $e->getMessage()], 500);
         }
     }
 }
