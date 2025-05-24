@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             ConditionSeeder::class,
             AccessoriesSeeder::class,
+            BeeSeeder::class,
             CosmeticStatusSeeder::class,
         ]);
     }
