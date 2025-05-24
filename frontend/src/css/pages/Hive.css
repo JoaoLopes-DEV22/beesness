@@ -44,6 +44,10 @@
     padding: 0% 3%;
 }
 
+.load{
+    color: var(--branco) !important;
+}
+
 .card {
     width: 31.5%;
     height: 120px;
@@ -367,4 +371,10 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
+}
+
+.disabled_button{
+    background-color: var(--cinza-bg);
+    color: var(--preto);
+
 }

@@ -33,7 +33,7 @@ class User extends Authenticatable
 
     public function account()
     {
-        return $this->belongsTo(Account::class, 'fk_user', 'id');
+        return $this->hasOne(Account::class, 'fk_user', 'id');
     }
 
     /**
@@ -57,5 +57,17 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function bee()
+    {
+        return $this->hasOneThrough(
+            Bee::class,
+            Account::class,
+            'fk_user',      // foreign key em accounts
+            'fk_account',   // foreign key em bees
+            'id',           // local key em users
+            'id_account'    // local key em accounts
+        );
     }
 }
