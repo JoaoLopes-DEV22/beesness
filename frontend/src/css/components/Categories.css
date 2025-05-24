@@ -221,3 +221,147 @@
     display: flex;
     align-items: center;
 }
+
+
+
+
+
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--branco);
+    padding: 20px;
+    border-radius: 10px;
+    width: 500px;
+    max-width: 90%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h2 {
+    font-size: 22px;
+    color: var(--preto);
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--cinza-texto);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.cancel-btn {
+    background-color: var(--cinza-texto);
+    color: white;
+}
+
+.save-btn {
+    background-color: var(--amarelo);
+    color: var(--amarelo-texto);
+}
+
+/* Ajuste para o formulário dentro do modal */
+.modal-content .form_category {
+    padding: 0;
+    box-shadow: none;
+}
+
+
+
+
+
+/* Estilos para o toast de confirmação */
+.confirm-toast {
+    background: #fff3e0 !important;
+    border-left: 6px solid #ff9800 !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+}
+
+.custom-toast-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.toast-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toast-warning-icon {
+    color: #ff9800;
+    font-size: 24px;
+}
+
+.toast-title {
+    font-weight: bold;
+    color: #5d4037;
+    font-size: 16px;
+}
+
+.toast-message {
+    color: #5d4037;
+    margin: 5px 0 15px;
+    font-size: 14px;
+}
+
+.confirm-toast-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.confirm-toast-button {
+    padding: 10px 0;
+    border-radius: 6px;
+    font-weight: bold;
+    flex: 1;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.confirm-toast-button.confirm {
+    background: #d32f2f;
+    color: white;
+}
+
+.confirm-toast-button.confirm:hover {
+    background: #b71c1c;
+}
+
+.confirm-toast-button.cancel {
+    background: #e0e0e0;
+    color: #424242;
+}
+
+.confirm-toast-button.cancel:hover {
+    background: #bdbdbd;
+}
