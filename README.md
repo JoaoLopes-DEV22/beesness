@@ -72,12 +72,27 @@ Ao editar arquivos, o Git os marca:
 
 Verifique as alterações no ícone de source control no VS Code (barra lateral esquerda).
 
+## 🔄 Atualizando sua Main com o Repositório Remoto
+Para manter sua main atualizada:
+```bash
+git pull
+```
+⚠️ Isso mostrará todos os arquivos atualizados ou criados.
+
 ## 🔄 Atualizando sua Branch com a Main
 Para manter sua branch sincronizada com a main, estando na sua branch:
 ```bash
 git merge main
 ```
-⚠️ Resolva eventuais conflitos manualmente e faça um commit após o merge.
+
+## 🔄 Enviar suas alterações para a Main
+Para enviar as alterações da sua branch:
+```bash
+git add .
+git commit -m "nome do commit"
+git push
+```
+⚠️ Após isso, criará um Pull Request no GitHub, e aceite no GitHub o Pull Request e dê o Merge.
 
 ## 💡 Dicas Úteis
 ✅ Sempre atualize sua branch antes de criar um pull request
