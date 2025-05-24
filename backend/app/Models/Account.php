@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,5 +28,10 @@ class Account extends Model
     public function category()
     {
         return $this->belongsTo(Category::class, 'fk_account', 'id_account');
+    }
+
+    public function bee()
+    {
+        return $this->hasOne(Bee::class, 'fk_account');
     }
 }
