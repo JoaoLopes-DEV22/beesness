@@ -6,20 +6,19 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class AccountSeeder extends Seeder
+class BeeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
-    public function run()
+    public function run(): void
     {
-        DB::table('accounts')->insert([
+        DB::table('bees')->insert([
             [
-                'incomes_account' => 0,
-                'expenses_account' => 0,
-                'balance_account' => 0,
-                'sunflowers_account' => 10000,
-                'fk_user' => 1,
+                'name_bee' => 'Mel',
+                'experience_bee' => 500,
+                'level_bee' => 10,
+                'fk_account' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
