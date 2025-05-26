@@ -9,6 +9,7 @@ import AllTransactions from "./pages/AllTransactions.js";
 import Dashboard from "./pages/Dashboard.js";
 import Perfil from "./pages/Perfil.js";
 import Hive from "./pages/Hive.js";
+import Pendences from "./pages/Pendences.js";
 
 function App() {
   return (
@@ -40,6 +41,11 @@ function App() {
         <Route path="/edit-profile" element={
           <ProtectedRoute>
             <EditProfile />
+          </ProtectedRoute>
+        } />
+        <Route path="/pendences" element={
+          <ProtectedRoute>
+            <Pendences />
           </ProtectedRoute>
         } />
         <Route path="/hive" element={
