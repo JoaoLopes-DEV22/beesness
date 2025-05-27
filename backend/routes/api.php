@@ -7,6 +7,7 @@ use App\Http\Controllers\BeeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PendenceController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PendingController;
