@@ -1,0 +1,197 @@
+.pendences_area {
+    display: flex;
+    justify-content: space-between;
+}
+
+.latest_pendences,
+.new_pendence {
+    height: 350px;
+    padding: 14px 20px;
+    border-radius: 10px;
+    background-color: var(--branco);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.15);
+}
+
+.latest_pendences p,
+.new_pendence p {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.latest_pendences {
+    width: 65.5%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px
+}
+
+/* .pendences {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+} */
+
+.pendences {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 260px;
+    /* Defina a altura máxima */
+    overflow-y: auto;
+    /* Adiciona a scrollbar quando necessário */
+}
+
+.l_pendence_title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pendences_date_btn {
+    display: flex;
+    gap: 10px;
+}
+
+.pendences_date_btn input {
+    padding: 10px;
+    background-color: var(--cinza-bg);
+    border: none;
+    border-radius: 10px;
+    outline-style: none;
+    font-weight: bold;
+}
+
+.latest_pendences button,
+.form_pendence button {
+    padding: 12px 20px;
+    background-color: var(--amarelo);
+    color: var(--amarelo-texto);
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.new_pendence {
+    width: 31.5%;
+}
+
+
+/* .date_pendence_group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.p_date {
+    font-size: 16px !important;
+    color: var(--cinza-texto);
+} */
+
+.pendence_card {
+    background-color: var(--cinza-bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 10px;
+}
+
+.tcard_left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.type_circle_g,
+.type_circle_r {
+    padding: 10px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.type_circle_g {
+    background-color: var(--verde-bg-tipo);
+    color: var(--verde-receita);
+}
+
+.type_circle_r {
+    background-color: var(--vermelho-bg-tipo);
+    color: var(--vermelho-despesa);
+}
+
+.tcontent_title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.tcontent_category {
+    color: var(--cinza-texto);
+    font-weight: bold;
+}
+
+.pendence_value_g,
+.pendence_value_r {
+    font-weight: bold;
+}
+
+.pendence_value_g {
+    color: var(--verde-receita);
+}
+
+.pendence_value_r {
+    color: var(--vermelho-despesa);
+}
+
+.form_pendence {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.form_pendence button {
+    margin-top: 5px !important;
+}
+
+.form_pendence label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.input_group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input_group input,
+.input_group select {
+    background-color: var(--cinza-bg);
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    outline-style: none;
+}
+
+.radios_area {
+    display: flex;
+    gap: 10px;
+    text-transform: capitalize;
+}
+
+.radio_item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.icon_despesa {
+    color: var(--vermelho-despesa);
+}
+
+.icon_receita {
+    color: var(--verde-receita);
+}
