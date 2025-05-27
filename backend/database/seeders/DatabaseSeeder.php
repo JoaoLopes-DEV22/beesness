@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
             AccessoriesSeeder::class,
             BeeSeeder::class,
             CosmeticStatusSeeder::class,
+            AchievementSeeder::class,
+            DecorationSeeder::class,
             TransactionSeeder::class,
             PendingSeeder::class,
         ]);
