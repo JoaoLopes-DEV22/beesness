@@ -195,3 +195,19 @@
 .icon_receita {
     color: var(--verde-receita);
 }
+
+.side_by_side {
+    flex-direction: row !important;
+    gap: 15px !important;
+}
+
+.input_pair {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+
+.input_pair input {
+    width: 100%;
+}

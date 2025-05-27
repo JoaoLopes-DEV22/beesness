@@ -14,7 +14,8 @@ class Pending extends Model
 
     protected $fillable = [
         'title_pending',
-        'value_pending',
+        'initial_pending',
+        'total_pending',
         'deadline_pending',
         'fk_type',
         'fk_category',

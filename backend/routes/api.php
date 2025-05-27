@@ -43,16 +43,16 @@ Route::prefix('transactions')->group(function () {
 });
 
 Route::prefix('pendences')->group(function () {
-    Route::get('/annual/charts', [PendenceController::class, 'getAnnualChartsData']);
-    Route::get('/monthly/evolution', [PendenceController::class, 'getMonthlyEvolution']);
-    Route::get('/monthly/charts', [PendenceController::class, 'getMonthlyChartsData']);
-    Route::get('/last', [PendenceController::class, 'getLastPendencesByUser']);
-    Route::get('/monthly', [PendenceController::class, 'getMonthlyPendences']);
-    Route::get('/monthly/type', [PendenceController::class, 'getMonthlyPendencesByType']);
-    Route::get('/{id}', [PendenceController::class, 'show']);
-    Route::post('/', [PendenceController::class, 'store']);
-    Route::put('/{id}', [PendenceController::class, 'update']);
-    Route::delete('/{id}', [PendenceController::class, 'destroy']);
+    Route::get('/annual/charts', [PendingController::class, 'getAnnualChartsData']);
+    Route::get('/monthly/evolution', [PendingController::class, 'getMonthlyEvolution']);
+    Route::get('/monthly/charts', [PendingController::class, 'getMonthlyChartsData']);
+    Route::get('/last', [PendingController::class, 'getLastPendencesByUser']);
+    Route::get('/monthly', [PendingController::class, 'getMonthlyPendences']);
+    Route::get('/monthly/type', [PendingController::class, 'getMonthlyPendencesByType']);
+    Route::get('/{id}', [PendingController::class, 'show']);
+    Route::post('/', [PendingController::class, 'store']);
+    Route::put('/{id}', [PendingController::class, 'update']);
+    Route::delete('/{id}', [PendingController::class, 'destroy']);
 });
 
 Route::get('/bee', [BeeController::class, 'showBee'])->middleware('auth:sanctum');
