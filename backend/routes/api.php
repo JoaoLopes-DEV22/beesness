@@ -6,14 +6,14 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\BeeAccessoryController;
 use App\Http\Controllers\BeeController;
 use App\Http\Controllers\UserController;
-use App\Http\Middleware\AuthenticateAPI;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DecorationController;
 use App\Http\Controllers\HiveDecorationController;
+use App\Http\Controllers\PendenceController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\PendingController;
 
 Route::post('/auth', [AuthController::class, 'auth']);
 Route::post('/register', [UserController::class, 'register']);
@@ -22,18 +22,48 @@ Route::post('/logout', [UserController::class, 'logout'])->middleware('auth:sanc
 Route::get('/user', [UserController::class, 'index'])->middleware('auth:sanctum');
 Route::put('/profile', [UserController::class, 'update'])->middleware('auth:sanctum');
 
-Route::get('/categories', [CategoryController::class, 'index']);
-Route::post('/categories/store', [CategoryController::class, 'store']);
 Route::get('/types', [TypeController::class, 'index']);
-Route::post('/transactions', [TransactionController::class, 'store']);
-Route::get('/transactions/last', [TransactionController::class, 'getLastTransactionsByUser']);
-Route::get('/transactions/monthly', [TransactionController::class, 'getMonthlyTransactions']);
-Route::get('/transactions/monthly/type', [TransactionController::class, 'getMonthlyTransactionsByType']);
+
+Route::prefix('categories')->group(function () {
+    Route::get('/', [CategoryController::class, 'index']);
+    Route::post('/store', [CategoryController::class, 'store']);
+    Route::get('/{id}', [CategoryController::class, 'show']);
+    Route::put('/{id}', [CategoryController::class, 'update']);
+    Route::delete('/{id}', [CategoryController::class, 'destroy']);
+});
+
+Route::prefix('transactions')->group(function () {
+    Route::get('/annual/charts', [TransactionController::class, 'getAnnualChartsData']);
+    Route::get('/monthly/evolution', [TransactionController::class, 'getMonthlyEvolution']);
+    Route::get('/monthly/charts', [TransactionController::class, 'getMonthlyChartsData']);
+    Route::get('/last', [TransactionController::class, 'getLastTransactionsByUser']);
+    Route::get('/monthly', [TransactionController::class, 'getMonthlyTransactions']);
+    Route::get('/monthly/type', [TransactionController::class, 'getMonthlyTransactionsByType']);
+    Route::get('/{id}', [TransactionController::class, 'show']);
+    Route::post('/', [TransactionController::class, 'store']);
+    Route::put('/{id}', [TransactionController::class, 'update']);
+    Route::delete('/{id}', [TransactionController::class, 'destroy']);
+});
+
+Route::prefix('pendences')->group(function () {
+    Route::get('/annual/charts', [PendenceController::class, 'getAnnualChartsData']);
+    Route::get('/monthly/evolution', [PendenceController::class, 'getMonthlyEvolution']);
+    Route::get('/monthly/charts', [PendenceController::class, 'getMonthlyChartsData']);
+    Route::get('/last', [PendenceController::class, 'getLastPendencesByUser']);
+    Route::get('/monthly', [PendenceController::class, 'getMonthlyPendences']);
+    Route::get('/monthly/type', [PendenceController::class, 'getMonthlyPendencesByType']);
+    Route::get('/{id}', [PendenceController::class, 'show']);
+    Route::post('/', [PendenceController::class, 'store']);
+    Route::put('/{id}', [PendenceController::class, 'update']);
+    Route::delete('/{id}', [PendenceController::class, 'destroy']);
+});
 
 Route::get('/bee', [BeeController::class, 'showBee'])->middleware('auth:sanctum');
 Route::get('/accessories', [AccessoryController::class, 'index']);
-Route::post('/bee-accessories/buy', [BeeAccessoryController::class, 'store'])->middleware('auth:sanctum');
-Route::put('/bee-accessories/{id}/toggle-equip', [BeeAccessoryController::class, 'toggleEquip'])->middleware('auth:sanctum');
+
+Route::prefix('bee-accessories')->group(function () {
+    Route::post('/buy', [BeeAccessoryController::class, 'store'])->middleware('auth:sanctum');
+    Route::put('/{id}/toggle-equip', [BeeAccessoryController::class, 'toggleEquip'])->middleware('auth:sanctum');
 
 Route::get('/decorations', [DecorationController::class, 'index']);
 
@@ -42,16 +72,6 @@ Route::get('/achievements', [AchievementController::class, 'index']);
 Route::post('/hive-decorations/buy', [HiveDecorationController::class, 'purchaseDecoration'])->middleware('auth:sanctum');
 Route::put('/hive-decorations/{hiveDecoration}/equip', [HiveDecorationController::class, 'equipDecoration'])->middleware('auth:sanctum');
 Route::put('/hive-decorations/{hiveDecoration}/unequip', [HiveDecorationController::class, 'unequipDecoration'])->middleware('auth:sanctum');
-
-Route::get('/transactions/{id}', [TransactionController::class, 'show']); // Mostrar uma transação específica
-Route::put('/transactions/{id}', [TransactionController::class, 'update']); // Atualizar uma transação
-Route::delete('/transactions/{id}', [TransactionController::class, 'destroy']); // Deletar uma transação
-
-Route::middleware(AuthenticateAPI::class)->group(function () {
-    // Route::get('/user', function () {
-    //     return response()->json([
-    //         'success' => true,
-    //         'user' => auth()->user()
-    //     ]);
-    // });
 });
+
+Route::get('/pendings/monthly', [PendingController::class, 'getMonthlyPendingsData']);
