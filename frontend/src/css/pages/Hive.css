@@ -44,7 +44,7 @@
     padding: 0% 3%;
 }
 
-.load{
+.load {
     color: var(--branco) !important;
 }
 
@@ -70,8 +70,8 @@
     width: 100%;
 }
 
-.account_level_text{
-     color: var(--branco);
+.account_level_text {
+    color: var(--branco);
     font-size: 20px;
     font-weight: bold;
 }
@@ -104,12 +104,12 @@
     justify-content: center;
 }
 
-.add_button{
+.add_button {
     width: 100%;
     height: 100%;
 }
 
-.bee_area{
+.bee_area {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -117,18 +117,19 @@
     gap: 10px;
 }
 
-.name_area{
+.name_area {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    margin-bottom: 15px;
 }
 
-.edit_icon{
+.edit_icon {
     color: var(--branco);
 }
 
-.bee_area input{
+.bee_area input {
     border: none;
     background-color: transparent;
     border-bottom: 3px solid var(--branco);
@@ -142,7 +143,7 @@
     width: 175px;
 }
 
-.hive_xp{
+.hive_xp {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -150,7 +151,7 @@
     width: 100%;
 }
 
-.xp_quant{
+.xp_quant {
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -158,26 +159,26 @@
     justify-content: space-between;
 }
 
-.xp{
+.xp {
     color: var(--branco);
     font-size: 20px;
     font-weight: bold;
 }
 
-.quant_progress{
+.quant_progress {
     color: var(--branco);
     font-size: 20px;
     font-weight: bold;
 }
 
-.progress_bar_total{
+.progress_bar_total {
     width: 100%;
     height: 20px;
     background-color: var(--branco);
     border-radius: 30px;
 }
 
-.progress_bar{
+.progress_bar {
     width: 85%;
     height: 20px;
     background-color: var(--amarelo);
@@ -373,8 +374,67 @@
     justify-content: center;
 }
 
-.disabled_button{
+.disabled_button {
     background-color: var(--cinza-bg);
     color: var(--preto);
 
+}
+
+.hive_bee {
+    position: relative;
+    /* FUNDAMENTAL para o posicionamento absoluto dos acessórios */
+    display: flex;
+    /* Ou block, dependendo do seu layout */
+    justify-content: center;
+    /* Centraliza a abelha principal */
+    align-items: center;
+    /* Centraliza a abelha principal */
+    width: 100%;
+    /* Ou um tamanho fixo */
+    height: auto;
+    /* Ou um tamanho fixo */
+}
+
+.main_bee {
+    position: relative;
+    /* Ou z-index menor se a abelha for o fundo */
+    z-index: 0;
+    /* A abelha deve estar no fundo */
+    /* Outros estilos para a abelha principal */
+}
+
+.equipped_head_accessory,
+.equipped_face_accessory,
+.equipped_body_accessory {
+    position: absolute;
+    /* Permite posicionar livremente */
+    /* top, left, transform são essenciais para ajustar a posição */
+    /* width e height são essenciais para ajustar o tamanho da imagem do acessório */
+}
+
+.equipped_head_accessory {
+    top: -8%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 25%;
+    height: auto;
+    z-index: 2;
+}
+
+.equipped_face_accessory {
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30%;
+    height: auto;
+    z-index: 3;
+}
+
+.equipped_body_accessory {
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    height: auto;
+    z-index: 1;
 }

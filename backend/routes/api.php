@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccessoryController;
+use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\BeeAccessoryController;
 use App\Http\Controllers\BeeController;
@@ -9,6 +10,8 @@ use App\Http\Middleware\AuthenticateAPI;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DecorationController;
+use App\Http\Controllers\HiveDecorationController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\TransactionController;
 
@@ -31,6 +34,14 @@ Route::get('/bee', [BeeController::class, 'showBee'])->middleware('auth:sanctum'
 Route::get('/accessories', [AccessoryController::class, 'index']);
 Route::post('/bee-accessories/buy', [BeeAccessoryController::class, 'store'])->middleware('auth:sanctum');
 Route::put('/bee-accessories/{id}/toggle-equip', [BeeAccessoryController::class, 'toggleEquip'])->middleware('auth:sanctum');
+
+Route::get('/decorations', [DecorationController::class, 'index']);
+
+Route::get('/achievements', [AchievementController::class, 'index']);
+
+Route::post('/hive-decorations/buy', [HiveDecorationController::class, 'purchaseDecoration'])->middleware('auth:sanctum');
+Route::put('/hive-decorations/{hiveDecoration}/equip', [HiveDecorationController::class, 'equipDecoration'])->middleware('auth:sanctum');
+Route::put('/hive-decorations/{hiveDecoration}/unequip', [HiveDecorationController::class, 'unequipDecoration'])->middleware('auth:sanctum');
 
 Route::get('/transactions/{id}', [TransactionController::class, 'show']); // Mostrar uma transação específica
 Route::put('/transactions/{id}', [TransactionController::class, 'update']); // Atualizar uma transação

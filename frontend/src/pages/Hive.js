@@ -1,34 +1,72 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Sidebar from '../components/Sidebar.js';
 import Header from '../components/Header.js';
-import '../css/pages/Hive.css'; // Certifique-se de que este CSS existe
-import api from '../api'; // Seu arquivo axios instance
+import AchievementCard from '../components/AchievementCard.js';
+import AccessoryCard from '../components/AccessoryCard.js'; // Importe o novo componente
+import DecorationCard from '../components/DecorationCard.js'; // Importe o novo componente
+import '../css/pages/Hive.css';
+import api from '../api';
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { MdModeEdit } from "react-icons/md";
 
 function Home() {
+    // ... (Seus estados e funções de alteração de modo/filtro permanecem inalterados)
+    const [isShopMode, setIsShopMode] = useState(true);
     const [isAccessories, setIsAccessories] = useState(true);
+    const [selectedAchievementFilter, setSelectedAchievementFilter] = useState('all');
+
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    // Este é o único estado para controlar os acessórios possuídos e seu status.
-    const [ownedAccessoriesMap, setOwnedAccessoriesMap] = useState(new Map());
 
     const [bee, setBee] = useState(null);
     const [sunflowers, setSunflowers] = useState(null);
-
-    const [accessories, setAccessories] = useState([]); // Acessórios da loja
-    const [currentPage, setCurrentPage] = useState(1);
-    const [lastPage, setLastPage] = useState(1);
     const [loadingBee, setLoadingBee] = useState(true);
 
-    const toggleSwitch = () => {
-        setIsAccessories(!isAccessories);
+    const [accessories, setAccessories] = useState([]);
+    const [ownedAccessoriesMap, setOwnedAccessoriesMap] = useState(new Map());
+    const [equippedDisplay, setEquippedDisplay] = useState({
+        head: '',
+        face: '',
+        body: ''
+    });
+
+    const [decorations, setDecorations] = useState([]);
+    const [ownedDecorationsMap, setOwnedDecorationsMap] = useState(new Map());
+
+    const [achievements, setAchievements] = useState([]);
+    const [userAchievementsMap, setUserAchievementsMap] = useState(new Map());
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [lastPage, setLastPage] = useState(1);
+
+    const handleModeChange = (event) => {
+        const selectedMode = event.target.value;
+        setIsShopMode(selectedMode === 'loja');
+        setCurrentPage(1);
+        if (selectedMode === 'loja') {
+            setIsAccessories(true);
+        } else {
+            setSelectedAchievementFilter('all');
+        }
+    };
+
+    const toggleSubFilter = () => {
+        if (isShopMode) {
+            setIsAccessories(prev => !prev);
+            setCurrentPage(1);
+        }
+    };
+
+    const handleAchievementFilterChange = (event) => {
+        setSelectedAchievementFilter(event.target.value);
+        setCurrentPage(1);
     };
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
-    // Função para carregar acessórios da API com paginação
+
+    // --- Funções de Carregamento de Dados (permanecem inalteradas) ---
     const fetchAccessories = async (page = 1) => {
         try {
             const response = await api.get(`/accessories?page=${page}`);
@@ -36,32 +74,76 @@ function Home() {
             setLastPage(response.data.last_page);
         } catch (error) {
             console.error("Erro ao buscar acessórios:", error);
+            setAccessories([]);
+            setLastPage(1);
         }
     };
 
-    // Função para carregar dados da abelha, girassóis e acessórios possuídos
+    const fetchDecorations = async (page = 1) => {
+        try {
+            const response = await api.get(`/decorations?page=${page}`);
+            setDecorations(response.data.data);
+            setLastPage(response.data.last_page);
+        } catch (error) {
+            console.error("Erro ao buscar decorações:", error);
+            setDecorations([]);
+            setLastPage(1);
+        }
+    };
+
+    const fetchAchievements = async (page = 1) => {
+        try {
+            const response = await api.get(`/achievements?page=${page}`);
+            setAchievements(response.data.data);
+            setLastPage(response.data.last_page);
+        } catch (error) {
+            console.error("Erro ao buscar conquistas:", error);
+            setAchievements([]);
+            setLastPage(1);
+        }
+    };
+
     const fetchBee = useCallback(async () => {
         try {
             setLoadingBee(true);
             const response = await api.get(`/bee`);
-            
+
             setBee(response.data.data.bee_data);
             setSunflowers(response.data.data.sunflowers);
-            
-            const ownedMap = new Map();
+
+            const ownedAccMap = new Map();
             response.data.data.owned_accessories.forEach(item => {
-                // *** CORREÇÃO DUPLA APLICADA AQUI: ***
-                // 1. Usando item.accessory.id_accessory como a chave (mais robusto)
-                // 2. Verificando o status de equipado usando fk_cosmetic_status
-                ownedMap.set(parseInt(item.accessory.id_accessory), { 
+                ownedAccMap.set(parseInt(item.accessory.id_accessory), {
                     beeAccessoryId: item.id_bee_accessories,
-                    // *** AQUI É A MUDANÇA MAIS IMPORTANTE: ***
-                    // Assumindo que fk_cosmetic_status === 1 é 'equipped'
-                    // Se o seu ID para "equipped" for outro, mude este '1'
-                    isEquipped: item.fk_cosmetic_status === 1 
+                    isEquipped: item.fk_cosmetic_status === 1
                 });
             });
-            setOwnedAccessoriesMap(ownedMap);
+            setOwnedAccessoriesMap(ownedAccMap);
+
+            const ownedDecoMap = new Map();
+            if (response.data.data.owned_decorations) {
+                response.data.data.owned_decorations.forEach(item => {
+                    ownedDecoMap.set(parseInt(item.decoration.id_decoration), {
+                        beeDecorationId: item.id_bee_decoration,
+                        isEquipped: item.fk_cosmetic_status === 1
+                    });
+                });
+            }
+            setOwnedDecorationsMap(ownedDecoMap);
+
+            const userAchMap = new Map();
+            if (response.data.data.user_achievements) {
+                response.data.data.user_achievements.forEach(item => {
+                    userAchMap.set(parseInt(item.achievement.id_achievement), item);
+                });
+            }
+            setUserAchievementsMap(userAchMap);
+
+            setEquippedDisplay(response.data.data.equipped_accessories_display || {
+                head: '',
+                face: '',
+                body: ''
+            });
 
         } catch (error) {
             console.error("Erro ao buscar dados da abelha:", error);
@@ -70,15 +152,16 @@ function Home() {
         }
     }, []);
 
-    // Função para lidar com a compra do acessório
+
+    // --- Funções de Ação (Comprar/Equipar/Resgatar - permanecem inalteradas, mas as chamadas serão movidas para os componentes) ---
+    // Elas precisam ser passadas como props para os componentes de card.
     const handleBuyAccessory = async (accessoryId) => {
         try {
             const response = await api.post('/bee-accessories/buy', { fk_accessory: accessoryId });
-            
             if (response.data.status) {
                 alert(response.data.message);
-                // Recarrega os dados da abelha e os acessórios possuídos após a compra
-                fetchBee(); 
+                fetchBee();
+                fetchAccessories(currentPage);
             } else {
                 alert(`Erro: ${response.data.message}`);
             }
@@ -92,16 +175,12 @@ function Home() {
         }
     };
 
-    // Função para lidar com o equipar/desequipar do acessório
     const handleToggleEquipAccessory = async (beeAccessoryId) => {
         try {
             const response = await api.put(`/bee-accessories/${beeAccessoryId}/toggle-equip`);
-            
             if (response.data.status) {
                 alert(response.data.message);
-                // MUITO IMPORTANTE: Recarrega os dados da abelha e dos acessórios possuídos
-                // para que o frontend reflita o novo estado dos botões.
-                fetchBee(); 
+                fetchBee();
             } else {
                 alert(`Erro: ${response.data.message}`);
             }
@@ -115,16 +194,65 @@ function Home() {
         }
     };
 
-    // Efeitos para carregar dados ao montar o componente ou mudar a página
+     const handleBuyDecoration = async (decorationId) => {
+        try {
+            // MUDANÇA AQUI: Chamada para o novo endpoint no HiveDecorationController
+            const response = await api.post('/hive-decorations/buy', { fk_decoration: decorationId });
+
+            if (response.data.status) {
+                alert(response.data.message);
+                fetchBee(); // Recarrega os dados da abelha e posses
+                fetchDecorations(currentPage); // Recarrega a lista de decorações da página atual
+            } else {
+                alert(`Erro: ${response.data.message}`);
+            }
+        } catch (error) {
+            console.error("Erro ao comprar decoração:", error);
+            if (error.response && error.response.data && error.response.data.message) {
+                alert(`Erro ao comprar decoração: ${error.response.data.message}`);
+            } else {
+                alert('Erro desconhecido ao tentar comprar decoração.');
+            }
+        }
+    };
+
+    const handleClaimAchievement = async (achievementId) => {
+        alert("Funcionalidade de resgatar recompensa (ainda não implementada)");
+        // Sua lógica de API POST aqui
+    };
+
+    // ... (UseEffects, loading state, xpPercent, paginação - tudo permanece igual)
     useEffect(() => {
         fetchBee();
     }, [fetchBee]);
 
     useEffect(() => {
-        fetchAccessories(currentPage);
+        setCurrentPage(1);
+
+        if (isShopMode) {
+            if (isAccessories) {
+                fetchAccessories(1);
+            } else {
+                fetchDecorations(1);
+            }
+        } else {
+            fetchAchievements(1);
+        }
+    }, [isShopMode, isAccessories, selectedAchievementFilter]);
+
+    useEffect(() => {
+        if (isShopMode) {
+            if (isAccessories) {
+                fetchAccessories(currentPage);
+            } else {
+                fetchDecorations(currentPage);
+            }
+        } else {
+            fetchAchievements(currentPage);
+        }
     }, [currentPage]);
 
-    // Tela de carregamento
+
     if (loadingBee || !bee || sunflowers === null) {
         return (
             <div className="screen">
@@ -143,10 +271,8 @@ function Home() {
         );
     }
 
-    // Cálculo da porcentagem de XP
     const xpPercent = Math.min(100, (bee.experience_bee % 1000) / 10);
 
-    // Funções de paginação
     const prevPage = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
@@ -162,6 +288,22 @@ function Home() {
     const goToPage = (page) => {
         setCurrentPage(page);
     };
+
+    const filteredAchievements = achievements.filter(achievement => {
+        const userAchievement = userAchievementsMap.get(parseInt(achievement.id_achievement));
+        const isCompleted = userAchievement ? userAchievement.is_completed : false;
+        const isClaimed = userAchievement ? userAchievement.is_claimed : false;
+
+        if (selectedAchievementFilter === 'all') {
+            return true;
+        } else if (selectedAchievementFilter === 'completed') {
+            return isCompleted && !isClaimed;
+        } else if (selectedAchievementFilter === 'in-progress') {
+            return !isCompleted;
+        }
+        return true;
+    });
+
 
     return (
         <div className="screen">
@@ -205,6 +347,30 @@ function Home() {
                                 </div>
 
                                 <div className="hive_bee">
+                                    {equippedDisplay.head && (
+                                        <img
+                                            src={`/assets/accessories/${equippedDisplay.head}`}
+                                            alt="Acessório de Cabeça"
+                                            className='equipped_head_accessory accessories'
+                                        />
+                                    )}
+
+                                    {equippedDisplay.face && (
+                                        <img
+                                            src={`/assets/accessories/${equippedDisplay.face}`}
+                                            alt="Acessório de Rosto"
+                                            className='equipped_face_accessory accessories'
+                                        />
+                                    )}
+
+                                    {equippedDisplay.body && (
+                                        <img
+                                            src={`/assets/accessories/${equippedDisplay.body}`}
+                                            alt="Acessório de Corpo"
+                                            className='equipped_body_accessory accessories'
+                                        />
+                                    )}
+
                                     <img src="/assets/bee/hive-bee.png" alt="abelha" className='main_bee' />
                                 </div>
                             </div>
@@ -231,15 +397,23 @@ function Home() {
 
                     <div className="filters">
                         <div className="left_filters">
-                            <select name="hive-section" id="hive-section" className='hive-select'>
-                                <option value="loja" selected >Loja</option>
+                            <select name="hive-section" id="hive-section" className='hive-select' onChange={handleModeChange} value={isShopMode ? 'loja' : 'conquistas'}>
+                                <option value="loja">Loja</option>
                                 <option value="conquistas">Conquistas</option>
                             </select>
 
-                            <div className="switch_filter_hive">
-                                <p className={isAccessories ? 'on_gray' : 'off_gray'} onClick={toggleSwitch}>Acessórios</p>
-                                <p className={isAccessories ? 'off_gray' : 'on_gray'} onClick={toggleSwitch}>Decorações</p>
-                            </div>
+                            {isShopMode ? (
+                                <div className="switch_filter_hive">
+                                    <p className={isAccessories ? 'on_gray' : 'off_gray'} onClick={toggleSubFilter}>Acessórios</p>
+                                    <p className={isAccessories ? 'off_gray' : 'on_gray'} onClick={toggleSubFilter}>Decorações</p>
+                                </div>
+                            ) : (
+                                <select name="achievement-filter" id="achievement-filter" className='hive-select' onChange={handleAchievementFilterChange} value={selectedAchievementFilter}>
+                                    <option value="all">Todos</option>
+                                    <option value="in-progress">Em Andamento</option>
+                                    <option value="completed">Concluídas</option>
+                                </select>
+                            )}
                         </div>
 
                         <div className="right_filters pagination">
@@ -267,81 +441,44 @@ function Home() {
                     </div>
 
                     <div className="shop_area">
-                        {accessories.map((acc) => {
-                            // Convertendo acc.id_accessory para número inteiro para buscar no Map
-                            const ownedAccessoryData = ownedAccessoriesMap.get(parseInt(acc.id_accessory));
-
-                            // Verifica se a abelha possui este acessório.
-                            const isOwned = !!ownedAccessoryData; 
-
-                            // Verifica se o acessório está equipado (só relevante se for possuído).
-                            const isEquipped = isOwned ? ownedAccessoryData.isEquipped : false;
-
-                            // Verifica as condições de compra (nível e girassóis), independentemente de já possuir.
-                            const isLevelInsufficient = bee.level_bee < acc.level_accessory;
-                            const isPriceInsufficient = parseFloat(sunflowers) < parseFloat(acc.price_accessory);
-
-
-                            // Variáveis que vão determinar o texto, classe CSS e ação do botão.
-                            let buttonText = 'Comprar';
-                            let buttonClass = 'buy_button';
-                            let buttonDisabled = false;
-                            let buttonClickHandler = () => handleBuyAccessory(acc.id_accessory); // Ação padrão é comprar
-
-                            if (isOwned) {
-                                // Se a abelha já possui o acessório, o botão vira "Equipar" ou "Desequipar".
-                                buttonText = isEquipped ? 'Desequipar' : 'Equipar';
-                                buttonClass = isEquipped ? 'unequip_button' : 'equip_button'; // Classes CSS diferentes
-                                // A ação agora chama a função de toggle, passando o ID do registro em bee_accessories.
-                                buttonClickHandler = () => handleToggleEquipAccessory(ownedAccessoryData.beeAccessoryId);
-                            } else if (isLevelInsufficient) {
-                                // Se não possui e o nível é insuficiente, desabilita a compra.
-                                buttonText = `Nível ${acc.level_accessory} Necessário`;
-                                buttonClass = 'buy_button disabled_button';
-                                buttonDisabled = true;
-                                buttonClickHandler = null; // Não há ação ao clicar
-                            } else if (isPriceInsufficient) {
-                                // Se não possui e os girassóis são insuficientes, desabilita a compra.
-                                buttonText = `Girassóis Insuficientes`;
-                                buttonClass = 'buy_button disabled_button';
-                                buttonDisabled = true;
-                                buttonClickHandler = null; // Não há ação ao clicar
-                            } else {
-                                // Se não é possuído e o nível/preço são suficientes, então é "Comprar"
-                                console.log(`  RESULTADO: DISPONÍVEL PARA COMPRA. Botão: ${buttonText}`); // Log do resultado
-                            }
-
-
-                            return (
-                                <div key={acc.id_accessory} className="shop_card">
-                                    <div className="title_shop_card">
-                                        <div className="accessory_title">
-                                            <div className="accessory_icon">
-                                                {acc.icon_accessory}
-                                            </div>
-                                            <p className="accessory_text">{acc.name_accessory}</p>
-                                        </div>
-                                        <div className="accessory_level">
-                                            <p className='level_text'>Nível {acc.level_accessory}</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="content_shop_card">
-                                        <div className="accessory_price">
-                                            <img src="/assets/sunflower.png" alt="Girassol" className='sunflower_icon' />
-                                            <p className="acessory_value">{parseInt(acc.price_accessory)}</p>
-                                        </div>
-                                        <button
-                                            className={buttonClass}
-                                            disabled={buttonDisabled}
-                                            onClick={buttonClickHandler}
-                                        >
-                                            {buttonText}
-                                        </button>
-                                    </div>
-                                </div>
-                            );
-                        })}
+                        {isShopMode ? (
+                            isAccessories ? (
+                                // --- Renderização de Acessórios usando AccessoryCard ---
+                                accessories.map((acc) => (
+                                    <AccessoryCard
+                                        key={acc.id_accessory}
+                                        accessory={acc}
+                                        ownedAccessoryData={ownedAccessoriesMap.get(parseInt(acc.id_accessory))}
+                                        beeLevel={bee.level_bee}
+                                        sunflowers={sunflowers}
+                                        onBuyAccessory={handleBuyAccessory}
+                                        onToggleEquipAccessory={handleToggleEquipAccessory}
+                                    />
+                                ))
+                            ) : (
+                                // --- Renderização de Decorações usando DecorationCard ---
+                                decorations.map((deco) => (
+                                    <DecorationCard
+                                        key={deco.id_decoration}
+                                        decoration={deco}
+                                        ownedDecorationData={ownedDecorationsMap.get(parseInt(deco.id_decoration))}
+                                        beeLevel={bee.level_bee}
+                                        sunflowers={sunflowers}
+                                        onBuyDecoration={handleBuyDecoration}
+                                    />
+                                ))
+                            )
+                        ) : (
+                            // --- Renderização de Conquistas usando AchievementCard ---
+                            filteredAchievements.map((achievement) => (
+                                <AchievementCard
+                                    key={achievement.id_achievement}
+                                    achievement={achievement}
+                                    userAchievement={userAchievementsMap.get(parseInt(achievement.id_achievement))}
+                                    onClaimAchievement={handleClaimAchievement}
+                                />
+                            ))
+                        )}
                     </div>
                 </main>
             </div>
