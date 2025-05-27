@@ -64,14 +64,16 @@ Route::get('/accessories', [AccessoryController::class, 'index']);
 Route::prefix('bee-accessories')->group(function () {
     Route::post('/buy', [BeeAccessoryController::class, 'store'])->middleware('auth:sanctum');
     Route::put('/{id}/toggle-equip', [BeeAccessoryController::class, 'toggleEquip'])->middleware('auth:sanctum');
+});
+
+Route::prefix('hive-decorations')->group(function () {
+    Route::post('/buy', [HiveDecorationController::class, 'purchaseDecoration'])->middleware('auth:sanctum');
+    Route::put('/{hiveDecoration}/equip', [HiveDecorationController::class, 'equipDecoration'])->middleware('auth:sanctum');
+    Route::put('/{hiveDecoration}/unequip', [HiveDecorationController::class, 'unequipDecoration'])->middleware('auth:sanctum');
+});
 
 Route::get('/decorations', [DecorationController::class, 'index']);
 
 Route::get('/achievements', [AchievementController::class, 'index']);
-
-Route::post('/hive-decorations/buy', [HiveDecorationController::class, 'purchaseDecoration'])->middleware('auth:sanctum');
-Route::put('/hive-decorations/{hiveDecoration}/equip', [HiveDecorationController::class, 'equipDecoration'])->middleware('auth:sanctum');
-Route::put('/hive-decorations/{hiveDecoration}/unequip', [HiveDecorationController::class, 'unequipDecoration'])->middleware('auth:sanctum');
-});
 
 Route::get('/pendings/monthly', [PendingController::class, 'getMonthlyPendingsData']);
