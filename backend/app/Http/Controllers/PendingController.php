@@ -61,4 +61,32 @@ class PendingController extends Controller
             return response()->json(['message' => 'Erro ao criar pendência: ' . $e->getMessage()], 500);
         }
     }
+
+    public function getLastPendencesByUser(Request $request)
+    {
+        $userId = $request->query('user_id');
+        if (!$userId) {
+            return response()->json(['message' => 'user_id é obrigatório'], 400);
+        }
+
+        $lastPendences = Pending::where('fk_account', $userId)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (!$lastPendences) {
+            return response()->json(['pendencess' => [], 'last_date' => null]);
+        }
+
+        $lastDate = $lastPendences->created_at->toDateString();
+
+        $pendences = Pending::where('fk_account', $userId)
+            ->whereDate('created_at', $lastDate)
+            ->with('category')
+            ->get();
+
+        return response()->json([
+            'last_date' => $lastDate,
+            'pendences' => $pendences
+        ]);
+    }
 }

@@ -49,7 +49,7 @@ function Pendences() {
                 const response = await api.get('/pendences/last', {
                     params: { user_id: user.id }
                 });
-
+                console.log(response)
                 setLastDate(response.data.last_date || '');
                 setLastPendences(response.data.pendences || []);
 
@@ -102,7 +102,7 @@ function Pendences() {
             });
             setLastDate(response.data.last_date || '');
             setLastPendences(response.data.pendences || []);
-
+            console.log(response)
         } catch (error) {
             console.error("Error adding pendences:", error);
             toast.error("Erro ao adicionar pendência.");
@@ -126,20 +126,40 @@ function Pendences() {
                     </div>
                     <div className="pendences">
                         {lastPendences.length > 0 ? (
-                            lastPendences.map(pendences => (
-                                <div key={pendences.id_pendences} className="pendences_card">
+                            lastPendences.map(pendence => (
+                                <div key={pendence.id_pendences} className="pendences_card">
                                     <div className="tcard_left">
-                                        <div className={pendences.fk_type === 1 ? "type_circle_g" : "type_circle_r"}>
-                                            {pendences.fk_type === 1 ? <FaArrowTrendUp /> : <FaArrowTrendDown />}
+                                        <div className={pendence.fk_type === 1 ? "type_circle_g" : "type_circle_r"}>
+                                            {pendence.fk_type === 1 ? <FaArrowTrendUp /> : <FaArrowTrendDown />}
                                         </div>
                                         <div className="tcontent">
-                                            <div className="tcontent_title">{pendences.title_pendences}</div>
-                                            <div className="tcontent_category" style={{ color: pendences.category.color_category }}>{pendences.category?.title_category || 'Categoria'}</div>
+                                            <div className="tcontent_title">{pendence.title_pending}</div>
+                                            <div className="tcontent_category" style={{ color: pendence.category?.color_category }}>
+                                                {pendence.category?.title_category || 'Sem categoria'}
+                                            </div>
+                                            <div className="pendence_date">
+                                                Prazo: {pendence.deadline_pending
+                                                    ? new Date(pendence.deadline_pending).toLocaleDateString('pt-BR', {
+                                                        day: '2-digit',
+                                                        month: '2-digit',
+                                                        year: 'numeric'
+                                                    }).replace(/\//g, '/')
+                                                    : 'Sem prazo'}
+                                            </div>
+                                            <div className={`pendence_status ${pendence.fk_condition == 1 ? 'status-pending' : 'status-completed'}`}>
+                                                {pendence.fk_condition == 1 ? 'Pendente' : 'Concluído'}
+                                            </div>
+                                            <div className="progress_container">
+                                                <div className="progress_bar" style={{ width: `${(pendence.initial_pending / pendence.total_pending) * 100}%` }}></div>
+                                            </div>
+                                            <div className="progress_text">
+                                                R$ {parseFloat(pendence.initial_pending).toFixed(2).replace('.', ',')} / R$ {parseFloat(pendence.total_pending).toFixed(2).replace('.', ',')}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="tcard_right">
-                                        <p className={pendences.fk_type === 1 ? "pendences_value_g" : "pendences_value_r"}>
-                                            {pendences.fk_type === 1 ? '+' : '-'} R$ {parseFloat(pendences.value_pendences).toFixed(2).replace('.', ',')}
+                                        <p className={pendence.fk_type === 1 ? "pendences_value_g" : "pendences_value_r"}>
+                                            {pendence.fk_type === 1 ? '+' : '-'} R$ {parseFloat(pendence.initial_pending).toFixed(2).replace('.', ',')}
                                         </p>
                                     </div>
                                 </div>
@@ -148,8 +168,6 @@ function Pendences() {
                             <p>Sem pendências para exibir.</p>
                         )}
                     </div>
-
-
                 </div>
 
                 <div className="new_pendence">
