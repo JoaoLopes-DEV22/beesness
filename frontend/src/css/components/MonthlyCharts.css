@@ -1,0 +1,348 @@
+.monthly_charts_area {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.icon {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+}
+
+.circle_p {
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    font-size: 26px;
+}
+
+.circle_p {
+    background-color: var(--amarelo);
+    color: var(--amarelo-texto);
+}
+
+.dashboard_cards {
+  display: grid;
+  grid-template-columns: 3fr 7fr;
+  gap: 30px;
+}
+
+.card-dash {
+  background: var(--branco);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 300px;
+}
+
+.card-dash:hover {
+  transform: translateY(-5px);
+}
+
+.card-data-account {
+  background: linear-gradient(145deg, #ffffff, #fff5f7);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* .card-data-account:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(54, 162, 235, 0.2);
+} */
+
+.card-dash-gasto {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  width: 100%;
+  padding: 25px;
+  gap: 20px;
+  height: 100%;
+}
+
+.expense-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 500;
+  width: 100%;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.expense-row:hover {
+  transform: scale(1.02);
+}
+
+.expense-row.positive {
+  background-color: rgba(255, 99, 132, 0.1);
+}
+
+.expense-row.positive:hover {
+  background-color: rgba(255, 99, 132, 0.2);
+}
+
+.expense-row.negative {
+  background-color: rgba(54, 162, 235, 0.1);
+}
+
+.expense-row.negative:hover {
+  background-color: rgba(54, 162, 235, 0.2);
+}
+
+.positive .arrow-icon {
+  color: #ff6384;
+  font-size: 22px;
+  transition: transform 0.3s ease;
+}
+
+.positive:hover .arrow-icon {
+  transform: translateY(-3px);
+}
+
+.negative .arrow-icon {
+  color: #36a2eb;
+  font-size: 22px;
+  transition: transform 0.3s ease;
+}
+
+.negative:hover .arrow-icon {
+  transform: translateY(3px);
+}
+
+.category-icon {
+  font-size: 26px;
+  color: #000;
+  transition: color 0.2s ease;
+}
+
+.expense-row:hover .category-icon {
+  color: #ff2d55;
+}
+
+.category-text {
+  flex: 1;
+  text-align: left;
+  font-weight: 600;
+  color: #000;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.value {
+  font-weight: 700;
+  color: #000;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 5px 10px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-family: 'Quicksand', sans-serif;
+}
+
+.card h3 {
+  font-size: 18px;
+  color: #000;
+  margin-bottom: 10px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.card p {
+  font-size: 10px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.charts_grid {
+  display: grid;
+  grid-template-columns: 7fr 3fr;
+  gap: 30px;
+}
+
+.title-dash {
+  text-align: center;
+  margin: 0;
+  width: 100%;
+  font-size: 18px;
+  background-color: var(--verde-medio);
+  color: var(--branco);
+  padding: 12px;
+  border-radius: 12px 12px 0 0;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.chart_container {
+  background: var(--branco);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  height: 360px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.chart_container:hover {
+  transform: translateY(-5px);
+}
+
+.chart_centered {
+  align-items: center;
+  height: 300px;
+}
+
+.pendencies {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  height: 100%;
+}
+
+.row {
+  width: 3px;
+  height: 200px;
+  background-color: var(--verde-medio);
+}
+
+.total {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.receitas {
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+  font-size: 20px;
+  gap: 10px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.positive-p,
+.warning {
+  font-size: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.value-despesa {
+  color: var(--vermelho-despesa);
+  font-weight: bold;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.value-receita {
+  color: var(--verde-receita);
+  font-weight: bold;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.value-pendencia {
+  color: var(--amarelo);
+  font-weight: bold;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.chart_wrapper {
+  width: 90%;
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  position: relative;
+}
+
+
+@media (max-width: 768px) {
+  .charts_grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard_cards {
+    grid-template-columns: 1fr;
+  }
+
+
+  .chart_container {
+    height: 320px;
+  }
+
+  .chart_wrapper {
+    width: 100%;
+    height: 70%;
+  }
+
+  .expense-row {
+    font-size: 16px;
+    padding: 8px 12px;
+  }
+
+  .category-icon {
+    font-size: 22px;
+  }
+
+  .arrow-icon {
+    font-size: 18px;
+  }
+
+  .value {
+    border: 2px solid #000;
+    padding: 10px;
+  }
+
+  .value:hover {
+    background-color: #f0f0f0;
+  }
+
+  .pendencies {
+    height: 280px;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .row {
+    display: none;
+  }
+
+
+  /* .card-dash:hover,
+  .card-data-account:hover,
+  .chart_container:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(255, 206, 86, 0.15);
+  } */
+}
+
+@media (max-width: 480px) {
+  .left_area-dash {
+    width: 200px;
+  }
+
+  .chart_container {
+    height: 300px;
+  }
+
+  .title_area input,
+  .title_area select {
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .title-dash {
+    font-size: 14px;
+  }
+}

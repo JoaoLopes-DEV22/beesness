@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import '../css/components/Transactions.css';
 import { FaArrowTrendUp, FaArrowTrendDown } from "react-icons/fa6";
 import { PiPlusCircleBold, PiMinusCircleBold } from "react-icons/pi";
@@ -7,7 +7,23 @@ import { ToastContainer, toast } from 'react-toastify';
 import api from '../api';
 
 function Transactions() {
-    const user = JSON.parse(localStorage.getItem('user'));
+    // Carrega o usuário de forma segura com tratamento de erro
+    const [user, setUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    
+    useEffect(() => {
+        try {
+            const userData = localStorage.getItem('user');
+            if (userData) {
+                setUser(JSON.parse(userData));
+            }
+        } catch (error) {
+            console.error("Error parsing user data:", error);
+            toast.error("Erro ao carregar dados do usuário");
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
 
     const [categories, setCategories] = useState([]);
     const [filteredCategories, setFilteredCategories] = useState([]);
@@ -19,54 +35,67 @@ function Transactions() {
         fk_category: ''
     });
 
-    // Novos estados para transações e data das últimas transações
     const [lastDate, setLastDate] = useState('');
     const [lastTransactions, setLastTransactions] = useState([]);
+    const [hasLoadedTransactions, setHasLoadedTransactions] = useState(false);
 
+    // Busca categorias e tipos
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchInitialData = async () => {
+            if (!user?.id) return;
+            
             try {
-                const categoriesResponse = await api.get('/categories', {
-                    params: { user_id: user.id}
-                });
-                const typesResponse = await api.get('/types');
-
+                const [categoriesResponse, typesResponse] = await Promise.all([
+                    api.get('/categories', { params: { user_id: user.id } }),
+                    api.get('/types')
+                ]);
+                
                 setCategories(categoriesResponse.data);
                 setTypes(typesResponse.data);
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Error fetching initial data:", error);
+                toast.error("Erro ao carregar dados iniciais");
             }
         };
-        fetchData();
-    }, []);
 
-    // Busca as últimas transações do usuário, enviando user.id no query param
+        fetchInitialData();
+    }, [user?.id]);
+
+    // Busca as últimas transações com debounce e cache
+    const fetchLastTransactions = useCallback(async () => {
+        if (!user?.id || hasLoadedTransactions) return;
+        
+        try {
+            const response = await api.get('/transactions/last', {
+                params: { user_id: user.id },
+                headers: {
+                    'Cache-Control': 'max-age=60' // Cache de 1 minuto
+                }
+            });
+
+            setLastDate(response.data.last_date || '');
+            setLastTransactions(response.data.transactions || []);
+            setHasLoadedTransactions(true);
+        } catch (error) {
+            console.error("Error fetching last transactions:", error);
+            toast.error("Erro ao carregar transações recentes");
+        }
+    }, [user?.id, hasLoadedTransactions]);
+
     useEffect(() => {
-        const fetchLastTransactions = async () => {
-            try {
-                if (!user?.id) return; // evita erro se não tiver user
+        const timer = setTimeout(() => {
+            fetchLastTransactions();
+        }, 500); // Debounce de 500ms
 
-                const response = await api.get('/transactions/last', {
-                    params: { user_id: user.id }
-                });
-
-                setLastDate(response.data.last_date || '');
-                setLastTransactions(response.data.transactions || []);
-
-            } catch (error) {
-                console.error("Error fetching last transactions:", error);
-            }
-        };
-
-        fetchLastTransactions();
-    }, [user]);
+        return () => clearTimeout(timer);
+    }, [fetchLastTransactions]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
+        setFormData(prev => ({
+            ...prev,
             [name]: value
-        });
+        }));
 
         if (name === 'fk_type') {
             const selectedType = parseInt(value);
@@ -77,45 +106,54 @@ function Transactions() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        if (!user?.id) {
+            toast.error("Usuário não identificado");
+            return;
+        }
+
         try {
             const dataToSend = {
                 ...formData,
                 fk_account: user.id
             };
+            
             await api.post('/transactions', dataToSend);
+            
             setFormData({
                 title_transaction: '',
                 value_transaction: '',
                 fk_type: '',
                 fk_category: '',
             });
+            
             setFilteredCategories([]);
+            setHasLoadedTransactions(false); // Força recarregar as transações
             toast.success("Transação adicionada com sucesso!");
-
-            // Atualiza lista de últimas transações após adicionar uma nova
-            const response = await api.get('/transactions/last', {
-                params: { user_id: user.id }
-            });
-            setLastDate(response.data.last_date || '');
-            setLastTransactions(response.data.transactions || []);
 
         } catch (error) {
             console.error("Error adding transaction:", error);
-            toast.error("Erro ao adicionar transação.");
+            toast.error(error.response?.data?.message || "Erro ao adicionar transação");
         }
     };
 
     const allTransactions = () => {
-        window.location.href = '/all-transactions'
+        window.location.href = '/all-transactions';
+    }
+
+    if (isLoading) {
+        return <div className="loading-container">Carregando...</div>;
+    }
+
+    if (!user) {
+        return <div className="error-container">Usuário não autenticado</div>;
     }
 
     return (
         <div>
             <div className="transactions_area">
-
                 <div className="latest_transactions">
-
-                     <div className="l_transaction_title">
+                    <div className="l_transaction_title">
                         <p>Últimas Transações</p>
                         <div className='transactions_date_btn'>
                             <input type="date" readOnly value={lastDate} />
@@ -132,7 +170,9 @@ function Transactions() {
                                         </div>
                                         <div className="tcontent">
                                             <div className="tcontent_title">{transaction.title_transaction}</div>
-                                            <div className="tcontent_category" style={{color: transaction.category.color_category}}>{transaction.category?.title_category || 'Categoria'}</div>
+                                            <div className="tcontent_category" style={{color: transaction.category.color_category}}>
+                                                {transaction.category?.title_category || 'Categoria'}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="tcard_right">
@@ -146,8 +186,6 @@ function Transactions() {
                             <p>Sem transações para exibir.</p>
                         )}
                     </div>
-
-
                 </div>
 
                 <div className="new_transaction">
@@ -163,8 +201,11 @@ function Transactions() {
                                             name="fk_type"
                                             value={type.id_type}
                                             onChange={handleChange}
+                                            required
                                         />
-                                        {type.id_type === 1 ? <PiPlusCircleBold className='icon_receita' /> : <PiMinusCircleBold className='icon_despesa' />}
+                                        {type.id_type === 1 ? 
+                                            <PiPlusCircleBold className='icon_receita' /> : 
+                                            <PiMinusCircleBold className='icon_despesa' />}
                                         <label>{type.name_type}</label>
                                     </div>
                                 ))}
@@ -175,9 +216,12 @@ function Transactions() {
                             <input
                                 type="text"
                                 name="title_transaction"
-                                placeholder=' Nomeie a transação'
+                                placeholder='Nomeie a transação'
                                 value={formData.title_transaction}
                                 onChange={handleChange}
+                                required
+                                minLength="3"
+                                maxLength="50"
                             />
                         </div>
                         <div className="input_group">
@@ -188,6 +232,9 @@ function Transactions() {
                                 placeholder='0,00'
                                 value={formData.value_transaction}
                                 onChange={handleChange}
+                                required
+                                min="0.01"
+                                step="0.01"
                             />
                         </div>
                         <div className="input_group">
@@ -196,6 +243,7 @@ function Transactions() {
                                 name="fk_category"
                                 value={formData.fk_category}
                                 onChange={handleChange}
+                                required
                             >
                                 <option value="">Selecione uma categoria</option>
                                 {filteredCategories.map(category => (
@@ -209,8 +257,8 @@ function Transactions() {
                         <button type="submit">Adicionar Transação</button>
                     </form>
                 </div>
-
             </div>
+            
             <ToastContainer
                 position="top-right"
                 autoClose={5000}
