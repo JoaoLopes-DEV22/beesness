@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\PendingController;
 
 Route::post('/auth', [AuthController::class, 'auth']);
 Route::post('/register', [UserController::class, 'register']);
@@ -39,6 +40,14 @@ Route::delete('/transactions/{id}', [TransactionController::class, 'destroy']);
 Route::get('/categories/{id}', [CategoryController::class, 'show']); 
 Route::put('/categories/{id}', [CategoryController::class, 'update']);
 Route::delete('/categories/{id}', [CategoryController::class, 'destroy']); 
+
+Route::get('/transactions/monthly/charts', [TransactionController::class, 'getMonthlyChartsData']);
+Route::get('/pendings/monthly', [PendingController::class, 'getMonthlyPendingsData']);
+
+// Rotas para gráficos anuais
+Route::get('/transactions/annual/charts', [TransactionController::class, 'getAnnualChartsData']);
+Route::get('/transactions/monthly/evolution', [TransactionController::class, 'getMonthlyEvolution']);
+
 
 Route::middleware(AuthenticateAPI::class)->group(function () {
     // Route::get('/user', function () {

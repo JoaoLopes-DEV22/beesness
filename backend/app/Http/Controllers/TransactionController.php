@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Carbon\Carbon; // Adicionar o uso de Carbon
 
 class TransactionController extends Controller
 {
@@ -145,5 +146,168 @@ class TransactionController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => 'Erro ao excluir transação: ' . $e->getMessage()], 500);
         }
+    }
+
+    // TransactionController.php
+
+    public function getMonthlyChartsData(Request $request)
+    {
+        $userId = $request->query('user_id');
+        $month = $request->query('month');
+
+        if (!$userId || !$month) {
+            return response()->json(['message' => 'user_id e month são obrigatórios'], 400);
+        }
+
+        $startDate = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+        $endDate = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
+
+        // Busca apenas transações do tipo despesa (fk_type = 2)
+        $transactions = Transaction::where('fk_account', $userId)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereHas('category', function ($query) {
+                $query->where('fk_type', 2); // Filtra por tipo de despesa (fk_type = 2)
+            })
+            ->with('category')
+            ->get();
+
+        // Agrupa por categoria e calcula totais
+        $grouped = $transactions->groupBy('fk_category')->map(function ($items) {
+            return [
+                'total' => $items->sum('value_transaction'),
+                'category' => $items->first()->category
+            ];
+        });
+
+        $sorted = $grouped->sortByDesc('total');
+
+        return response()->json([
+            'transactions' => $sorted->values(),
+            'total_month' => $transactions->sum('value_transaction')
+        ]);
+    }
+
+    public function getAnnualChartsData(Request $request)
+    {
+        $userId = $request->query('user_id');
+        $year = $request->query('year');
+
+        if (!$userId || !$year) {
+            return response()->json(['message' => 'user_id e year são obrigatórios'], 400);
+        }
+
+        // Obtém o primeiro e último dia do ano selecionado
+        $startDate = Carbon::createFromFormat('Y', $year)->startOfYear();
+        $endDate = Carbon::createFromFormat('Y', $year)->endOfYear();
+
+        // Busca apenas transações do usuário no ano selecionado do tipo despesa (fk_type = 2)
+        $transactions = Transaction::where('fk_account', $userId)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereHas('category', function ($query) {
+                $query->where('fk_type', 2); // Filtra por tipo de despesa (fk_type = 2)
+            })
+            ->with('category')
+            ->get();
+
+        // Agrupa por categoria e calcula totais
+        $grouped = $transactions->groupBy('fk_category')->map(function ($items) {
+            return [
+                'total' => $items->sum('value_transaction'),
+                'category' => $items->first()->category
+            ];
+        });
+
+        $sorted = $grouped->sortByDesc('total');
+
+        return response()->json([
+            'transactions' => $sorted->values(),
+            'total_year' => $transactions->sum('value_transaction')
+        ]);
+    }
+
+
+    public function getMonthlyEvolution(Request $request)
+    {
+        $userId = $request->query('user_id');
+        $year = $request->query('year');
+
+        if (!$userId || !$year) {
+            return response()->json(['message' => 'user_id e year são obrigatórios'], 400);
+        }
+
+        // Nomes dos meses em português
+        $monthNames = [
+            1 => 'Jan',
+            2 => 'Fev',
+            3 => 'Mar',
+            4 => 'Abr',
+            5 => 'Mai',
+            6 => 'Jun',
+            7 => 'Jul',
+            8 => 'Ago',
+            9 => 'Set',
+            10 => 'Out',
+            11 => 'Nov',
+            12 => 'Dez'
+        ];
+
+        // Inicializa os dados para cada mês
+        $monthlyData = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $monthlyData[$i] = [
+                'receitas' => 0,
+                'despesas' => 0,
+            ];
+        }
+
+        // Obtém o primeiro e último dia do ano selecionado
+        $startDate = Carbon::createFromFormat('Y', $year)->startOfYear();
+        $endDate = Carbon::createFromFormat('Y', $year)->endOfYear();
+
+        // Busca as transações do usuário no ano selecionado
+        $transactions = Transaction::where('fk_account', $userId)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->with('category')
+            ->get();
+
+        // Agrupa as transações por mês
+        foreach ($transactions as $transaction) {
+            $month = $transaction->created_at->format('n'); // Obtém o mês (1-12)
+            if ($transaction->fk_type == 1) { // Receita
+                $monthlyData[$month]['receitas'] += $transaction->value_transaction;
+            } else if ($transaction->fk_type == 2) { // Despesa
+                $monthlyData[$month]['despesas'] += $transaction->value_transaction;
+            }
+        }
+
+        // Formata os dados para o gráfico
+        $labels = array_map(function ($month) use ($monthNames) {
+            return $monthNames[$month];
+        }, array_keys($monthlyData));
+
+        $receitas = array_column($monthlyData, 'receitas');
+        $despesas = array_column($monthlyData, 'despesas');
+
+        return response()->json([
+            'labels' => $labels,
+            'datasets' => [
+                [
+                    'label' => 'Receitas',
+                    'data' => $receitas,
+                    'borderColor' => '#4CAF50',
+                    'backgroundColor' => 'rgba(76, 175, 80, 0.2)',
+                    'tension' => 0.1,
+                    'fill' => false,
+                ],
+                [
+                    'label' => 'Despesas',
+                    'data' => $despesas,
+                    'borderColor' => '#F44336',
+                    'backgroundColor' => 'rgba(244, 67, 54, 0.2)',
+                    'tension' => 0.1,
+                    'fill' => false,
+                ],
+            ],
+        ]);
     }
 }
