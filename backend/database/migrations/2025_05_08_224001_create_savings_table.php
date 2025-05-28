@@ -19,8 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('fk_account');
             $table->foreign('fk_account')->references('id_account')->on('accounts')->onDelete('cascade');
 
-            $table->unsignedBigInteger('fk_condition');
-            $table->foreign('fk_condition')->references('id_condition')->on('conditions')->onDelete('cascade');
+            
             $table->timestamps();
         });
     }
