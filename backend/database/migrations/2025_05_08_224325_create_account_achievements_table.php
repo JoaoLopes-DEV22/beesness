@@ -16,11 +16,15 @@ return new class extends Migration
             $table->unsignedBigInteger('fk_account');
             $table->foreign('fk_account')->references('id_account')->on('accounts')->onDelete('cascade');
 
+            $table->boolean('is_completed')->default(false); // Se a condição da conquista foi atingida pela conta
+            $table->boolean('is_claimed')->default(false);   // Se a conta já resgatou a recompensa
+            $table->timestamp('completed_at')->nullable(); // Quando a conquista foi concluída pela conta
+            $table->timestamp('claimed_at')->nullable();   // Quando a recompensa foi resgatada pela conta
+
             $table->unsignedBigInteger('fk_achievements');
             $table->foreign('fk_achievements')->references('id_achievement')->on('achievements')->onDelete('cascade');
 
-            $table->unsignedBigInteger('fk_condition');
-            $table->foreign('fk_condition')->references('id_condition')->on('conditions')->onDelete('cascade');
+            
             $table->timestamps();
         });
     }

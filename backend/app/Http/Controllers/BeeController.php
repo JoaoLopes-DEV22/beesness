@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\BeeAccessory;
 use App\Models\Accessory;
+use App\Models\HiveDecoration; // Importe o modelo HiveDecoration
+use Illuminate\Support\Facades\Validator; // Para validação
+use Illuminate\Support\Facades\Log; // Para logs de depuração
+
 
 class BeeController extends Controller
 {
@@ -35,8 +39,8 @@ class BeeController extends Controller
 
         // Carrega todos os acessórios que a abelha possui, com os detalhes do acessório
         $ownedAccessories = BeeAccessory::where('fk_bee', $bee->id_bee)
-                                        ->with('accessory')
-                                        ->get();
+            ->with('accessory')
+            ->get();
 
         // Inicializa o array para os acessórios equipados para exibição
         $equippedAccessoriesDisplay = [
@@ -57,6 +61,12 @@ class BeeController extends Controller
             }
         }
 
+        $ownedHiveDecorations = HiveDecoration::where('fk_account', $account->id_account)
+            ->where('fk_cosmetic_status', 1) // Filtra apenas as equipadas
+            ->whereIn('position_hive_decoration', ['left', 'right']) // Garante que tem posição
+            ->with('decoration', 'cosmeticStatus') // Carrega detalhes da Decoration e do Status
+            ->get();
+
         return response()->json([
             'status' => true,
             'data' => [
@@ -64,7 +74,66 @@ class BeeController extends Controller
                 'sunflowers' => (string)$account->sunflowers_account,
                 'owned_accessories' => $ownedAccessories,
                 'equipped_accessories_display' => $equippedAccessoriesDisplay,
+                'owned_hive_decorations' => $ownedHiveDecorations,
             ]
         ], 200);
+    }
+
+public function rename(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Usuário não autenticado.'], 401);
+        }
+
+        $account = $user->account;
+
+        if (!$account) {
+            return response()->json(['message' => 'Conta associada ao usuário não encontrada.'], 404);
+        }
+
+        $bee = $account->bee; // Pega a abelha da conta
+        
+        if (!$bee) {
+            return response()->json(['message' => 'Abelha associada à conta não encontrada.'], 404);
+        }
+
+        // 1. Validação do novo nome
+        $validator = Validator::make($request->all(), [
+            'new_name' => 'required|string|max:50|min:1', // Novo nome é obrigatório, string, max 50 chars, min 1 char
+        ], [
+            'new_name.required' => 'O novo nome da abelha é obrigatório.',
+            'new_name.string' => 'O nome da abelha deve ser um texto.',
+            'new_name.max' => 'O nome da abelha não pode ter mais de :max caracteres.',
+            'new_name.min' => 'O nome da abelha deve ter pelo menos :min caractere.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Erro de validação.', 'errors' => $validator->errors()], 422);
+        }
+
+        $newName = $request->input('new_name');
+
+        // 2. Trocar o nome antigo caso não seja vazio
+        // A validação 'min:1' já garante que $newName não será vazio
+        // Mas se você quiser um tratamento extra aqui, pode adicionar
+        
+        $oldName = $bee->name_bee; // Guarda o nome antigo para a resposta
+
+        $bee->name_bee = $newName;
+        
+        if ($bee->isDirty('name_bee')) { // Verifica se o nome realmente mudou
+            $bee->save();
+            Log::info("Abelha {$oldName} renomeada para {$newName} pela conta {$account->id_account}.");
+            return response()->json([
+                'message' => 'Nome da abelha atualizado com sucesso!',
+                'old_name' => $oldName,
+                'new_name' => $bee->name_bee,
+                'status' => true
+            ]);
+        } else {
+            return response()->json(['message' => 'O nome da abelha já é o mesmo.', 'status' => false]);
+        }
     }
 }

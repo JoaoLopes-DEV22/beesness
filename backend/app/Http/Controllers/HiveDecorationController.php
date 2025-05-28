@@ -2,221 +2,199 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Decoration; // Para buscar os detalhes da decoração a ser comprada
-use App\Models\HiveDecoration; // O modelo que representa a decoração na colmeia do usuário
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use App\Models\Account; // Assumindo que a conta do usuário é o modelo para girassóis e nível
+use App\Models\HiveDecoration; // Certifique-se de importar o modelo
+use App\Models\Decoration;     // Pode ser útil para validações ou futuras lógicas
+use App\Models\CosmeticStatus; // Certifique-se de importar o modelo de Status Cosmético
+use App\Models\Account;        // Para acessar a conta do usuário
 
 class HiveDecorationController extends Controller
 {
     /**
-     * Handles the purchase of a decoration for the user's hive.
-     * Creates a new HiveDecoration entry with 'none' position and 'unequipped' status.
-     *
-     * @param  \Illuminate\Http\Request  $request
+     * Compra uma nova decoração para a colmeia.
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function purchaseDecoration(Request $request)
     {
-        // 1. Validação da requisição
         $request->validate([
-            'fk_decoration' => 'required|integer|exists:decorations,id_decoration',
+            'fk_decoration' => 'required|exists:decorations,id_decoration',
         ]);
 
-        $decorationId = $request->fk_decoration;
-        $userAccount = Auth::user(); // Assumindo que Auth::user() retorna sua instância de Account ou um modelo que possui 'id_account', 'sunflowers', 'level_bee'
-
-        // Se o usuário não estiver autenticado, retorne um erro
-        if (!$userAccount) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Usuário não autenticado.'
-            ], 401); // Unauthorized
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['status' => false, 'message' => 'Usuário não autenticado.'], 401);
         }
 
-        // Encontre a decoração que o usuário quer comprar
-        $decoration = Decoration::find($decorationId);
+        $account = $user->account;
+        if (!$account) {
+            return response()->json(['status' => false, 'message' => 'Conta do usuário não encontrada.'], 404);
+        }
 
+        $decoration = Decoration::find($request->fk_decoration);
         if (!$decoration) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Decoração não encontrada.'
-            ], 404); // Not Found
+            return response()->json(['status' => false, 'message' => 'Decoração não encontrada.'], 404);
         }
 
-        // 2. Verificações de Elegibilidade (Preço e Nível)
-        if ($userAccount->account->sunflowers_account < $decoration->price_decoration) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Girassóis insuficientes para comprar esta decoração.',
-            ], 400); // Bad Request
-        }
-
-        if ($userAccount->account->bee->level_bee < $decoration->level_decoration) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Nível insuficiente para comprar esta decoração. Nível necessário: ' . $decoration->level_decoration
-            ], 400); // Bad Request
-        }
-
-        // 3. Verificar se o usuário já possui esta decoração em seu inventário de colmeia
-        $alreadyOwned = HiveDecoration::where('fk_account', $userAccount->id_account)
-            ->where('fk_decoration', $decorationId)
-            ->exists();
+        // Verifica se a decoração já foi comprada pelo usuário para a colmeia
+        $alreadyOwned = HiveDecoration::where('fk_account', $account->id_account)
+                                      ->where('fk_decoration', $decoration->id_decoration)
+                                      ->exists();
 
         if ($alreadyOwned) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Você já possui esta decoração.'
-            ], 409); // Conflict
+            return response()->json(['status' => false, 'message' => 'Você já possui esta decoração para a colmeia.'], 400);
         }
 
-        // 4. Iniciar uma transação de banco de dados
-        DB::beginTransaction();
-
-        try {
-            // 5. Criar o registro em hive_decorations
-            // Assumindo que '2' é o ID para 'unequipped' na sua tabela 'cosmetic_status'
-
-            $hiveDecoration = HiveDecoration::create([
-                'position_hive_decoration' => 'none',
-                'fk_cosmetic_status' => 2, // ID para "desequipado"
-                'fk_decoration' => $decorationId,
-                'fk_account' => $userAccount->account->id_account,
-            ]);
-
-            // 6. Deduzir os girassóis do usuário E SALVAR NA CONTA DA ABELHA (Account)
-            $userAccount->account->sunflowers_account -= $decoration->price_decoration;
-            $userAccount->save(); // <-- Salva o modelo Account (que foi modificado)
-
-            // 7. Confirmar a transação
-            DB::commit();
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Decoração comprada com sucesso e adicionada ao seu inventário!',
-                'data' => $hiveDecoration
-            ], 201); // Created
-
-        } catch (\Exception $e) {
-            // 8. Reverter a transação em caso de erro
-            DB::rollBack();
-            return response()->json([
-                'status' => false,
-                'message' => 'Erro ao processar a compra da decoração. Tente novamente.'. $e,
-                
-            ], 500); // Internal Server Error
+        // Lógica de custo e dedução de girassóis (adapte conforme seu modelo de `Account`)
+        if ($account->sunflowers_account < $decoration->price_decoration) {
+            return response()->json(['status' => false, 'message' => 'Girassóis insuficientes para comprar esta decoração.'], 400);
         }
+
+        $account->sunflowers_account -= $decoration->price_decoration;
+        $account->save();
+
+        // --- ALTERADO AQUI: Usando o ID 2 para 'unequipped' ---
+        $unequippedStatusId = 2; // ID para 'unequipped'
+
+        // Cria o registro de posse da decoração para a colmeia
+        $hiveDecoration = HiveDecoration::create([
+            'position_hive_decoration' => 'none', // Começa como desequipado
+            'fk_cosmetic_status' => $unequippedStatusId,
+            'fk_decoration' => $decoration->id_decoration,
+            'fk_account' => $account->id_account,
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Decoração comprada com sucesso!',
+            'data' => $hiveDecoration->load('decoration', 'cosmeticStatus')
+        ]);
     }
 
     /**
-     * Equips a specific hive decoration to a given slot.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\HiveDecoration  $hiveDecoration The specific hive decoration to be equipped.
+     * Equipa uma decoração na colmeia em um slot específico (left/right).
+     * @param Request $request
+     * @param HiveDecoration $hiveDecoration (Model Binding)
      * @return \Illuminate\Http\JsonResponse
      */
     public function equipDecoration(Request $request, HiveDecoration $hiveDecoration)
     {
-        // 1. Validação da requisição
         $request->validate([
-            'position_slot' => 'required|in:left,right', // Assegura que a posição é 'left' ou 'right'
+            'position_slot' => ['required', 'string', 'in:left,right'],
         ]);
 
-        $slot = $request->position_slot;
-        $userAccount = Auth::user();
+        $user = Auth::user();
+        $account = $user->account;
 
-        // 2. Verificar se a hiveDecoration pertence ao usuário logado
-        if ($hiveDecoration->fk_account !== $userAccount->id_account) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Você não tem permissão para equipar esta decoração.'
-            ], 403); // Forbidden
+        // Verifica se a decoração pertence ao usuário autenticado
+        if ($hiveDecoration->fk_account !== $account->id_account) {
+            return response()->json(['status' => false, 'message' => 'Você não possui esta decoração.'], 403);
         }
 
-        DB::beginTransaction();
-        try {
-            // 3. Desequipar qualquer decoração que já esteja no slot desejado
-            // Assumindo que só pode haver 1 decoração por slot (left/right)
-            $existingDecorationInSlot = HiveDecoration::where('fk_account', $userAccount->id_account)
-                ->where('position_hive_decoration', $slot)
-                ->first();
+        // --- ALTERADO AQUI: Usando o ID 1 para 'equipped' ---
+        $equippedStatusId = 1; // ID para 'equipped'
 
-            if ($existingDecorationInSlot) {
-                $existingDecorationInSlot->update([
-                    'position_hive_decoration' => 'none', // Mova para 'none'
-                    'fk_cosmetic_status' => 2, // Setar como unequipped
-                ]);
-            }
+        // Desequipa qualquer outra decoração que esteja no mesmo slot
+        $existingEquippedDecoration = HiveDecoration::where('fk_account', $account->id_account)
+                                                    ->where('position_hive_decoration', $request->position_slot)
+                                                    ->where('fk_cosmetic_status', $equippedStatusId)
+                                                    ->first();
 
-            // 4. Equipar a decoração atual no novo slot
-            // Assumindo que '1' é o ID para 'equipped' na sua tabela 'cosmetic_status'
-            $hiveDecoration->update([
-                'position_hive_decoration' => $slot,
-                'fk_cosmetic_status' => 1, // Setar como equipped
+        if ($existingEquippedDecoration && $existingEquippedDecoration->id_hive_decoration !== $hiveDecoration->id_hive_decoration) {
+            // --- ALTERADO AQUI: Usando o ID 2 para 'unequipped' ---
+            $unequippedStatusId = 2; // ID para 'unequipped'
+            $existingEquippedDecoration->update([
+                'position_hive_decoration' => 'none',
+                'fk_cosmetic_status' => $unequippedStatusId,
             ]);
-
-            DB::commit();
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Decoração equipada com sucesso!',
-                'equipped_decoration' => $hiveDecoration->load('decoration') // Carrega os detalhes da decoração para o retorno
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'status' => false,
-                'message' => 'Erro ao equipar decoração. Tente novamente.'
-            ], 500);
         }
+
+        // Equipa a nova decoração
+        $hiveDecoration->update([
+            'position_hive_decoration' => $request->position_slot,
+            'fk_cosmetic_status' => $equippedStatusId,
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Decoração equipada com sucesso!',
+            'data' => $hiveDecoration->load('decoration', 'cosmeticStatus')
+        ]);
     }
 
     /**
-     * Unequips a specific hive decoration.
-     *
-     * @param  \App\Models\HiveDecoration  $hiveDecoration The specific hive decoration to be unequipped.
+     * Desequipa uma decoração da colmeia.
+     * @param HiveDecoration $hiveDecoration (Model Binding)
      * @return \Illuminate\Http\JsonResponse
      */
     public function unequipDecoration(HiveDecoration $hiveDecoration)
     {
-        $userAccount = Auth::user();
+        $user = Auth::user();
+        $account = $user->account;
 
-        // Verificar se a hiveDecoration pertence ao usuário logado
-        if ($hiveDecoration->fk_account !== $userAccount->id_account) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Você não tem permissão para desequipar esta decoração.'
-            ], 403); // Forbidden
+        // Verifica se a decoração pertence ao usuário autenticado
+        if ($hiveDecoration->fk_account !== $account->id_account) {
+            return response()->json(['status' => false, 'message' => 'Você não possui esta decoração.'], 403);
         }
 
-        DB::beginTransaction();
-        try {
-            // Assumindo que '2' é o ID para 'unequipped' na sua tabela 'cosmetic_status'
-            $hiveDecoration->update([
-                'position_hive_decoration' => 'none', // Mova para 'none'
-                'fk_cosmetic_status' => 2, // Setar como unequipped
-            ]);
+        // --- ALTERADO AQUI: Usando o ID 2 para 'unequipped' ---
+        $unequippedStatusId = 2; // ID para 'unequipped'
+        // --- ALTERADO AQUI: Usando o ID 1 para 'equipped' ---
+        $equippedStatusId = 1; // ID para 'equipped'
 
-            DB::commit();
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Decoração desequipada com sucesso e movida para o inventário!'
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'status' => false,
-                'message' => 'Erro ao desequipar decoração. Tente novamente.'
-            ], 500);
+        // Verifica se a decoração está realmente equipada
+        if ($hiveDecoration->fk_cosmetic_status !== $equippedStatusId) {
+            return response()->json(['status' => false, 'message' => 'Esta decoração não está equipada.'], 400);
         }
+
+        // Desequipa a decoração
+        $hiveDecoration->update([
+            'position_hive_decoration' => 'none',
+            'fk_cosmetic_status' => $unequippedStatusId,
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Decoração desequipada com sucesso!',
+            'data' => $hiveDecoration->load('decoration', 'cosmeticStatus')
+        ]);
     }
 
-    // Você pode adicionar aqui outros métodos relacionados a HiveDecorations, como:
-    // - public function getEquippedDecorations() (para a tela da colmeia)
-    // - public function getInventoryDecorations() (para o modal de inventário)
-    // - public function removeDecoration($id) (para remover definitivamente do inventário, se permitido)
+    /**
+     * Get all hive decorations owned by the authenticated user.
+     * Includes equipped and unequipped items.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getUserHiveDecorations()
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Usuário não autenticado.'
+            ], 401);
+        }
+
+        $userAccount = $user->account; // Acessa a conta da abelha
+
+        if (!$userAccount) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Dados da conta da abelha não encontrados.'
+            ], 404);
+        }
+
+        // Busca todas as HiveDecorations do usuário, carregando os dados da Decoration e CosmeticStatus
+        $hiveDecorations = HiveDecoration::where('fk_account', $userAccount->id_account)
+                                        ->with(['decoration', 'cosmeticStatus']) // Carrega os relacionamentos
+                                        ->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $hiveDecorations
+        ]);
+    }
 }
