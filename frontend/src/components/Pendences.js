@@ -12,15 +12,17 @@ function Pendences() {
     const [filteredCategories, setFilteredCategories] = useState([]);
     const [types, setTypes] = useState([]);
     const [formData, setFormData] = useState({
-        title_pendences: '',
-        value_pendences: '',
+        title_pending: '',
+        deadline_pending: '',
+        initial_pending: '',
+        total_pending: '',
         fk_type: '',
-        fk_category: ''
+        fk_category: '',
+        fk_condition: ''
     });
 
-    // Novos estados para transações e data das últimas transações
     const [lastDate, setLastDate] = useState('');
-    const [lastpendences, setLastpendences] = useState([]);
+    const [lastPendences, setLastPendences] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -39,25 +41,24 @@ function Pendences() {
         fetchData();
     }, []);
 
-    // Busca as últimas transações do usuário, enviando user.id no query param
     useEffect(() => {
-        const fetchLastpendences = async () => {
+        const fetchLastPendences = async () => {
             try {
-                if (!user?.id) return; // evita erro se não tiver user
+                if (!user?.id) return;
 
                 const response = await api.get('/pendences/last', {
                     params: { user_id: user.id }
                 });
-
+                console.log(response)
                 setLastDate(response.data.last_date || '');
-                setLastpendences(response.data.pendences || []);
+                setLastPendences(response.data.pendences || []);
 
             } catch (error) {
                 console.error("Error fetching last pendences:", error);
             }
         };
 
-        fetchLastpendences();
+        fetchLastPendences();
     }, [user]);
 
     const handleChange = (e) => {
@@ -79,14 +80,18 @@ function Pendences() {
         try {
             const dataToSend = {
                 ...formData,
-                fk_account: user.id
+                fk_account: user.id,
+                fk_condition: 1
             };
+
             await api.post('/pendences', dataToSend);
             setFormData({
-                title_pendences: '',
-                value_pendences: '',
+                title_pending: '',
+                initial_pending: '',
+                total_pending: '',
                 fk_type: '',
                 fk_category: '',
+                fk_condition: ''
             });
             setFilteredCategories([]);
             toast.success("Pendência adicionada com sucesso!");
@@ -96,15 +101,15 @@ function Pendences() {
                 params: { user_id: user.id }
             });
             setLastDate(response.data.last_date || '');
-            setLastpendences(response.data.pendences || []);
-
+            setLastPendences(response.data.pendences || []);
+            console.log(response)
         } catch (error) {
             console.error("Error adding pendences:", error);
             toast.error("Erro ao adicionar pendência.");
         }
     };
 
-    const allpendences = () => {
+    const allPendences = () => {
         window.location.href = '/all-pendences'
     }
 
@@ -116,25 +121,45 @@ function Pendences() {
                         <p>Últimas Pendências</p>
                         <div className='pendences_date_btn'>
                             <input type="date" readOnly value={lastDate} />
-                            <button onClick={allpendences}>Ver Todas</button>
+                            <button onClick={allPendences}>Ver Todas</button>
                         </div>
                     </div>
                     <div className="pendences">
-                        {lastpendences.length > 0 ? (
-                            lastpendences.map(pendences => (
-                                <div key={pendences.id_pendences} className="pendences_card">
+                        {lastPendences.length > 0 ? (
+                            lastPendences.map(pendence => (
+                                <div key={pendence.id_pendences} className="pendences_card">
                                     <div className="tcard_left">
-                                        <div className={pendences.fk_type === 1 ? "type_circle_g" : "type_circle_r"}>
-                                            {pendences.fk_type === 1 ? <FaArrowTrendUp /> : <FaArrowTrendDown />}
+                                        <div className={pendence.fk_type === 1 ? "type_circle_g" : "type_circle_r"}>
+                                            {pendence.fk_type === 1 ? <FaArrowTrendUp /> : <FaArrowTrendDown />}
                                         </div>
                                         <div className="tcontent">
-                                            <div className="tcontent_title">{pendences.title_pendences}</div>
-                                            <div className="tcontent_category" style={{ color: pendences.category.color_category }}>{pendences.category?.title_category || 'Categoria'}</div>
+                                            <div className="tcontent_title">{pendence.title_pending}</div>
+                                            <div className="tcontent_category" style={{ color: pendence.category?.color_category }}>
+                                                {pendence.category?.title_category || 'Sem categoria'}
+                                            </div>
+                                            <div className="pendence_date">
+                                                Prazo: {pendence.deadline_pending
+                                                    ? new Date(pendence.deadline_pending).toLocaleDateString('pt-BR', {
+                                                        day: '2-digit',
+                                                        month: '2-digit',
+                                                        year: 'numeric'
+                                                    }).replace(/\//g, '/')
+                                                    : 'Sem prazo'}
+                                            </div>
+                                            <div className={`pendence_status ${pendence.fk_condition == 1 ? 'status-pending' : 'status-completed'}`}>
+                                                {pendence.fk_condition == 1 ? 'Pendente' : 'Concluído'}
+                                            </div>
+                                            <div className="progress_container">
+                                                <div className="progress_bar" style={{ width: `${(pendence.initial_pending / pendence.total_pending) * 100}%` }}></div>
+                                            </div>
+                                            <div className="progress_text">
+                                                R$ {parseFloat(pendence.initial_pending).toFixed(2).replace('.', ',')} / R$ {parseFloat(pendence.total_pending).toFixed(2).replace('.', ',')}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="tcard_right">
-                                        <p className={pendences.fk_type === 1 ? "pendences_value_g" : "pendences_value_r"}>
-                                            {pendences.fk_type === 1 ? '+' : '-'} R$ {parseFloat(pendences.value_pendences).toFixed(2).replace('.', ',')}
+                                        <p className={pendence.fk_type === 1 ? "pendences_value_g" : "pendences_value_r"}>
+                                            {pendence.fk_type === 1 ? '+' : '-'} R$ {parseFloat(pendence.initial_pending).toFixed(2).replace('.', ',')}
                                         </p>
                                     </div>
                                 </div>
@@ -143,8 +168,6 @@ function Pendences() {
                             <p>Sem pendências para exibir.</p>
                         )}
                     </div>
-
-
                 </div>
 
                 <div className="new_pendence">
@@ -167,26 +190,50 @@ function Pendences() {
                                 ))}
                             </div>
                         </div>
-                        <div className="input_group">
-                            <label htmlFor="">Título</label>
-                            <input
-                                type="text"
-                                name="title_pendences"
-                                placeholder=' Nomeie a pendência'
-                                value={formData.title_pendences}
-                                onChange={handleChange}
-                            />
+                        <div className="input_group side_by_side">
+                            <div className="input_pair">
+                                <label htmlFor="">Título</label>
+                                <input
+                                    type="text"
+                                    name="title_pending"
+                                    placeholder='Nomeie a pendência'
+                                    value={formData.title_pending}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className="input_pair">
+                                <label htmlFor="">Prazo (opcional)</label>
+                                <input
+                                    type="date"
+                                    name="deadline_pending"
+                                    value={formData.deadline}
+                                    onChange={handleChange}
+                                />
+                            </div>
                         </div>
-                        <div className="input_group">
-                            <label htmlFor="">Valor (R$)</label>
-                            <input
-                                type="number"
-                                name="value_pendences"
-                                placeholder='0,00'
-                                value={formData.value_pendences}
-                                onChange={handleChange}
-                            />
+                        <div className="input_group side_by_side">
+                            <div className="input_pair">
+                                <label htmlFor="">Valor inicial (R$)</label>
+                                <input
+                                    type="number"
+                                    name="initial_pending"
+                                    placeholder='0,00'
+                                    value={formData.initial_pending}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className="input_pair">
+                                <label htmlFor="">Valor Total (R$)</label>
+                                <input
+                                    type="number"
+                                    name="total_pending"
+                                    placeholder='0,00'
+                                    value={formData.total_pending}
+                                    onChange={handleChange}
+                                />
+                            </div>
                         </div>
+
                         <div className="input_group">
                             <label htmlFor="">Categoria</label>
                             <select

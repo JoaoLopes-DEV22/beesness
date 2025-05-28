@@ -17,7 +17,8 @@ class PendingSeeder extends Seeder
         DB::table('pendings')->insert([
             [
                 'title_pending' => 'Salário do mês',
-                'value_pending' => 3000.00,
+                'initial_pending' => 3000.00,
+                'total_pending' => 5000.00,
                 'deadline_pending' => '2025-11-05',
                 'fk_type' => 1,
                 'fk_category' => 11, // Salário
@@ -28,7 +29,8 @@ class PendingSeeder extends Seeder
             ],
             [
                 'title_pending' => 'Site pra Loja',
-                'value_pending' => 2300.00,
+                'initial_pending' => 2300.00,
+                'total_pending' => 5300.00,
                 'deadline_pending' => '2025-11-15',
                 'fk_type' => 1,
                 'fk_category' => 12, // Freelance
@@ -39,7 +41,8 @@ class PendingSeeder extends Seeder
             ],
             [
                 'title_pending' => 'Venda do Notebook',
-                'value_pending' => 1200.00,
+                'initial_pending' => 1200.00,
+                'total_pending' => 5200.00,
                 'deadline_pending' => '2025-11-08',
                 'fk_type' => 1,
                 'fk_category' => 13, // Venda
@@ -50,7 +53,8 @@ class PendingSeeder extends Seeder
             ],
             [
                 'title_pending' => 'Reembolso de Viagem',
-                'value_pending' => 450.00,
+                'initial_pending' => 450.00,
+                'total_pending' => 5450.00,
                 'deadline_pending' => '2025-11-20',
                 'fk_type' => 1,
                 'fk_category' => 10, // Sem categoria (receita)
@@ -61,7 +65,8 @@ class PendingSeeder extends Seeder
             ],
             [
                 'title_pending' => 'Aluguel do Apartamento',
-                'value_pending' => 1500.00,
+                'initial_pending' => 1500.00,
+                'total_pending' => 5500.00,
                 'deadline_pending' => '2025-11-05',
                 'fk_type' => 2,
                 'fk_category' => 4, // Moradia
@@ -72,7 +77,8 @@ class PendingSeeder extends Seeder
             ],
             [
                 'title_pending' => 'Fatura do Cartão de Crédito',
-                'value_pending' => 1200.00,
+                'initial_pending' => 1200.00,
+                'total_pending' => 5200.00,
                 'deadline_pending' => '2025-11-10',
                 'fk_type' => 2,
                 'fk_category' => 1, // Sem categoria (despesa)
@@ -83,7 +89,8 @@ class PendingSeeder extends Seeder
             ],
             [
                 'title_pending' => 'Conta de Luz',
-                'value_pending' => 180.00,
+                'initial_pending' => 180.00,
+                'total_pending' => 5180.00,
                 'deadline_pending' => '2025-11-15',
                 'fk_type' => 2,
                 'fk_category' => 9, // Serviços
@@ -94,7 +101,8 @@ class PendingSeeder extends Seeder
             ],
             [
                 'title_pending' => 'Parcela do Financiamento do Carro',
-                'value_pending' => 850.00,
+                'initial_pending' => 850.00,
+                'total_pending' => 5850.00,
                 'deadline_pending' => '2025-11-20',
                 'fk_type' => 2,
                 'fk_category' => 5, // Transporte
@@ -105,7 +113,8 @@ class PendingSeeder extends Seeder
             ],
             [
                 'title_pending' => 'Supermercado',
-                'value_pending' => 350.00,
+                'initial_pending' => 350.00,
+                'total_pending' => 5350.00,
                 'deadline_pending' => '2025-11-12',
                 'fk_type' => 2,
                 'fk_category' => 2, // Alimentação

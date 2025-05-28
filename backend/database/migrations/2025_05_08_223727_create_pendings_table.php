@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('pendings', function (Blueprint $table) {
             $table->id('id_pending');
             $table->string('title_pending', 100);
-            $table->decimal('value_pending', 11, 2)->default(0);
+            $table->decimal('initial_pending', 11, 2)->default(0);
+            $table->decimal('total_pending', 11, 2)->default(0);
             $table->date('deadline_pending')->nullable();
 
             $table->unsignedBigInteger('fk_type');
