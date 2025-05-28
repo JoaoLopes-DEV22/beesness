@@ -2,25 +2,32 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Sidebar from '../components/Sidebar.js';
 import Header from '../components/Header.js';
 import AchievementCard from '../components/AchievementCard.js';
-import AccessoryCard from '../components/AccessoryCard.js'; // Importe o novo componente
-import DecorationCard from '../components/DecorationCard.js'; // Importe o novo componente
+import AccessoryCard from '../components/AccessoryCard.js';
+import DecorationCard from '../components/DecorationCard.js';
+import HiveDecorationModal from '../components/DecorationModal.js';
 import '../css/pages/Hive.css';
-import api from '../api';
+import api from '../api'; // Seu axios instance configurado
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { FaArrowAltCircleRight } from "react-icons/fa";
 import { MdModeEdit } from "react-icons/md";
 
 function Home() {
-    // ... (Seus estados e funções de alteração de modo/filtro permanecem inalterados)
+    // --- Estados para controle de UI ---
     const [isShopMode, setIsShopMode] = useState(true);
     const [isAccessories, setIsAccessories] = useState(true);
     const [selectedAchievementFilter, setSelectedAchievementFilter] = useState('all');
-
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
+    // --- Estados para dados da abelha e loja ---
     const [bee, setBee] = useState(null);
     const [sunflowers, setSunflowers] = useState(null);
     const [loadingBee, setLoadingBee] = useState(true);
 
+    // --- NOVOS ESTADOS PARA RENOMEAR A ABELHA ---
+    const [isEditingBeeName, setIsEditingBeeName] = useState(false);
+    const [newBeeNameInput, setNewBeeNameInput] = useState('');
+
+    // --- Estados para listagens da loja/conquistas ---
     const [accessories, setAccessories] = useState([]);
     const [ownedAccessoriesMap, setOwnedAccessoriesMap] = useState(new Map());
     const [equippedDisplay, setEquippedDisplay] = useState({
@@ -35,9 +42,125 @@ function Home() {
     const [achievements, setAchievements] = useState([]);
     const [userAchievementsMap, setUserAchievementsMap] = useState(new Map());
 
+    // --- Estados para o Modal de Decorações da Colmeia ---
+    const [isDecorationModalOpen, setIsDecorationModalOpen] = useState(false);
+    const [selectedDecorationSlot, setSelectedDecorationSlot] = useState(null);
+
+    // --- Estados de Paginação ---
     const [currentPage, setCurrentPage] = useState(1);
     const [lastPage, setLastPage] = useState(1);
 
+    // --- Funções de Carregamento de Dados (USANDO useCallback) ---
+    // Mova todas as funções useCallback para AQUI, antes dos useEffects
+    const fetchAccessories = useCallback(async (page = 1) => {
+        try {
+            const response = await api.get(`/accessories?page=${page}`);
+            setAccessories(response.data.data);
+            setLastPage(response.data.last_page);
+        } catch (error) {
+            console.error("Erro ao buscar acessórios:", error);
+            setAccessories([]);
+            setLastPage(1);
+        }
+    }, []);
+
+    const fetchDecorations = useCallback(async (page = 1) => {
+        try {
+            const response = await api.get(`/decorations?page=${page}`);
+            setDecorations(response.data.data);
+            setLastPage(response.data.last_page);
+        } catch (error) {
+            console.error("Erro ao buscar decorações:", error);
+            setDecorations([]);
+            setLastPage(1);
+        }
+    }, []);
+
+    const fetchAchievements = useCallback(async (page = 1) => {
+        try {
+            const response = await api.get(`/achievements?page=${page}`);
+            setAchievements(response.data.data);
+            setLastPage(response.data.last_page);
+
+            const userAchMap = new Map();
+            response.data.data.forEach(achievement => {
+                if (achievement.account_status) {
+                    userAchMap.set(parseInt(achievement.id_achievement), achievement.account_status);
+                } else {
+                    userAchMap.set(parseInt(achievement.id_achievement), {
+                        is_completed: false,
+                        is_claimed: false,
+                        current_progress: 0,
+                        claimed_at: null
+                    });
+                }
+            });
+            setUserAchievementsMap(userAchMap);
+
+        } catch (error) {
+            console.error("Erro ao buscar conquistas:", error);
+            setAchievements([]);
+            setLastPage(1);
+            setUserAchievementsMap(new Map());
+        }
+    }, []);
+
+    const fetchBee = useCallback(async () => {
+        try {
+            setLoadingBee(true);
+            const response = await api.get(`/bee`);
+
+            setBee(response.data.data.bee_data);
+            setSunflowers(response.data.data.sunflowers);
+
+            const ownedAccMap = new Map();
+            response.data.data.owned_accessories.forEach(item => {
+                ownedAccMap.set(parseInt(item.accessory.id_accessory), {
+                    beeAccessoryId: item.id_bee_accessories,
+                    isEquipped: item.fk_cosmetic_status === 1
+                });
+            });
+            setOwnedAccessoriesMap(ownedAccMap);
+
+            const ownedDecoMap = new Map();
+            if (response.data.data.owned_hive_decorations) {
+                response.data.data.owned_hive_decorations.forEach(item => {
+                    ownedDecoMap.set(parseInt(item.decoration.id_decoration), {
+                        hiveDecorationId: item.id_hive_decoration,
+                        isEquipped: item.fk_cosmetic_status === 1,
+                        position: item.position_hive_decoration
+                    });
+                });
+            }
+            setOwnedDecorationsMap(ownedDecoMap);
+
+            setBee(prevBee => ({
+                ...response.data.data.bee_data,
+                hive_decorations: response.data.data.owned_hive_decorations || []
+            }));
+
+            setEquippedDisplay(response.data.data.equipped_accessories_display || {
+                head: '',
+                face: '',
+                body: ''
+            });
+
+        } catch (error) {
+            console.error("Erro ao buscar dados da abelha:", error);
+        } finally {
+            setLoadingBee(false);
+        }
+    }, []);
+
+    // Callback para quando uma decoração for equipada/desequipada no modal (Depende de fetchBee)
+    const handleDecorationAction = useCallback(() => {
+        fetchBee();
+    }, [fetchBee]);
+
+    
+
+
+    // --- Funções de Manipulação de UI --- (Podem ficar aqui ou acima, mas não são useCallback)
     const handleModeChange = (event) => {
         const selectedMode = event.target.value;
         setIsShopMode(selectedMode === 'loja');
@@ -65,96 +188,43 @@ function Home() {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
-
-    // --- Funções de Carregamento de Dados (permanecem inalteradas) ---
-    const fetchAccessories = async (page = 1) => {
-        try {
-            const response = await api.get(`/accessories?page=${page}`);
-            setAccessories(response.data.data);
-            setLastPage(response.data.last_page);
-        } catch (error) {
-            console.error("Erro ao buscar acessórios:", error);
-            setAccessories([]);
-            setLastPage(1);
-        }
+    // --- Funções do Modal de Decoração da Colmeia ---
+    const openDecorationModal = (slot) => {
+        setSelectedDecorationSlot(slot);
+        setIsDecorationModalOpen(true);
     };
 
-    const fetchDecorations = async (page = 1) => {
-        try {
-            const response = await api.get(`/decorations?page=${page}`);
-            setDecorations(response.data.data);
-            setLastPage(response.data.last_page);
-        } catch (error) {
-            console.error("Erro ao buscar decorações:", error);
-            setDecorations([]);
-            setLastPage(1);
-        }
+    const closeDecorationModal = () => {
+        setIsDecorationModalOpen(false);
+        setSelectedDecorationSlot(null);
     };
 
-    const fetchAchievements = async (page = 1) => {
-        try {
-            const response = await api.get(`/achievements?page=${page}`);
-            setAchievements(response.data.data);
-            setLastPage(response.data.last_page);
-        } catch (error) {
-            console.error("Erro ao buscar conquistas:", error);
-            setAchievements([]);
-            setLastPage(1);
+    // --- Função para renomear a abelha ---
+    const handleRenameBee = async () => {
+        if (newBeeNameInput.trim() === '') {
+            alert('O nome da abelha não pode ser vazio.');
+            return;
         }
-    };
-
-    const fetchBee = useCallback(async () => {
+        if (newBeeNameInput.length > 50) {
+            alert('O nome da abelha não pode ter mais de 50 caracteres.');
+            return;
+        }
         try {
-            setLoadingBee(true);
-            const response = await api.get(`/bee`);
-
-            setBee(response.data.data.bee_data);
-            setSunflowers(response.data.data.sunflowers);
-
-            const ownedAccMap = new Map();
-            response.data.data.owned_accessories.forEach(item => {
-                ownedAccMap.set(parseInt(item.accessory.id_accessory), {
-                    beeAccessoryId: item.id_bee_accessories,
-                    isEquipped: item.fk_cosmetic_status === 1
-                });
-            });
-            setOwnedAccessoriesMap(ownedAccMap);
-
-            const ownedDecoMap = new Map();
-            if (response.data.data.owned_decorations) {
-                response.data.data.owned_decorations.forEach(item => {
-                    ownedDecoMap.set(parseInt(item.decoration.id_decoration), {
-                        beeDecorationId: item.id_bee_decoration,
-                        isEquipped: item.fk_cosmetic_status === 1
-                    });
-                });
+            const response = await api.post('/bee/rename', { new_name: newBeeNameInput });
+            if (response.data.status) {
+                alert(response.data.message);
+                setBee(prevBee => ({ ...prevBee, name_bee: response.data.new_name }));
+                setIsEditingBeeName(false); // Sai do modo de edição
+            } else {
+                alert(`Erro: ${response.data.message}`);
             }
-            setOwnedDecorationsMap(ownedDecoMap);
-
-            const userAchMap = new Map();
-            if (response.data.data.user_achievements) {
-                response.data.data.user_achievements.forEach(item => {
-                    userAchMap.set(parseInt(item.achievement.id_achievement), item);
-                });
-            }
-            setUserAchievementsMap(userAchMap);
-
-            setEquippedDisplay(response.data.data.equipped_accessories_display || {
-                head: '',
-                face: '',
-                body: ''
-            });
-
         } catch (error) {
-            console.error("Erro ao buscar dados da abelha:", error);
-        } finally {
-            setLoadingBee(false);
+            console.error("Erro ao renomear abelha:", error.response?.data || error.message);
+            alert(`Erro ao renomear abelha: ${error.response?.data?.message || 'Erro desconhecido.'}`);
         }
-    }, []);
+    };
 
-
-    // --- Funções de Ação (Comprar/Equipar/Resgatar - permanecem inalteradas, mas as chamadas serão movidas para os componentes) ---
-    // Elas precisam ser passadas como props para os componentes de card.
+    // --- Funções de Ação (Comprar/Equipar/Resgatar) ---
     const handleBuyAccessory = async (accessoryId) => {
         try {
             const response = await api.post('/bee-accessories/buy', { fk_accessory: accessoryId });
@@ -167,11 +237,7 @@ function Home() {
             }
         } catch (error) {
             console.error("Erro ao comprar acessório:", error);
-            if (error.response && error.response.data && error.response.data.message) {
-                alert(`Erro ao comprar acessório: ${error.response.data.message}`);
-            } else {
-                alert('Erro desconhecido ao tentar comprar acessório.');
-            }
+            alert(`Erro ao comprar acessório: ${error.response?.data?.message || 'Erro desconhecido.'}`);
         }
     };
 
@@ -186,46 +252,87 @@ function Home() {
             }
         } catch (error) {
             console.error("Erro ao equipar/desequipar acessório:", error);
-            if (error.response && error.response.data && error.response.data.message) {
-                alert(`Erro ao equipar/desequipar acessório: ${error.response.data.message}`);
-            } else {
-                alert('Erro desconhecido ao tentar equipar/desequipar acessório.');
-            }
+            alert(`Erro ao equipar/desequipar acessório: ${error.response?.data?.message || 'Erro desconhecido.'}`);
         }
     };
 
-     const handleBuyDecoration = async (decorationId) => {
+    const handleBuyDecoration = async (decorationId) => {
         try {
-            // MUDANÇA AQUI: Chamada para o novo endpoint no HiveDecorationController
             const response = await api.post('/hive-decorations/buy', { fk_decoration: decorationId });
-
             if (response.data.status) {
                 alert(response.data.message);
-                fetchBee(); // Recarrega os dados da abelha e posses
-                fetchDecorations(currentPage); // Recarrega a lista de decorações da página atual
+                fetchBee();
+                fetchDecorations(currentPage);
             } else {
                 alert(`Erro: ${response.data.message}`);
             }
         } catch (error) {
             console.error("Erro ao comprar decoração:", error);
-            if (error.response && error.response.data && error.response.data.message) {
-                alert(`Erro ao comprar decoração: ${error.response.data.message}`);
-            } else {
-                alert('Erro desconhecido ao tentar comprar decoração.');
-            }
+            alert(`Erro ao comprar decoração: ${error.response?.data?.message || 'Erro desconhecido.'}`);
         }
     };
 
     const handleClaimAchievement = async (achievementId) => {
-        alert("Funcionalidade de resgatar recompensa (ainda não implementada)");
-        // Sua lógica de API POST aqui
+        try {
+            const response = await api.post(`/achievements/${achievementId}/claim`);
+
+            if (response.status === 200 && response.data.status) {
+                alert(response.data.message);
+
+                setAchievements(prevAchievements =>
+                    prevAchievements.map(ach =>
+                        ach.id_achievement === achievementId
+                            ? {
+                                ...ach,
+                                account_status: {
+                                    ...ach.account_status,
+                                    is_claimed: true,
+                                    claimed_at: response.data.claimed_at || new Date().toISOString(),
+                                },
+                            }
+                            : ach
+                    )
+                );
+
+                setUserAchievementsMap(prevMap => {
+                    const newMap = new Map(prevMap);
+                    const currentStatus = newMap.get(achievementId);
+                    if (currentStatus) {
+                        newMap.set(achievementId, {
+                            ...currentStatus,
+                            is_claimed: true,
+                            claimed_at: response.data.claimed_at || new Date().toISOString(),
+                        });
+                    }
+                    return newMap;
+                });
+
+                setSunflowers(response.data.new_sunflowers);
+
+                setBee(prevBee => ({
+                    ...prevBee,
+                    level_bee: response.data.new_bee_level,
+                    experience_bee: response.data.new_bee_experience,
+                }));
+
+            } else {
+                alert(`Erro: ${response.data.message || 'Erro desconhecido ao resgatar a recompensa.'}`);
+            }
+        } catch (err) {
+            console.error('Erro ao resgatar a conquista:', err.response ? err.response.data : err.message);
+            alert(err.response && err.response.data && err.response.data.message
+                ? err.response.data.message
+                : 'Erro ao resgatar a recompensa. Tente novamente.');
+        }
     };
 
-    // ... (UseEffects, loading state, xpPercent, paginação - tudo permanece igual)
+    // --- Efeitos de Carregamento e Paginação ---
+    // Efeito para carregar dados iniciais da abelha
     useEffect(() => {
         fetchBee();
     }, [fetchBee]);
 
+    // Efeito para buscar itens da loja ou conquistas quando o modo/filtro muda
     useEffect(() => {
         setCurrentPage(1);
 
@@ -238,8 +345,9 @@ function Home() {
         } else {
             fetchAchievements(1);
         }
-    }, [isShopMode, isAccessories, selectedAchievementFilter]);
+    }, [isShopMode, isAccessories, selectedAchievementFilter, fetchAccessories, fetchDecorations, fetchAchievements]);
 
+    // Efeito para buscar itens da loja ou conquistas quando a página muda
     useEffect(() => {
         if (isShopMode) {
             if (isAccessories) {
@@ -250,9 +358,9 @@ function Home() {
         } else {
             fetchAchievements(currentPage);
         }
-    }, [currentPage]);
+    }, [currentPage, isShopMode, isAccessories, fetchAccessories, fetchDecorations, fetchAchievements]);
 
-
+    // --- Renderização de Loading ---
     if (loadingBee || !bee || sunflowers === null) {
         return (
             <div className="screen">
@@ -271,8 +379,10 @@ function Home() {
         );
     }
 
+    // --- Cálculos para a UI ---
     const xpPercent = Math.min(100, (bee.experience_bee % 1000) / 10);
 
+    // --- Funções de Paginação ---
     const prevPage = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
@@ -289,10 +399,16 @@ function Home() {
         setCurrentPage(page);
     };
 
+    // --- Filtragem de Conquistas ---
     const filteredAchievements = achievements.filter(achievement => {
-        const userAchievement = userAchievementsMap.get(parseInt(achievement.id_achievement));
-        const isCompleted = userAchievement ? userAchievement.is_completed : false;
-        const isClaimed = userAchievement ? userAchievement.is_claimed : false;
+        const accountStatus = userAchievementsMap.get(parseInt(achievement.id_achievement)) || {
+            is_completed: false,
+            is_claimed: false,
+            current_progress: 0
+        };
+
+        const isCompleted = accountStatus.is_completed;
+        const isClaimed = accountStatus.is_claimed;
 
         if (selectedAchievementFilter === 'all') {
             return true;
@@ -300,10 +416,14 @@ function Home() {
             return isCompleted && !isClaimed;
         } else if (selectedAchievementFilter === 'in-progress') {
             return !isCompleted;
+        } else if (selectedAchievementFilter === 'claimed') {
+            return isClaimed;
         }
         return true;
     });
 
+    const leftDecoration = bee.hive_decorations?.find(d => d.position_hive_decoration === 'left');
+    const rightDecoration = bee.hive_decorations?.find(d => d.position_hive_decoration === 'right');
 
     return (
         <div className="screen">
@@ -330,20 +450,36 @@ function Home() {
 
                         <div className="hive_main">
                             <div className="left_decoration">
-                                <img src="/assets/add_button.png" alt="add_button" className='add_button' />
+                                {leftDecoration && leftDecoration.decoration ? (
+                                    <div className="equipped-decoration-display">
+                                        <img
+                                            src={`/assets/decorations/${leftDecoration.decoration.img_decoration}`}
+                                            alt="Decoração Esquerda"
+                                            className="equipped_decoration_image"
+                                            onClick={() => openDecorationModal('left')}
+                                        />
+                                    </div>
+                                ) : (
+                                    <img src="/assets/add_button.png" alt="Adicionar Decoração" className='add_button_image' onClick={() => openDecorationModal('left')} />
+                                )}
                             </div>
 
                             <div className="bee_area">
-                                <div className="name_area">
+                               <div className="name_area">
                                     <input
                                         type="text"
                                         name="bee_name"
                                         id="bee_name"
                                         placeholder='Nome da abelha'
-                                        value={bee.name_bee}
-                                        readOnly
+                                        value={isEditingBeeName ? newBeeNameInput : (bee ? bee.name_bee : '')}
+                                        onChange={(e) => setNewBeeNameInput(e.target.value)} 
+                                        maxLength={50} 
                                     />
-                                    <MdModeEdit className='edit_icon' />
+                                    <MdModeEdit className='edit_icon' onClick={() => setIsEditingBeeName(!isEditingBeeName)} />
+                                    {isEditingBeeName && (
+                                       <FaArrowAltCircleRight className='edit_icon' onClick={handleRenameBee}/>
+
+                                    )}
                                 </div>
 
                                 <div className="hive_bee">
@@ -376,7 +512,19 @@ function Home() {
                             </div>
 
                             <div className="right_decoration">
-                                <img src="/assets/add_button.png" alt="add_button" className='add_button' />
+                                {rightDecoration && rightDecoration.decoration ? (
+                                    <div className="equipped-decoration-display">
+                                        <img
+                                            src={`/assets/decorations/${rightDecoration.decoration.img_decoration}`}
+                                            alt="Decoração Direita"
+                                            className="equipped_decoration_image"
+                                            onClick={() => openDecorationModal('right')}
+                                        />
+                                    </div>
+                                ) : (
+                                    <img src="/assets/add_button.png" alt="Adicionar Decoração" className='add_button_image' onClick={() => openDecorationModal('right')} />
+
+                                )}
                             </div>
                         </div>
 
@@ -412,6 +560,7 @@ function Home() {
                                     <option value="all">Todos</option>
                                     <option value="in-progress">Em Andamento</option>
                                     <option value="completed">Concluídas</option>
+                                    <option value="claimed">Resgatadas</option>
                                 </select>
                             )}
                         </div>
@@ -421,9 +570,13 @@ function Home() {
                                 className={`arrow arrow_first ${currentPage === 1 ? 'disabled' : ''}`}
                                 onClick={prevPage}
                             />
-                            {[...Array(lastPage)].map((_, index) => {
-                                const pageNum = index + 1;
-                                return (
+                            {Array.from({ length: lastPage }, (_, i) => i + 1)
+                                .filter(pageNum =>
+                                    pageNum === 1 ||
+                                    pageNum === lastPage ||
+                                    (pageNum >= currentPage - 2 && pageNum <= currentPage + 2)
+                                )
+                                .map((pageNum) => (
                                     <div
                                         key={pageNum}
                                         className={`pagination_item ${pageNum === currentPage ? 'selected' : ''}`}
@@ -431,8 +584,8 @@ function Home() {
                                     >
                                         <p>{pageNum}</p>
                                     </div>
-                                );
-                            })}
+                                ))
+                            }
                             <IoIosArrowForward
                                 className={`arrow arrow_last ${currentPage === lastPage ? 'disabled' : ''}`}
                                 onClick={nextPage}
@@ -443,7 +596,6 @@ function Home() {
                     <div className="shop_area">
                         {isShopMode ? (
                             isAccessories ? (
-                                // --- Renderização de Acessórios usando AccessoryCard ---
                                 accessories.map((acc) => (
                                     <AccessoryCard
                                         key={acc.id_accessory}
@@ -456,7 +608,6 @@ function Home() {
                                     />
                                 ))
                             ) : (
-                                // --- Renderização de Decorações usando DecorationCard ---
                                 decorations.map((deco) => (
                                     <DecorationCard
                                         key={deco.id_decoration}
@@ -469,12 +620,10 @@ function Home() {
                                 ))
                             )
                         ) : (
-                            // --- Renderização de Conquistas usando AchievementCard ---
                             filteredAchievements.map((achievement) => (
                                 <AchievementCard
                                     key={achievement.id_achievement}
                                     achievement={achievement}
-                                    userAchievement={userAchievementsMap.get(parseInt(achievement.id_achievement))}
                                     onClaimAchievement={handleClaimAchievement}
                                 />
                             ))
@@ -482,6 +631,14 @@ function Home() {
                     </div>
                 </main>
             </div>
+
+            <HiveDecorationModal
+                isOpen={isDecorationModalOpen}
+                onClose={closeDecorationModal}
+                selectedSlot={selectedDecorationSlot}
+                onDecorationEquipped={handleDecorationAction}
+                onDecorationUnequipped={handleDecorationAction}
+            />
         </div>
     );
 }
