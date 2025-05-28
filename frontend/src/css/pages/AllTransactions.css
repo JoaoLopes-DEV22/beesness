@@ -59,22 +59,25 @@ button {
 
 .all_transactions {
     max-height: 400px; /* Defina a altura máxima desejada */
+    padding-right: 5px;
     overflow-y: auto; /* Adiciona a barra de rolagem vertical */
 }
 
 /* Para navegadores WebKit (Chrome, Safari) */
 .all_transactions::-webkit-scrollbar {
-    width: 8px; /* Largura da barra de rolagem */
+    width: 6px; /* Largura da barra de rolagem */
+}
+
+.all_transactions::-webkit-scrollbar-track {
+    background: var(--cinza-bg);
+    border-radius: 10px;
 }
 
 .all_transactions::-webkit-scrollbar-thumb {
-    background-color: #888; /* Cor do "thumb" da barra de rolagem */
+    background-color: var(--cinza-bg); /* Cor do "thumb" da barra de rolagem */
     border-radius: 10px; /* Arredonda os cantos do "thumb" */
 }
 
-.all_transactions::-webkit-scrollbar-thumb:hover {
-    background-color: #555; /* Cor do "thumb" ao passar o mouse */
-}
 
 /* Para Firefox */
 .all_transactions {
@@ -131,7 +134,7 @@ button {
     gap: 10px;
 }
 
-.tcard_right {
+.tran_card_right {
     display: flex;
     gap: 20px;
 }
