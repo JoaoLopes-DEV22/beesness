@@ -41,4 +41,52 @@ class PendingController extends Controller
             'total_despesas_pendentes' => $totalDespesasPendentes
         ]);
     }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title_pending' => 'required|string|max:100',
+            'initial_pending' => 'required|numeric',
+            'total_pending' => 'required|numeric',
+            'fk_type' => 'required|exists:types,id_type',
+            'fk_category' => 'required|exists:categories,id_category',
+            'fk_account' => 'required|exists:accounts,id_account',
+            'fk_condition' => 'required|exists:conditions,id_condition'
+        ]);
+
+        try {
+            $pendings = Pending::create($request->all());
+            return response()->json($pendings, 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erro ao criar pendência: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function getLastPendencesByUser(Request $request)
+    {
+        $userId = $request->query('user_id');
+        if (!$userId) {
+            return response()->json(['message' => 'user_id é obrigatório'], 400);
+        }
+
+        $lastPendences = Pending::where('fk_account', $userId)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (!$lastPendences) {
+            return response()->json(['pendencess' => [], 'last_date' => null]);
+        }
+
+        $lastDate = $lastPendences->created_at->toDateString();
+
+        $pendences = Pending::where('fk_account', $userId)
+            ->whereDate('created_at', $lastDate)
+            ->with('category')
+            ->get();
+
+        return response()->json([
+            'last_date' => $lastDate,
+            'pendences' => $pendences
+        ]);
+    }
 }

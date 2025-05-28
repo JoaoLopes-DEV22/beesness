@@ -1,12 +1,17 @@
+html {
+    overflow-y: hidden;
+}
+
 .pendences_area {
     display: flex;
     justify-content: space-between;
+    gap: 20px;
 }
 
 .latest_pendences,
 .new_pendence {
-    height: 350px;
-    padding: 14px 20px;
+    height: 500px;
+    padding: 20px;
     border-radius: 10px;
     background-color: var(--branco);
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.15);
@@ -14,31 +19,40 @@
 
 .latest_pendences p,
 .new_pendence p {
-    font-size: 22px;
+    font-size: 16px;
     font-weight: bold;
+    margin-bottom: 5px;
 }
 
 .latest_pendences {
     width: 65.5%;
     display: flex;
     flex-direction: column;
-    gap: 10px
+    gap: 15px;
 }
-
-/* .pendences {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-} */
 
 .pendences {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    max-height: 260px;
-    /* Defina a altura máxima */
+    gap: 15px;
+    max-height: 500px;
     overflow-y: auto;
-    /* Adiciona a scrollbar quando necessário */
+    padding-right: 5px;
+}
+
+/* Custom scrollbar */
+.pendences::-webkit-scrollbar {
+    width: 6px;
+}
+
+.pendences::-webkit-scrollbar-track {
+    background: var(--cinza-bg);
+    border-radius: 10px;
+}
+
+.pendences::-webkit-scrollbar-thumb {
+    background: var(--cinza-texto);
+    border-radius: 10px;
 }
 
 .l_pendence_title {
@@ -50,6 +64,7 @@
 .pendences_date_btn {
     display: flex;
     gap: 10px;
+    align-items: center;
 }
 
 .pendences_date_btn input {
@@ -70,46 +85,53 @@
     border-radius: 10px;
     font-weight: bold;
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.latest_pendences button:hover,
+.form_pendence button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
 }
 
 .new_pendence {
     width: 31.5%;
 }
 
-
-/* .date_pendence_group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.p_date {
-    font-size: 16px !important;
-    color: var(--cinza-texto);
-} */
-
-.pendence_card {
+/* Card styles */
+.pendences_card {
     background-color: var(--cinza-bg);
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 10px 15px;
-    border-radius: 10px;
+    border-left: 4px solid var(--amarelo);
+    transition: all 0.3s ease;
+}
+
+.pendences_card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .tcard_left {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    align-items: flex-start;
+    gap: 15px;
+    width: 75%;
 }
 
 .type_circle_g,
 .type_circle_r {
-    padding: 10px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     display: flex;
+    align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-size: 18px;
+    flex-shrink: 0;
 }
 
 .type_circle_g {
@@ -122,38 +144,110 @@
     color: var(--vermelho-despesa);
 }
 
+.tcontent {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
 .tcontent_title {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: bold;
+    color: var(--preto-texto);
+    margin: 0;
 }
 
 .tcontent_category {
+    font-size: 14px;
     color: var(--cinza-texto);
-    font-weight: bold;
+    font-weight: normal;
+    margin: 0;
+    text-transform: capitalize;
 }
 
-.pendence_value_g,
-.pendence_value_r {
-    font-weight: bold;
+.pendence_date {
+    font-size: 13px;
+    color: var(--cinza-texto);
+    margin-top: 2px;
 }
 
-.pendence_value_g {
+.pendence_status {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 10px;
+    display: inline-block;
+    width: fit-content;
+    font-weight: 500;
+}
+
+.status-pending {
+    background-color: var(--amarelo) !important;
+    color: var(--preto-texto) !important;
+}
+
+.status-completed {
+    background-color: var(--verde-bg-tipo) !important;
+    color: var(--verde-receita) !important;
+}
+
+.progress_container {
+    width: 100%;
+    background-color: var(--branco);
+    border-radius: 5px;
+    margin-top: 10px;
+    height: 8px;
+    overflow: hidden;
+}
+
+.progress_bar {
+    height: 100%;
+    border-radius: 5px;
+    background-color: var(--amarelo);
+    transition: width 0.5s ease;
+}
+
+.progress_text {
+    font-size: 13px;
+    color: var(--cinza-texto);
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+.tcard_right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 25%;
+    text-align: right;
+}
+
+.pendences_value_g,
+.pendences_value_r {
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0;
+}
+
+.pendences_value_g {
     color: var(--verde-receita);
 }
 
-.pendence_value_r {
+.pendences_value_r {
     color: var(--vermelho-despesa);
 }
 
+/* Form styles */
 .form_pendence {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    margin-top: 5px;
+    gap: 15px;
+    margin-top: 10px;
 }
 
 .form_pendence button {
-    margin-top: 5px !important;
+    margin-top: 10px;
 }
 
 .form_pendence label {
@@ -164,7 +258,7 @@
 .input_group {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 8px;
 }
 
 .input_group input,
@@ -172,26 +266,183 @@
     background-color: var(--cinza-bg);
     border: none;
     border-radius: 10px;
-    padding: 10px;
+    padding: 12px;
     outline-style: none;
+    font-size: 14px;
 }
 
 .radios_area {
     display: flex;
-    gap: 10px;
+    gap: 15px;
     text-transform: capitalize;
 }
 
 .radio_item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.radio_item input {
+    cursor: pointer;
 }
 
 .icon_despesa {
     color: var(--vermelho-despesa);
+    font-size: 20px;
 }
 
 .icon_receita {
     color: var(--verde-receita);
+    font-size: 20px;
+}
+
+.side_by_side {
+    flex-direction: row !important;
+    gap: 15px !important;
+}
+
+.input_pair {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.input_pair input {
+    width: 100%;
+}
+
+.goal_card {
+    background-color: var(--cinza-bg) !important;
+}
+
+.progress_bar_total_g {
+    background-color: var(--branco) !important;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.edit-modal {
+    background-color: var(--branco);
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    font-size: 20px;
+    color: var(--preto-texto);
+    margin: 0;
+}
+
+.close-icon {
+    font-size: 24px;
+    color: var(--cinza-texto);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.close-icon:hover {
+    color: var(--vermelho-despesa);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.cancel-btn {
+    padding: 10px 20px;
+    background-color: var(--cinza-bg);
+    color: var(--cinza-texto);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cancel-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.save-btn {
+    padding: 10px 20px;
+    background-color: var(--verde-receita);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.save-btn:hover {
+    background-color: #219653;
+}
+
+/* Ajuste para o formulário dentro do modal */
+.edit-modal .form_pendence {
+    margin-top: 0;
+}
+
+.edit-modal .input_group {
+    margin-bottom: 15px;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .pendences_area {
+        flex-direction: column;
+    }
+
+    .latest_pendences,
+    .new_pendence {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .side_by_side {
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+
+    .l_pendence_title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .pendences_date_btn {
+        width: 100%;
+        justify-content: space-between;
+    }
 }

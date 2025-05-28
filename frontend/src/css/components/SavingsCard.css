@@ -1,0 +1,65 @@
+.savings_card {
+    width: 100%;
+    height: 120px;
+    background-color: var(--branco);
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.15);
+}
+
+.title_card {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.value_card_g {
+    color: var(--verde-receita);
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.value_card_b {
+    color: var(--preto);
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.savings_balance,
+.savings_transactions,
+.savings_start_date,
+.savings_tax {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.savings_edit {
+    display: flex;
+    align-items: flex-end;
+}
+
+.form_savings {
+    display: flex;
+    gap: 10px;
+}
+
+.form_savings input {
+    background-color: var(--cinza-bg);
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    outline-style: none;
+}
+
+.edit_icon_savings {
+    color: var(--cinza-texto);
+    font-size: 30px;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.edit_icon_savings:hover {
+    color: var(--preto);
+}
