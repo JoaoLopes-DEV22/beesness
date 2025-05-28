@@ -187,20 +187,22 @@ function Pendences() {
                     <div className="pendences">
                         {lastPendences.length > 0 ? (
                             lastPendences.map(pendence => (
-                                <div key={pendence.id_pendences} className="goal_card">
+                                <div key={pendence.id_pendences} className="pendence_card">
                                     <div className="gc_top">
                                         <div className="gc_top_left">
                                             <span className={pendence.fk_type === 1 ? "type_circle_g" : "type_circle_r"}>
                                                 {pendence.fk_type === 1 ? <FaArrowTrendUp /> : <FaArrowTrendDown />}
                                             </span>
                                             <div className="gc_top_content">
-                                                <p className="gc_title">{pendence.title_pending}</p>
-                                                <p className="gc_deadline" style={{textTransform: 'capitalize'}}>{pendence.category.title_category}</p>
-                                                <p className="gc_deadline">
-                                                    Prazo: {pendence.deadline_pending
-                                                        ? new Date(pendence.deadline_pending).toLocaleDateString('pt-BR')
-                                                        : 'Sem prazo'}
-                                                </p>
+                                                <p className="pc_title">{pendence.title_pending}</p>
+                                                <div className="subtitle">
+                                                    <p className="pc_deadline" style={{ textTransform: 'capitalize' }}>{pendence.category.title_category}</p>
+                                                    <p className="pc_deadline">
+                                                        Prazo: {pendence.deadline_pending
+                                                            ? new Date(pendence.deadline_pending).toLocaleDateString('pt-BR')
+                                                            : 'Sem prazo'}
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="gc_condition_area">
@@ -218,17 +220,17 @@ function Pendences() {
                                                     R$ {parseFloat(pendence.total_pending).toFixed(2).replace('.', ',')}
                                                 </p>
                                             </div>
-                                            <div className="progress_bar_total_g">
+                                            <div className="progress_bar_total_p">
                                                 <div
                                                     className={pendence.fk_type === 1 ? "progress_bar_g" : "progress_bar_g"}
                                                     style={{ width: `${(pendence.initial_pending / pendence.total_pending) * 100}%` }}
                                                 ></div>
                                             </div>
                                         </div>
-                                        <div className="gc_edit">
+                                        {/* <div className="gc_edit">
                                             <MdEdit className="edit_icon_goal" onClick={() => handleEditClick(pendence)} />
                                             <MdDelete className="delete_icon_goal" />
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                             ))

@@ -17,7 +17,7 @@ class PendingSeeder extends Seeder
         DB::table('pendings')->insert([
             [
                 'title_pending' => 'Salário do mês',
-                'initial_pending' => 3000.00,
+                'initial_pending' => 5000.00,
                 'total_pending' => 5000.00,
                 'deadline_pending' => '2025-11-05',
                 'fk_type' => 1,
@@ -53,7 +53,7 @@ class PendingSeeder extends Seeder
             ],
             [
                 'title_pending' => 'Reembolso de Viagem',
-                'initial_pending' => 450.00,
+                'initial_pending' => 5450.00,
                 'total_pending' => 5450.00,
                 'deadline_pending' => '2025-11-20',
                 'fk_type' => 1,
@@ -89,7 +89,7 @@ class PendingSeeder extends Seeder
             ],
             [
                 'title_pending' => 'Conta de Luz',
-                'initial_pending' => 180.00,
+                'initial_pending' => 5180.00,
                 'total_pending' => 5180.00,
                 'deadline_pending' => '2025-11-15',
                 'fk_type' => 2,
@@ -113,7 +113,7 @@ class PendingSeeder extends Seeder
             ],
             [
                 'title_pending' => 'Supermercado',
-                'initial_pending' => 350.00,
+                'initial_pending' => 5350.00,
                 'total_pending' => 5350.00,
                 'deadline_pending' => '2025-11-12',
                 'fk_type' => 2,

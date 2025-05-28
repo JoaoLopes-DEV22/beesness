@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('savings_transactions', function (Blueprint $table) {
-            $table->id('id_savings_transaction');
-            $table->decimal('value_savings_transaction', 11, 2)->default(0);
+        Schema::create('goal_transactions', function (Blueprint $table) {
+            $table->id('id_goal_transaction');
+            $table->decimal('value_goal_transaction', 11, 2)->default(0);
 
             $table->unsignedBigInteger('fk_type_savings');
             $table->foreign('fk_type_savings')->references('id_type_savings')->on('types_savings')->onDelete('cascade');
 
-            $table->unsignedBigInteger('fk_savings');
-            $table->foreign('fk_savings')->references('id_savings')->on('savings')->onDelete('cascade');
+            $table->unsignedBigInteger('fk_goal');
+            $table->foreign('fk_goal')->references('id_goal')->on('goals')->onDelete('cascade');
 
             $table->timestamps();
         });
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('savings_transactions');
+        Schema::dropIfExists('goal_transactions');
     }
 };
