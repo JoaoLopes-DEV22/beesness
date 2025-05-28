@@ -25,13 +25,39 @@ class Account extends Model
         return $this->belongsTo(User::class, 'fk_user', 'id');
     }
 
-    public function category()
+    public function categories() // Mudei para plural e para hasMany
     {
-        return $this->belongsTo(Category::class, 'fk_account', 'id_account');
+        return $this->hasMany(Category::class, 'fk_account', 'id_account');
     }
 
     public function bee()
     {
         return $this->hasOne(Bee::class, 'fk_account');
     }
+
+    public function accountAchievements()
+    {
+        return $this->hasMany(AccountAchievement::class, 'fk_account', 'id_account');
+    }
+
+     public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'fk_account', 'id_transaction');
+    }
+
+    public function pendings()
+    {
+        return $this->hasMany(Pending::class, 'fk_account', 'id_pending');
+    }
+
+     public function hiveDecorations()
+    {
+        return $this->hasMany(HiveDecoration::class, 'fk_account', 'id_hive_decoration');
+    }
+
+    public function beeAccessories()
+    {
+        return $this->hasMany(BeeAccessory::class, 'fk_account', 'id_bee_accessory');
+    }
+
 }

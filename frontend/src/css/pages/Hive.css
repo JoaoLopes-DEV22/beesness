@@ -438,3 +438,15 @@
     height: auto;
     z-index: 1;
 }
+
+.add_button_image{
+    width: 50px;
+}
+
+.equipped-decoration-display{
+    height: 0px;
+}
+
+.equipped-decoration-display img{
+    height: 120px;
+}
