@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_goal');
             $table->string('title_goal', 100);
             $table->decimal('target_goal', 11, 2)->default(0);
+            $table->decimal('value_goal', 11, 2)->default(0);
             $table->date('deadline_goal')->nullable();
             $table->unsignedBigInteger('fk_account');
             $table->foreign('fk_account')->references('id_account')->on('accounts')->onDelete('cascade');
