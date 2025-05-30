@@ -42,22 +42,22 @@ class Account extends Model
 
      public function transactions()
     {
-        return $this->hasMany(Transaction::class, 'fk_account', 'id_transaction');
+        return $this->hasMany(Transaction::class, 'fk_account', 'id_account');
     }
 
     public function pendings()
     {
-        return $this->hasMany(Pending::class, 'fk_account', 'id_pending');
+        return $this->hasMany(Pending::class, 'fk_account', 'id_account');
     }
 
      public function hiveDecorations()
     {
-        return $this->hasMany(HiveDecoration::class, 'fk_account', 'id_hive_decoration');
+        return $this->hasMany(HiveDecoration::class, 'fk_account', 'id_account');
     }
 
     public function beeAccessories()
     {
-        return $this->hasMany(BeeAccessory::class, 'fk_account', 'id_bee_accessory');
+        return $this->hasMany(BeeAccessory::class, 'fk_account', 'id_account');
     }
 
 }
