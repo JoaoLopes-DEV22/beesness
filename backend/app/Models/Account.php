@@ -52,7 +52,7 @@ class Account extends Model
 
     public function pendings()
     {
-        return $this->hasMany(Pending::class, 'fk_account', 'id_pending');
+        return $this->hasMany(Pending::class, 'fk_account', 'id_account');
     }
 
     public function savings()
@@ -62,11 +62,11 @@ class Account extends Model
 
     public function hiveDecorations()
     {
-        return $this->hasMany(HiveDecoration::class, 'fk_account', 'id_hive_decoration');
+        return $this->hasMany(HiveDecoration::class, 'fk_account', 'id_account');
     }
 
     public function beeAccessories()
     {
-        return $this->hasMany(BeeAccessory::class, 'fk_account', 'id_bee_accessory');
+        return $this->hasMany(BeeAccessory::class, 'fk_account', 'id_account');
     }
 }

@@ -19,6 +19,10 @@ class Decoration extends Model
         'img_decoration',
         'level_decoration',
     ];
-
+    
+    public function hiveDecorations()
+{
+    return $this->hasMany(HiveDecoration::class, 'fk_decoration', 'id_decoration');
+}
 
 }

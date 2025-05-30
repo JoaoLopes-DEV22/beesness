@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Access;
 use Illuminate\Support\Facades\Log; // Para a classe Log
 use Illuminate\Support\Facades\DB;  // Para a classe DB
 use Illuminate\Http\Request;
@@ -101,9 +103,20 @@ class AchievementController extends Controller
                         break;
 
                     case 'Melhor operária':
-                        // Login streak da conta (se você tiver este campo na Account)
-                        // Lembre-se que este campo precisa ser atualizado por outra lógica.
-                        $isCompleted = $account->login_streak_weeks >= 4;
+                        // 1. Define o período de 4 semanas a partir de hoje
+                        $fourWeeksAgo = Carbon::now()->subWeeks(4);
+                        
+                        // 2. Busca os acessos da conta nas últimas 4 semanas
+                        // Usamos selectRaw para extrair o número da semana do ano e o ano,
+                        // garantindo que semanas em anos diferentes sejam tratadas corretamente.
+                        $accessWeeks = Access::where('fk_account', $account->id_account)
+                                            ->where('date_access', '>=', $fourWeeksAgo)
+                                            ->selectRaw('YEAR(date_access) as year, WEEK(date_access) as week_number')
+                                            ->distinct() // Pega apenas semanas únicas
+                                            ->get();
+
+                        // 3. Verifica se há pelo menos 4 semanas distintas com acesso
+                        $isCompleted = $accessWeeks->count() >= 4;
                         break;
 
                     case 'Arquiteto de favos':
@@ -114,7 +127,7 @@ class AchievementController extends Controller
 
                     case 'Polinizador':
                         // Girassóis da conta
-                        $isCompleted = $account->sunflowers >= 500;
+                        $isCompleted = $account->sunflowers_account >= 500;
                         break;
 
                     case 'Comprindo prazzo':
@@ -140,11 +153,15 @@ class AchievementController extends Controller
                         break;
 
                     case 'M-El Dourado':
-                        // Comprar decoração da conta
-                        $estatuaCampeaoBought = $account->hiveDecorations()->whereHas('decoration', function ($q) {
-                            $q->where('id_decoration', '17');
-                        })->exists();
-                        $isCompleted = $estatuaCampeaoBought;
+
+                        // 2. EXECUTANDO A CONSULTA E CONTANDO
+                        $estatuaCampeaoCount = $account->hiveDecorations()
+                            ->where('fk_decoration', 17) // ID da Estátua do Campeão
+                            ->count();
+
+                        // 3. DEFININDO O STATUS DA CONQUISTA
+                        // Se a contagem for exatamente 1 (ou > 0, dependendo da sua regra de negócio), a conquista é completada
+                        $isCompleted = ($estatuaCampeaoCount === 1); // Ou $estatuaCampeaoCount > 0;
                         break;
                 }
 
