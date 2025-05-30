@@ -86,11 +86,6 @@ html {
     transition: all 0.3s ease;
 }
 
-.latest_pendences button:hover,
-.form_pendence button:hover {
-    opacity: 0.9;
-    transform: translateY(-2px);
-}
 
 .new_pendence {
     width: 31.5%;
@@ -114,7 +109,7 @@ html {
 
 .subtitle {
     display: flex;
-    gap: 10px;
+    gap: 5px;
 }
 
 .pc_deadline {

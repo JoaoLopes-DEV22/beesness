@@ -73,3 +73,7 @@ main {
     flex-direction: column;
     gap: 30px;
 }
+
+input, select {
+    outline-style: none;
+}

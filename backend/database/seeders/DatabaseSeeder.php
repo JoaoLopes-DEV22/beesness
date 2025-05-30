@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\SavingsTransaction;
 use App\Models\Transaction;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -18,6 +19,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             AccountSeeder::class,
             TypesSeeder::class,
+            TypeSavingsSeeder::class,
             CategorySeeder::class,
             ConditionSeeder::class,
             AccessoriesSeeder::class,
@@ -27,6 +29,8 @@ class DatabaseSeeder extends Seeder
             DecorationSeeder::class,
             TransactionSeeder::class,
             PendingSeeder::class,
+            SavingsSeeder::class,
+            SavingsTransactionSeeder::class,
         ]);
     }
 }
