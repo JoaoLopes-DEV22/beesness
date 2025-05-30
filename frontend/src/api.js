@@ -6,7 +6,7 @@ export const API_BASE_URL = 'http://localhost:8000/api';
 const api = axios.create({
     baseURL: API_BASE_URL,
     headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json, multipart/form-data',
         'Accept': 'application/json'
     }
 });

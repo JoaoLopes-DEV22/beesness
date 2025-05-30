@@ -58,17 +58,20 @@
 
 .foto_perfil {
     width: 120px;
+    height: 120px;
+    object-fit: cover;
     border-radius: 200px;
     border: #124C50 5px solid;
     position: absolute;
     transform: translate(20px, 90px);
+    cursor: pointer;
 }
 
 .icon_perfil {
     width: 100%;
     cursor: pointer;
 }
-    
+
 .camera_perfil {
     width: 40px;
     background-color: #124C50;
@@ -80,6 +83,12 @@
     justify-content: center;
     position: absolute;
     transform: translate(110px, 170px);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.camera_perfil:hover {
+    transform: translate(110px, 170px) scale(1.1);
 }
 
 .icon_background_perfil {
@@ -88,7 +97,8 @@
     margin: 15px;
 }
 
-.usuario_perfil, .saldo_perfil {
+.usuario_perfil,
+.saldo_perfil {
     font-size: 30px;
 }
 
@@ -100,7 +110,8 @@
     gap: 10px;
 }
 
-.email_perfil, .nasc_perfil {
+.email_perfil,
+.nasc_perfil {
     font-size: 20px;
 }
 
