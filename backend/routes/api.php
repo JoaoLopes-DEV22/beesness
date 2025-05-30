@@ -6,14 +6,17 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\BeeAccessoryController;
 use App\Http\Controllers\BeeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AccountController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DecorationController;
 use App\Http\Controllers\HiveDecorationController;
-use App\Http\Controllers\PendenceController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PendingController;
+use App\Http\Controllers\SavingsController;
+use App\Http\Controllers\GoalController;
+use App\Http\Controllers\GoalTransactionController;
 
 Route::post('/auth', [AuthController::class, 'auth']);
 Route::post('/register', [UserController::class, 'register']);
@@ -30,6 +33,12 @@ Route::prefix('categories')->group(function () {
     Route::get('/{id}', [CategoryController::class, 'show']);
     Route::put('/{id}', [CategoryController::class, 'update']);
     Route::delete('/{id}', [CategoryController::class, 'destroy']);
+});
+
+Route::prefix('accounts')->group(function () {
+    Route::get('/user/{userId}', [AccountController::class, 'getAccountByUserId']);
+    Route::get('/{accountId}/values', [AccountController::class, 'getAccountValues']);
+    Route::post('/{accountId}/update-values', [AccountController::class, 'updateAccountValues']);
 });
 
 Route::prefix('transactions')->group(function () {
@@ -72,7 +81,6 @@ Route::prefix('hive-decorations')->group(function () {
     Route::put('/{hiveDecoration}/equip', [HiveDecorationController::class, 'equipDecoration'])->middleware('auth:sanctum');
     Route::put('/{hiveDecoration}/unequip', [HiveDecorationController::class, 'unequipDecoration'])->middleware('auth:sanctum');
     Route::get('/user-inventory', [HiveDecorationController::class, 'getUserHiveDecorations'])->middleware('auth:sanctum');
-
 });
 
 Route::get('/decorations', [DecorationController::class, 'index']);
@@ -82,3 +90,28 @@ Route::post('/achievements/{id}/claim', [AchievementController::class, 'claim'])
 
 
 Route::get('/pendings/monthly', [PendingController::class, 'getMonthlyPendingsData']);
+
+Route::post('/savings/{savings}/update-balance', [SavingsController::class, 'updateBalance']);
+
+Route::post('/savings/{savings}/update-balance', [SavingsController::class, 'updateSavingsBalance']);
+
+// Atualiza saldo pelo ID da conta
+Route::post('/accounts/{account}/update-savings-balance', [SavingsController::class, 'updateSavingsBalanceByAccount']);
+
+
+Route::get('/savings/account/{accountId}', [SavingsController::class, 'getByAccount']);
+
+// Busca transações da poupança
+Route::get('/savings/{savingsId}/transactions', [SavingsController::class, 'getTransactions']);
+
+Route::post('/savings/transactions', [SavingsController::class, 'createTransaction']);
+
+Route::get('/goals', [GoalController::class, 'index']);
+Route::post('/goals', [GoalController::class, 'store']);
+
+// Rotas para metas
+Route::get('/goals/{goal}', [GoalController::class, 'show']); // Nova rota GET
+Route::put('/goals/{goal}', [GoalController::class, 'update']);
+Route::put('/goals/{goal}/update-value', [GoalController::class, 'updateGoalValue']);
+ Route::delete('/goals/{goal}', [GoalController::class, 'destroy']);
+Route::post('/goal-transactions', [GoalController::class, 'storeTransaction']);

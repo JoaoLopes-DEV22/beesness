@@ -74,10 +74,10 @@ function Header({toggleSidebar}) {
                     <TbLayoutSidebarFilled id="sb_icon" onClick={toggleSidebar} />
                 </div>
                 <div className="right_items">
-                    <div className="notification_area">
+                    {/* <div className="notification_area">
                         <IoIosNotifications />
                         <span>3</span>
-                    </div>
+                    </div> */}
                     <div className="profile_area">
                         <p style={{textTransform: 'capitalize'}}>Olá, {name}</p>
                         <img

@@ -40,9 +40,14 @@ class Account extends Model
         return $this->hasMany(AccountAchievement::class, 'fk_account', 'id_account');
     }
 
-     public function transactions()
+    // public function transactions()
+    // {
+    //     return $this->hasMany(Transaction::class, 'fk_account', 'id_transaction');
+    // }
+
+    public function transactions()
     {
-        return $this->hasMany(Transaction::class, 'fk_account', 'id_transaction');
+        return $this->hasMany(Transaction::class, 'fk_account', 'id_account');
     }
 
     public function pendings()
@@ -50,7 +55,12 @@ class Account extends Model
         return $this->hasMany(Pending::class, 'fk_account', 'id_pending');
     }
 
-     public function hiveDecorations()
+    public function savings()
+    {
+        return $this->hasOne(Savings::class, 'fk_account');
+    }
+
+    public function hiveDecorations()
     {
         return $this->hasMany(HiveDecoration::class, 'fk_account', 'id_hive_decoration');
     }
@@ -59,5 +69,4 @@ class Account extends Model
     {
         return $this->hasMany(BeeAccessory::class, 'fk_account', 'id_bee_accessory');
     }
-
 }
