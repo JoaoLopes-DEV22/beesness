@@ -21,6 +21,7 @@ Route::post('/logout', [UserController::class, 'logout'])->middleware('auth:sanc
 
 Route::get('/user', [UserController::class, 'index'])->middleware('auth:sanctum');
 Route::put('/profile', [UserController::class, 'update'])->middleware('auth:sanctum');
+Route::post('/upload-profile-image', [UserController::class, 'uploadProfileImage'])->middleware('auth:sanctum');
 
 Route::get('/types', [TypeController::class, 'index']);
 
@@ -72,7 +73,6 @@ Route::prefix('hive-decorations')->group(function () {
     Route::put('/{hiveDecoration}/equip', [HiveDecorationController::class, 'equipDecoration'])->middleware('auth:sanctum');
     Route::put('/{hiveDecoration}/unequip', [HiveDecorationController::class, 'unequipDecoration'])->middleware('auth:sanctum');
     Route::get('/user-inventory', [HiveDecorationController::class, 'getUserHiveDecorations'])->middleware('auth:sanctum');
-
 });
 
 Route::get('/decorations', [DecorationController::class, 'index']);
