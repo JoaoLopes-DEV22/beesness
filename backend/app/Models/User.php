@@ -70,4 +70,13 @@ class User extends Authenticatable
             'id_account'    // local key em accounts
         );
     }
+
+    public function getProfilePictureUrlAttribute()
+    {
+        if (!$this->profile_picture) {
+            return null;
+        }
+
+        return asset('storage/profiles/' . $this->profile_picture);
+    }
 }

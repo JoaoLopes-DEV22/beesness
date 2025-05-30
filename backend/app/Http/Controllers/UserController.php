@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Account; // Adicione esta linha no início do arquivo
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -125,103 +126,103 @@ class UserController extends Controller
             ]);
 
             $categories = [
-            [
-                'title_category' => 'sem categoria',
-                'color_category' => '#818B92',
-                'fk_type' => '2',
-                'fk_account' => $account->id_account,
-            ],
-            [
-                'title_category' => 'alimentação',
-                'color_category' => '#818B92',
-                'fk_type' => '2',
-                'fk_account' => $account->id_account,
-            ],
-            [
-                'title_category' => 'lazer',
-                'color_category' => '#818B92',
-                'fk_type' => '2',
-                'fk_account' => $account->id_account,
-            ],
-            [
-                'title_category' => 'moradia',
-                'color_category' => '#818B92',
-                'fk_type' => '2',
-                'fk_account' => $account->id_account,
-            ],
-            [
-                'title_category' => 'transporte',
-                'color_category' => '#818B92',
-                'fk_type' => '2',
-                'fk_account' => $account->id_account,
-            ],
-            [
-                'title_category' => 'saúde',
-                'color_category' => '#818B92',
-                'fk_type' => '2',
-                'fk_account' => $account->id_account,
-            ],
-            [
-                'title_category' => 'educação',
-                'color_category' => '#818B92',
-                'fk_type' => '2',
-                'fk_account' => $account->id_account,
-            ],
-            [
-                'title_category' => 'vestuário',
-                'color_category' => '#818B92',
-                'fk_type' => '2',
-                'fk_account' => $account->id_account,
-            ],
-            [
-                'title_category' => 'serviços',
-                'color_category' => '#818B92',
-                'fk_type' => '2',
-                'fk_account' => $account->id_account,
-            ],
-            [
-                'title_category' => 'sem categoria',
-                'color_category' => '#818B92',
-                'fk_type' => '1',
-                'fk_account' => $account->id_account,
-            ],
-            [
-                'title_category' => 'salário',
-                'color_category' => '#818B92',
-                'fk_type' => '1',
-                'fk_account' => $account->id_account,
-            ],
-            [
-                'title_category' => 'freelance',
-                'color_category' => '#818B92',
-                'fk_type' => '1',
-                'fk_account' => $account->id_account,
-            ],
-            [
-                'title_category' => 'venda',
-                'color_category' => '#818B92',
-                'fk_type' => '1',
-                'fk_account' => $account->id_account,
-            ],
-            [
-                'title_category' => 'aposentadoria',
-                'color_category' => '#818B92',
-                'fk_type' => '1',
-                'fk_account' => $account->id_account,
-            ],
-        ];
+                [
+                    'title_category' => 'sem categoria',
+                    'color_category' => '#818B92',
+                    'fk_type' => '2',
+                    'fk_account' => $account->id_account,
+                ],
+                [
+                    'title_category' => 'alimentação',
+                    'color_category' => '#818B92',
+                    'fk_type' => '2',
+                    'fk_account' => $account->id_account,
+                ],
+                [
+                    'title_category' => 'lazer',
+                    'color_category' => '#818B92',
+                    'fk_type' => '2',
+                    'fk_account' => $account->id_account,
+                ],
+                [
+                    'title_category' => 'moradia',
+                    'color_category' => '#818B92',
+                    'fk_type' => '2',
+                    'fk_account' => $account->id_account,
+                ],
+                [
+                    'title_category' => 'transporte',
+                    'color_category' => '#818B92',
+                    'fk_type' => '2',
+                    'fk_account' => $account->id_account,
+                ],
+                [
+                    'title_category' => 'saúde',
+                    'color_category' => '#818B92',
+                    'fk_type' => '2',
+                    'fk_account' => $account->id_account,
+                ],
+                [
+                    'title_category' => 'educação',
+                    'color_category' => '#818B92',
+                    'fk_type' => '2',
+                    'fk_account' => $account->id_account,
+                ],
+                [
+                    'title_category' => 'vestuário',
+                    'color_category' => '#818B92',
+                    'fk_type' => '2',
+                    'fk_account' => $account->id_account,
+                ],
+                [
+                    'title_category' => 'serviços',
+                    'color_category' => '#818B92',
+                    'fk_type' => '2',
+                    'fk_account' => $account->id_account,
+                ],
+                [
+                    'title_category' => 'sem categoria',
+                    'color_category' => '#818B92',
+                    'fk_type' => '1',
+                    'fk_account' => $account->id_account,
+                ],
+                [
+                    'title_category' => 'salário',
+                    'color_category' => '#818B92',
+                    'fk_type' => '1',
+                    'fk_account' => $account->id_account,
+                ],
+                [
+                    'title_category' => 'freelance',
+                    'color_category' => '#818B92',
+                    'fk_type' => '1',
+                    'fk_account' => $account->id_account,
+                ],
+                [
+                    'title_category' => 'venda',
+                    'color_category' => '#818B92',
+                    'fk_type' => '1',
+                    'fk_account' => $account->id_account,
+                ],
+                [
+                    'title_category' => 'aposentadoria',
+                    'color_category' => '#818B92',
+                    'fk_type' => '1',
+                    'fk_account' => $account->id_account,
+                ],
+            ];
 
-        DB::table('categories')->insert($categories);
+            DB::table('categories')->insert($categories);
 
-        // Cria a abelha padrão do usuário
-        DB::table('bees')->insert([
-            'name_bee' => 'Mel',
-            'experience_bee' => 0,
-            'level_bee' => 0,
-            'fk_account' => $account->id_account,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+            // Cria a abelha padrão do usuário
+            DB::table('bees')->insert([
+                'name_bee' => 'Mel',
+                'experience_bee' => 0,
+                'level_bee' => 0,
+                'fk_account' => $account->id_account,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
             return response()->json([
                 'status' => true,
@@ -235,8 +236,6 @@ class UserController extends Controller
             ], 500);
         }
     }
-    
-
 
     public function logout(Request $request)
     {
@@ -257,6 +256,60 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Erro ao realizar logout: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function uploadProfileImage(Request $request)
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Usuário não autenticado'
+            ], 401);
+        }
+
+        $request->validate([
+            'profile_picture' => [
+                'required',
+                'image',
+                'mimes:jpeg,png,jpg,gif,webp',
+                'max:2048',
+                'dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
+            ],
+        ]);
+
+        try {
+            if ($user->profile_picture) {
+                $oldImagePath = 'profiles/' . $user->profile_picture;
+                if (Storage::disk('public')->exists($oldImagePath)) {
+                    Storage::disk('public')->delete($oldImagePath);
+                }
+            }
+
+            $imageName = 'profile_' . $user->id . '_' . time() . '.' . $request->profile_picture->extension();
+
+            $path = $request->profile_picture->storeAs(
+                'profiles',
+                $imageName,
+                'public'
+            );
+
+            $user->profile_picture = $imageName;
+            $user->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Imagem de perfil atualizada com sucesso',
+                'image_url' => Storage::disk('public')->url($path),
+                'image_path' => $imageName
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Erro ao processar imagem',
+                'error' => config('app.debug') ? $e->getMessage() : null
             ], 500);
         }
     }

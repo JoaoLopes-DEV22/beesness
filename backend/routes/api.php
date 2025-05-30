@@ -24,6 +24,7 @@ Route::post('/logout', [UserController::class, 'logout'])->middleware('auth:sanc
 
 Route::get('/user', [UserController::class, 'index'])->middleware('auth:sanctum');
 Route::put('/profile', [UserController::class, 'update'])->middleware('auth:sanctum');
+Route::post('/upload-profile-image', [UserController::class, 'uploadProfileImage'])->middleware('auth:sanctum');
 
 Route::get('/types', [TypeController::class, 'index']);
 
