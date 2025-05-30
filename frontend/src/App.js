@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard.js";
 import Perfil from "./pages/Perfil.js";
 import Hive from "./pages/Hive.js";
 import Pendences from "./pages/Pendences.js";
+import AllPendences from "./pages/AllPendences.js"
 import Savings from "./pages/Savings.js";
 
 function App() {
@@ -47,6 +48,11 @@ function App() {
         <Route path="/pendences" element={
           <ProtectedRoute>
             <Pendences />
+          </ProtectedRoute>
+        } />
+        <Route path="/all-pendences" element={
+          <ProtectedRoute>
+            <AllPendences />
           </ProtectedRoute>
         } />
         <Route path="/savings" element={

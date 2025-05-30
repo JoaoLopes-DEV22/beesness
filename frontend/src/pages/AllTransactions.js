@@ -290,7 +290,7 @@ function AllTransactions() {
                                                     <div className="tcontent_category" style={{ color: transaction.category.color_category }}>{transaction.category.title_category}</div>
                                                 </div>
                                             </div>
-                                            <div className="tcard_right">
+                                            <div className="tran_card_right">
                                                 <p className={transaction.fk_type === 1 ? "transaction_value_g" : "transaction_value_r"}>
                                                     {transaction.fk_type === 1
                                                         ? `+ R$ ${transaction.value_transaction.toFixed(2).replace('.', ',')}`
