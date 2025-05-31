@@ -8,10 +8,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import api from '../api';
 import { useEffect, useState } from 'react';
 
-function Header({toggleSidebar}) {
+function Header({ toggleSidebar }) {
     const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [name, setName] = useState('');
+    const [profileImage, setProfileImage] = useState('/assets/profiles/img_profile.png');
+    const url = 'http://localhost:8000'
 
     const handleLogout = async () => {
         try {
@@ -33,8 +35,13 @@ function Header({toggleSidebar}) {
             try {
                 const response = await api.get('/user');
                 if (response.data.status) {
-                    const { name } = response.data.data;
+                    const { name, profile_picture } = response.data.data;
                     setName(name);
+                    if (profile_picture) {
+                        setProfileImage(`${url}/storage/profiles/${profile_picture}`);
+                    } else {
+                        setProfileImage('/assets/profiles/img_profile.png');
+                    }
                 } else {
                     toast.error(response.data.message || 'Erro ao buscar usuário.');
                 }
@@ -74,17 +81,16 @@ function Header({toggleSidebar}) {
                     <TbLayoutSidebarFilled id="sb_icon" onClick={toggleSidebar} />
                 </div>
                 <div className="right_items">
-                    {/* <div className="notification_area">
-                        <IoIosNotifications />
-                        <span>3</span>
-                    </div> */}
                     <div className="profile_area">
-                        <p style={{textTransform: 'capitalize'}}>Olá, {name}</p>
+                        <p style={{ textTransform: 'capitalize' }}>Olá, {name}</p>
                         <img
-                            src="/assets/profiles/img_profile.png"
+                            src={profileImage}
                             alt="Foto de Perfil"
                             onClick={toggleDropdown}
                             style={{ cursor: 'pointer' }}
+                            onError={(e) => {
+                                e.target.src = '/assets/profiles/img_profile.png';
+                            }}
                         />
                         {isDropdownOpen && (
                             <div className="dropdown_menu">
