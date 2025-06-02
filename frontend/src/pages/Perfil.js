@@ -13,7 +13,9 @@ function Perfil() {
     const [email, setEmail] = useState('');
     const [birth, setBirth] = useState('');
     const [profileImage, setProfileImage] = useState('/assets/profiles/img_profile.png');
-    const fileInputRef = useRef(null);
+    const [bannerImage, setBannerImage] = useState('/assets/backgrounds/default_banner.jpg');
+    const profileFileInputRef = useRef(null);
+    const bannerFileInputRef = useRef(null);
     const navigate = useNavigate();
 
     const toggleSidebar = () => {
@@ -25,15 +27,20 @@ function Perfil() {
             try {
                 const response = await api.get('/user');
                 if (response.data.status) {
-                    const { birth, email, profile_picture } = response.data.data;
+                    const { birth, email, profile_picture, banner_picture } = response.data.data;
                     setBirth(birth);
                     setEmail(email);
 
                     if (profile_picture) {
-                        // Monta a URL completa da imagem
                         setProfileImage(`http://localhost:8000/storage/profiles/${profile_picture}`);
                     } else {
                         setProfileImage('/assets/profiles/img_profile.png');
+                    }
+
+                    if (banner_picture) {
+                        setBannerImage(`http://localhost:8000/storage/banners/${banner_picture}`);
+                    } else {
+                        setBannerImage('/assets/backgrounds/default_banner.jpg');
                     }
                 }
             } catch (error) {
@@ -69,25 +76,26 @@ function Perfil() {
         navigate('/edit-profile');
     };
 
-    const handleImageClick = () => {
-        fileInputRef.current.click();
+    const handleProfileImageClick = () => {
+        profileFileInputRef.current.click();
     };
 
-    const handleImageChange = async (e) => {
-        const file = e.target.files[0];
+    const handleBannerImageClick = () => {
+        bannerFileInputRef.current.click();
+    };
+
+    const handleImageUpload = async (file, type) => {
         if (!file) return;
 
-        // Verifica se o usuário está logado
         const token = localStorage.getItem('token');
         if (!token) {
             toast.error('Você precisa estar logado para alterar a imagem');
             return;
         }
 
-        // Verificações do arquivo
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         if (!allowedTypes.includes(file.type)) {
-            toast.error('Por favor, selecione uma imagem (JPEG, PNG ou GIF)');
+            toast.error('Por favor, selecione uma imagem (JPEG, PNG, GIF ou WEBP)');
             return;
         }
 
@@ -99,15 +107,20 @@ function Perfil() {
         // Cria preview temporária
         const reader = new FileReader();
         reader.onload = (event) => {
-            setProfileImage(event.target.result);
+            if (type === 'profile') {
+                setProfileImage(event.target.result);
+            } else {
+                setBannerImage(event.target.result);
+            }
         };
         reader.readAsDataURL(file);
 
         try {
             const formData = new FormData();
-            formData.append('profile_picture', file);
+            formData.append(type === 'profile' ? 'profile_picture' : 'banner_picture', file);
 
-            const response = await api.post('/upload-profile-image', formData, {
+            const endpoint = type === 'profile' ? '/upload-profile-image' : '/upload-banner-image';
+            const response = await api.post(endpoint, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`
@@ -116,8 +129,11 @@ function Perfil() {
 
             if (response.data.status) {
                 toast.success(response.data.message);
-                // Usa a URL retornada pelo servidor
-                setProfileImage(response.data.image_url);
+                if (type === 'profile') {
+                    setProfileImage(response.data.image_url);
+                } else {
+                    setBannerImage(response.data.image_url);
+                }
             } else {
                 throw new Error(response.data.message);
             }
@@ -128,17 +144,35 @@ function Perfil() {
             // Reverte para a imagem anterior
             try {
                 const userResponse = await api.get('/user');
-                if (userResponse.data.data?.profile_picture) {
-                    // Usa a URL completa do servidor
-                    const fullUrl = `${process.env.REACT_APP_API_URL}/storage/${userResponse.data.data.profile_picture}`;
-                    setProfileImage(fullUrl);
+                if (type === 'profile') {
+                    if (userResponse.data.data?.profile_picture) {
+                        setProfileImage(`${process.env.REACT_APP_API_URL}/storage/profiles/${userResponse.data.data.profile_picture}`);
+                    } else {
+                        setProfileImage('/assets/profiles/img_profile.png');
+                    }
                 } else {
-                    setProfileImage('/assets/profiles/img_profile.png');
+                    if (userResponse.data.data?.banner_picture) {
+                        setBannerImage(`${process.env.REACT_APP_API_URL}/storage/banners/${userResponse.data.data.banner_picture}`);
+                    } else {
+                        setBannerImage('/assets/backgrounds/default_banner.jpg');
+                    }
                 }
             } catch (fetchError) {
-                setProfileImage('/assets/profiles/img_profile.png');
+                if (type === 'profile') {
+                    setProfileImage('/assets/profiles/img_profile.png');
+                } else {
+                    setBannerImage('/assets/backgrounds/default_banner.jpg');
+                }
             }
         }
+    };
+
+    const handleProfileImageChange = (e) => {
+        handleImageUpload(e.target.files[0], 'profile');
+    };
+
+    const handleBannerImageChange = (e) => {
+        handleImageUpload(e.target.files[0], 'banner');
     };
 
     return (
@@ -154,28 +188,40 @@ function Perfil() {
                     </div>
 
                     <div className="card_perfil">
-                        <div className="background_perfil">
-                            <img src="/assets/camera.png" className="icon_background_perfil" alt="Background" />
+                        <div
+                            className="background_perfil"
+                            onClick={handleBannerImageClick}
+                            style={{ backgroundImage: `url(${bannerImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                        >
+                            <img src="/assets/camera.png" className="icon_background_perfil" alt="Alterar banner" />
                         </div>
 
                         <img
                             src={profileImage}
                             className="foto_perfil"
                             alt="Foto de perfil"
-                            onClick={handleImageClick}
+                            onClick={handleProfileImageClick}
                             onError={(e) => {
                                 e.target.src = '/assets/profiles/img_profile.png';
                             }}
                         />
 
-                        <div className="camera_perfil" onClick={handleImageClick}>
+                        <div className="camera_perfil" onClick={handleProfileImageClick}>
                             <img src="/assets/camera.png" className="icon_perfil" alt="Alterar foto" />
                         </div>
 
                         <input
                             type="file"
-                            ref={fileInputRef}
-                            onChange={handleImageChange}
+                            ref={profileFileInputRef}
+                            onChange={handleProfileImageChange}
+                            accept="image/*"
+                            style={{ display: 'none' }}
+                        />
+
+                        <input
+                            type="file"
+                            ref={bannerFileInputRef}
+                            onChange={handleBannerImageChange}
                             accept="image/*"
                             style={{ display: 'none' }}
                         />

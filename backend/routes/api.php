@@ -25,6 +25,7 @@ Route::post('/logout', [UserController::class, 'logout'])->middleware('auth:sanc
 Route::get('/user', [UserController::class, 'index'])->middleware('auth:sanctum');
 Route::put('/profile', [UserController::class, 'update'])->middleware('auth:sanctum');
 Route::post('/upload-profile-image', [UserController::class, 'uploadProfileImage'])->middleware('auth:sanctum');
+Route::post('/upload-banner-image', [UserController::class, 'uploadBannerImage'])->middleware('auth:sanctum');
 
 Route::get('/types', [TypeController::class, 'index']);
 
@@ -114,5 +115,5 @@ Route::post('/goals', [GoalController::class, 'store']);
 Route::get('/goals/{goal}', [GoalController::class, 'show']); // Nova rota GET
 Route::put('/goals/{goal}', [GoalController::class, 'update']);
 Route::put('/goals/{goal}/update-value', [GoalController::class, 'updateGoalValue']);
- Route::delete('/goals/{goal}', [GoalController::class, 'destroy']);
+Route::delete('/goals/{goal}', [GoalController::class, 'destroy']);
 Route::post('/goal-transactions', [GoalController::class, 'storeTransaction']);

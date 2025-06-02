@@ -7,9 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Account; // Adicione esta linha no início do arquivo
+use App\Models\Account;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Artisan;
 
 class UserController extends Controller
 {
@@ -262,6 +264,10 @@ class UserController extends Controller
 
     public function uploadProfileImage(Request $request)
     {
+        if (!File::exists(public_path('storage'))) {
+            Artisan::call('storage:link');
+        }
+
         $user = auth()->user();
         if (!$user) {
             return response()->json([
@@ -276,7 +282,6 @@ class UserController extends Controller
                 'image',
                 'mimes:jpeg,png,jpg,gif,webp',
                 'max:2048',
-                'dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
             ],
         ]);
 
@@ -302,6 +307,64 @@ class UserController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Imagem de perfil atualizada com sucesso',
+                'image_url' => Storage::disk('public')->url($path),
+                'image_path' => $imageName
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Erro ao processar imagem',
+                'error' => config('app.debug') ? $e->getMessage() : null
+            ], 500);
+        }
+    }
+
+    public function uploadBannerImage(Request $request)
+    {
+        if (!File::exists(public_path('storage'))) {
+            Artisan::call('storage:link');
+        }
+
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Usuário não autenticado'
+            ], 401);
+        }
+
+        $request->validate([
+            'banner_picture' => [
+                'required',
+                'image',
+                'mimes:jpeg,png,jpg,gif,webp',
+                'max:2048',
+            ],
+        ]);
+
+        try {
+            if ($user->banner_picture) {
+                $oldImagePath = 'banners/' . $user->banner_picture;
+                if (Storage::disk('public')->exists($oldImagePath)) {
+                    Storage::disk('public')->delete($oldImagePath);
+                }
+            }
+
+            $imageName = 'banner_' . $user->id . '_' . time() . '.' . $request->banner_picture->extension();
+
+            $path = $request->banner_picture->storeAs(
+                'banners',
+                $imageName,
+                'public'
+            );
+
+            $user->banner_picture = $imageName;
+            $user->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Imagem de banner atualizada com sucesso',
                 'image_url' => Storage::disk('public')->url($path),
                 'image_path' => $imageName
             ]);
