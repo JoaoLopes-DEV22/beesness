@@ -10,7 +10,7 @@ function Home() {
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [mode, setMode] = useState('transactions');
-    const [selectedMonth, setSelectedMonth] = useState('2025-05'); // Estado para o mês selecionado
+    const [selectedMonth, setSelectedMonth] = useState('2025-06'); // Estado para o mês selecionado
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };

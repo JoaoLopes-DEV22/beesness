@@ -9,7 +9,7 @@ import '../css/pages/Dashboard.css';
 function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMonthly, setIsMonthly] = useState(true);
-  const [selectedMonth, setSelectedMonth] = useState('2025-05');
+  const [selectedMonth, setSelectedMonth] = useState('2025-06');
   const [selectedYear, setSelectedYear] = useState('2025');
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
