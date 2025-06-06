@@ -8,7 +8,7 @@ import '../css/pages/Pendences.css';
 function Pendences() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [mode, setMode] = useState('pendences');
-    const [selectedMonth, setSelectedMonth] = useState('2025-05');
+    const [selectedMonth, setSelectedMonth] = useState('2025-06');
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };

@@ -283,12 +283,13 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     flex-wrap: wrap;
+    gap: 15px;
 }
 
 .shop_card {
-    width: 30%;
+    width: 32.2%;
     height: 150px;
     background-color: var(--branco);
     display: flex;
@@ -298,7 +299,7 @@
     border-radius: 10px;
     gap: 20%;
     padding: 0px 20px;
-    margin: 0px 20px 20px;
+    margin: 0px ;
 }
 
 .title_shop_card {
@@ -318,7 +319,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 5px;
     font-weight: bold;
     font-size: 18px;
 }
@@ -333,7 +334,7 @@
     font-weight: bold;
     border-radius: 30px;
     padding: 10px;
-    width: 35%;
+    width: 30%;
 }
 
 .content_shop_card {

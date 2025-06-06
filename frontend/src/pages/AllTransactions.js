@@ -12,7 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function AllTransactions() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [transactions, setTransactions] = useState([]);
-    const [selectedMonth, setSelectedMonth] = useState('2025-05');
+    const [selectedMonth, setSelectedMonth] = useState('2025-06');
     const [selectedType, setSelectedType] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
