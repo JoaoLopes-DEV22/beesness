@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Carbon\Carbon; // Adicionar o uso de Carbon
+use Illuminate\Support\Facades\Log;
 
 class TransactionController extends Controller
 {
@@ -117,20 +118,33 @@ class TransactionController extends Controller
         }
     }
 
+
     public function update(Request $request, $id)
     {
-        $request->validate([
+        Log::info('Dados recebidos na atualização:', $request->all());
+
+        $validatedData = $request->validate([
             'title_transaction' => 'required|string|max:100',
             'value_transaction' => 'required|numeric',
             'fk_type' => 'required|exists:types,id_type',
             'fk_category' => 'required|exists:categories,id_category',
         ]);
 
+        Log::info('Dados validados:', $validatedData);
+
         try {
             $transaction = Transaction::findOrFail($id);
-            $transaction->update($request->all());
+            $transaction->update($validatedData);
+
+            Log::info('Transação atualizada com sucesso:', $transaction->toArray());
+
             return response()->json($transaction);
         } catch (\Exception $e) {
+            Log::error('Erro ao atualizar transação:', [
+                'error' => $e->getMessage(),
+                'transaction_id' => $id,
+                'data' => $request->all()
+            ]);
             return response()->json(['message' => 'Erro ao atualizar transação: ' . $e->getMessage()], 500);
         }
     }

@@ -127,10 +127,26 @@ function AllTransactions() {
         }
     };
 
+
     const handleUpdateTransaction = async (e) => {
         e.preventDefault();
         try {
-            await api.put(`/transactions/${currentTransaction.id_transaction}`, formData);
+            // Preparar payload com os tipos corretos
+            const payload = {
+                title_transaction: formData.title_transaction,
+                value_transaction: parseFloat(formData.value_transaction),
+                fk_type: parseInt(formData.fk_type),
+                fk_category: parseInt(formData.fk_category)
+            };
+
+            console.log('Payload enviado:', payload); // Para depuração
+
+            await api.put(`/transactions/${currentTransaction.id_transaction}`, payload, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
             toast.success("Transação atualizada com sucesso!");
 
             // Atualiza a lista de transações
@@ -146,8 +162,8 @@ function AllTransactions() {
 
             setIsModalOpen(false);
         } catch (error) {
-            console.error("Error updating transaction:", error);
-            toast.error("Erro ao atualizar transação");
+            console.error("Error updating transaction:", error.response?.data || error.message);
+            toast.error(error.response?.data?.message || "Erro ao atualizar transação");
         }
     };
 
