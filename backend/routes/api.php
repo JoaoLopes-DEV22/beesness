@@ -80,8 +80,8 @@ Route::prefix('bee-accessories')->group(function () {
 
 Route::prefix('hive-decorations')->group(function () {
     Route::post('/buy', [HiveDecorationController::class, 'purchaseDecoration'])->middleware('auth:sanctum');
-    Route::put('/{hiveDecoration}/equip', [HiveDecorationController::class, 'equipDecoration'])->middleware('auth:sanctum');
-    Route::put('/{hiveDecoration}/unequip', [HiveDecorationController::class, 'unequipDecoration'])->middleware('auth:sanctum');
+    Route::put('/{hiveDecoration}/equip/{positionSlot}', [HiveDecorationController::class, 'equipDecoration'])->middleware('auth:sanctum');
+    Route::put('/{hiveDecoration}/unequip/{positionSlot}', [HiveDecorationController::class, 'unequipDecoration'])->middleware('auth:sanctum');
     Route::get('/user-inventory', [HiveDecorationController::class, 'getUserHiveDecorations'])->middleware('auth:sanctum');
 });
 

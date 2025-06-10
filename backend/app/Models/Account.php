@@ -69,4 +69,9 @@ class Account extends Model
     {
         return $this->hasMany(BeeAccessory::class, 'fk_account', 'id_account');
     }
+
+    public function goals()
+    {
+        return $this->hasMany(Goal::class, 'fk_account', 'id_account');
+    }
 }

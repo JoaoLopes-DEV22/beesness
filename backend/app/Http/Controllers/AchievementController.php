@@ -44,7 +44,7 @@ class AchievementController extends Controller
 
         $achievements = Achievement::paginate(6);
 
-        $achievements->getCollection()->transform(function ($achievement) use ($account) { // <-- Passamos $account para o closure
+        $achievements->getCollection()->transform(function ($achievement) use ($account, $user) { // <-- Passamos $account para o closure
             // Encontra ou cria o registro de progresso da CONTA para esta conquista.
             $accountAchievement = AccountAchievement::firstOrCreate(
                 [
@@ -88,12 +88,14 @@ class AchievementController extends Controller
                         break;
 
                     case 'O néctar do estilo':
-                        // Se `profile_picture_url` e `banner_url` são campos da Account
-                        $defaultProfilePic = '/assets/profile_pictures/default_avatar.png'; // Caminho padrão
-                        $defaultBanner = '/assets/banners/default_banner.png'; // Caminho padrão
-
-                        $hasCustomProfilePic = $account->profile_picture_url && $account->profile_picture_url !== $defaultProfilePic;
-                        $hasCustomBanner = $account->banner_url && $account->banner_url !== $defaultBanner;
+                        // Estes campos devem estar na tabela 'accounts'
+                        $defaultProfilePic = '/assets/profiles/img_profile.png'; // Caminho padrão
+                        $defaultBanner = '/assets/banners/img_banner.png'; // Caminho padrão
+                        // Capturando os valores das propriedades do usuário
+                        $userProfilePic = $user->profile_picture;
+                        $userBannerPic = $user->banner_picture;
+                        $hasCustomProfilePic = $userProfilePic && $userProfilePic !== $defaultProfilePic;
+                        $hasCustomBanner = $userBannerPic && $userBannerPic !== $defaultBanner;
                         $isCompleted = $hasCustomProfilePic && $hasCustomBanner;
                         break;
 
@@ -105,15 +107,15 @@ class AchievementController extends Controller
                     case 'Melhor operária':
                         // 1. Define o período de 4 semanas a partir de hoje
                         $fourWeeksAgo = Carbon::now()->subWeeks(4);
-                        
+
                         // 2. Busca os acessos da conta nas últimas 4 semanas
                         // Usamos selectRaw para extrair o número da semana do ano e o ano,
                         // garantindo que semanas em anos diferentes sejam tratadas corretamente.
                         $accessWeeks = Access::where('fk_account', $account->id_account)
-                                            ->where('date_access', '>=', $fourWeeksAgo)
-                                            ->selectRaw('YEAR(date_access) as year, WEEK(date_access) as week_number')
-                                            ->distinct() // Pega apenas semanas únicas
-                                            ->get();
+                            ->where('date_access', '>=', $fourWeeksAgo)
+                            ->selectRaw('YEAR(date_access) as year, WEEK(date_access) as week_number')
+                            ->distinct() // Pega apenas semanas únicas
+                            ->get();
 
                         // 3. Verifica se há pelo menos 4 semanas distintas com acesso
                         $isCompleted = $accessWeeks->count() >= 4;
@@ -130,12 +132,9 @@ class AchievementController extends Controller
                         $isCompleted = $account->sunflowers_account >= 500;
                         break;
 
-                    case 'Comprindo prazzo':
-                        // Metas da conta
-                        $isCompleted = $account->goals()
-                            ->whereNotNull('completed_at')
-                            ->whereColumn('completed_at', '<', 'due_date')
-                            ->exists();
+                    case 'Cumprindo prazzzo':
+                        // Verifica se existe algum goal associado à conta com fk_condition igual a 2
+                        $isCompleted = $account->goals()->where('fk_condition', 2)->exists();
                         break;
 
                     case 'Enxarme completo':

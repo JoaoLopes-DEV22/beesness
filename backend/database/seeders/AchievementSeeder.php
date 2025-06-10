@@ -90,8 +90,8 @@ class AchievementSeeder extends Seeder
         ]);
 
         Achievement::create([
-            'title_goal' => 'Comprindo prazzzo',
-            'description_achievement' => 'Crie uma meta e a conclua antes do prazo.',
+            'title_goal' => 'Cumprindo prazzzo',
+            'description_achievement' => 'Crie e conclua pelo menos uma meta.',
             'experience_achievement' => 1400,
             'sunflowers_achievement' => 950,
         ]);

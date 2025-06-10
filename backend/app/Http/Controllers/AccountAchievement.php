@@ -18,6 +18,7 @@ use App\Models\Decoration;
 use App\Models\Accessory;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB; // Importar Facade DB para transações
+use Illuminate\Support\Facades\Log;
 
 class AchievementController extends Controller
 {
@@ -43,7 +44,8 @@ class AchievementController extends Controller
 
         $achievements = Achievement::paginate(6);
 
-        $achievements->getCollection()->transform(function ($achievement) use ($account) {
+        $achievements->getCollection()->transform(function ($achievement) use ($account, $user) {
+
             $accountAchievement = AccountAchievement::firstOrCreate(
                 [
                     'fk_account' => $account->id_account,
@@ -80,12 +82,15 @@ class AchievementController extends Controller
 
                     case 'O néctar do estilo':
                         // Estes campos devem estar na tabela 'accounts'
-                        $defaultProfilePic = '/assets/profile_pictures/default_avatar.png'; // Caminho padrão
-                        $defaultBanner = '/assets/banners/default_banner.png'; // Caminho padrão
-
-                        $hasCustomProfilePic = $account->profile_picture_url && $account->profile_picture_url !== $defaultProfilePic;
-                        $hasCustomBanner = $account->banner_url && $account->banner_url !== $defaultBanner;
+                        $defaultProfilePic = '/assets/profiles/img_profile.png'; // Caminho padrão
+                        $defaultBanner = '/assets/banners/img_banner.png'; // Caminho padrão
+                        // Capturando os valores das propriedades do usuário
+                        $userProfilePic = $user->profile_picture;
+                        $userBannerPic = $user->banner_picture;
+                        $hasCustomProfilePic = $userProfilePic && $userProfilePic !== $defaultProfilePic;
+                        $hasCustomBanner = $userBannerPic && $userBannerPic !== $defaultBanner;
                         $isCompleted = $hasCustomProfilePic && $hasCustomBanner;
+
                         break;
 
                     case 'Zangado com as dívidas':
@@ -107,12 +112,13 @@ class AchievementController extends Controller
                         $isCompleted = $account->sunflowers_account >= 500;
                         break;
 
-                    case 'Comprindo prazzo':
+                    case 'Cumprindo prazzzo':
+                        // Verifica se existe pelo menos um objetivo (goal) para a conta com fk_condition = 2 (indicando que foi completo).
                         $isCompleted = $account->goals()
-                            ->whereNotNull('completed_at')
-                            ->whereColumn('completed_at', '<', 'due_date')
+                            ->where('fk_condition', 2)
                             ->exists();
                         break;
+
 
                     case 'Enxarme completo':
                         $bee = $account->bee;
@@ -188,8 +194,8 @@ class AchievementController extends Controller
         }
 
         $accountAchievement = AccountAchievement::where('fk_account', $account->id_account)
-                                                ->where('fk_achievements', $achievement->id_achievement)
-                                                ->first();
+            ->where('fk_achievements', $achievement->id_achievement)
+            ->first();
 
         if (!$accountAchievement) {
             return response()->json(['message' => 'Conquista não iniciada para esta conta.'], 400);
@@ -239,7 +245,6 @@ class AchievementController extends Controller
                 'new_bee_experience' => $bee->experience_bee, // Retornar XP da abelha
                 'claimed_achievement' => $accountAchievement->only(['is_claimed', 'claimed_at']),
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['message' => 'Erro interno ao resgatar a recompensa.', 'error' => $e->getMessage()], 500);

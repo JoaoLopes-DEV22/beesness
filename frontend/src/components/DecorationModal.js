@@ -32,10 +32,9 @@ const HiveDecorationModal = ({ isOpen, onClose, selectedSlot, onDecorationEquipp
     };
 
     const handleEquipDecoration = async (hiveDecorationId) => {
+        console.log(selectedSlot)
         try {
-            const response = await api.put(`/hive-decorations/${hiveDecorationId}/equip`, {
-                position_slot: selectedSlot
-            });
+            const response = await api.put(`/hive-decorations/${hiveDecorationId}/equip/${selectedSlot}`);
             if (response.data.status) {
                 alert(response.data.message);
                 onDecorationEquipped(); // Dispara atualização no componente pai
@@ -51,7 +50,9 @@ const HiveDecorationModal = ({ isOpen, onClose, selectedSlot, onDecorationEquipp
 
     const handleUnequipDecoration = async (hiveDecorationId) => {
         try {
-            const response = await api.put(`/hive-decorations/${hiveDecorationId}/unequip`);
+            const response = await api.put(`/hive-decorations/${hiveDecorationId}/unequip/${selectedSlot}`, {
+                position_slot: selectedSlot
+            });
             if (response.data.status) {
                 alert(response.data.message);
                 onDecorationUnequipped(); // Dispara atualização no componente pai

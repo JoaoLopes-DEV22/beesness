@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\HiveDecoration; // Certifique-se de importar o modelo
-use App\Models\Decoration;     // Pode ser útil para validações ou futuras lógicas
-use App\Models\CosmeticStatus; // Certifique-se de importar o modelo de Status Cosmético
-use App\Models\Account;        // Para acessar a conta do usuário
+use App\Models\HiveDecoration;
+use App\Models\Decoration;
+use App\Models\CosmeticStatus;
+use App\Models\Account;
+use Illuminate\Validation\Rule;
 
 class HiveDecorationController extends Controller
 {
@@ -54,8 +55,7 @@ class HiveDecorationController extends Controller
         $account->sunflowers_account -= $decoration->price_decoration;
         $account->save();
 
-        // --- ALTERADO AQUI: Usando o ID 2 para 'unequipped' ---
-        $unequippedStatusId = 2; // ID para 'unequipped'
+        $unequippedStatusId = 2; // ID para 'unequipped' (verifique se 2 é o ID correto no seu DB)
 
         // Cria o registro de posse da decoração para a colmeia
         $hiveDecoration = HiveDecoration::create([
@@ -76,13 +76,15 @@ class HiveDecorationController extends Controller
      * Equipa uma decoração na colmeia em um slot específico (left/right).
      * @param Request $request
      * @param HiveDecoration $hiveDecoration (Model Binding)
+     * @param string $positionSlot O slot (e.g., 'left', 'right') da rota
      * @return \Illuminate\Http\JsonResponse
      */
-    public function equipDecoration(Request $request, HiveDecoration $hiveDecoration)
+    public function equipDecoration(Request $request, HiveDecoration $hiveDecoration, string $positionSlot)
     {
-        $request->validate([
-            'position_slot' => ['required', 'string', 'in:left,right'],
-        ]);
+        // Validação do positionSlot vindo da rota
+        if (!in_array($positionSlot, ['left', 'right'])) {
+            return response()->json(['status' => false, 'message' => 'Posição de slot inválida.'], 400);
+        }
 
         $user = Auth::user();
         $account = $user->account;
@@ -92,18 +94,16 @@ class HiveDecorationController extends Controller
             return response()->json(['status' => false, 'message' => 'Você não possui esta decoração.'], 403);
         }
 
-        // --- ALTERADO AQUI: Usando o ID 1 para 'equipped' ---
-        $equippedStatusId = 1; // ID para 'equipped'
+        $equippedStatusId = 1; // ID para 'equipped' (verifique se 1 é o ID correto no seu DB)
+        $unequippedStatusId = 2; // ID para 'unequipped' (verifique se 2 é o ID correto no seu DB)
 
         // Desequipa qualquer outra decoração que esteja no mesmo slot
         $existingEquippedDecoration = HiveDecoration::where('fk_account', $account->id_account)
-                                                    ->where('position_hive_decoration', $request->position_slot)
+                                                    ->where('position_hive_decoration', $positionSlot)
                                                     ->where('fk_cosmetic_status', $equippedStatusId)
                                                     ->first();
 
         if ($existingEquippedDecoration && $existingEquippedDecoration->id_hive_decoration !== $hiveDecoration->id_hive_decoration) {
-            // --- ALTERADO AQUI: Usando o ID 2 para 'unequipped' ---
-            $unequippedStatusId = 2; // ID para 'unequipped'
             $existingEquippedDecoration->update([
                 'position_hive_decoration' => 'none',
                 'fk_cosmetic_status' => $unequippedStatusId,
@@ -112,7 +112,7 @@ class HiveDecorationController extends Controller
 
         // Equipa a nova decoração
         $hiveDecoration->update([
-            'position_hive_decoration' => $request->position_slot,
+            'position_hive_decoration' => $positionSlot,
             'fk_cosmetic_status' => $equippedStatusId,
         ]);
 
@@ -126,10 +126,16 @@ class HiveDecorationController extends Controller
     /**
      * Desequipa uma decoração da colmeia.
      * @param HiveDecoration $hiveDecoration (Model Binding)
+     * @param string $positionSlot O slot (e.g., 'left', 'right') de onde a decoração *estava* equipada, vindo da rota.
      * @return \Illuminate\Http\JsonResponse
      */
-    public function unequipDecoration(HiveDecoration $hiveDecoration)
+    public function unequipDecoration(HiveDecoration $hiveDecoration, string $positionSlot)
     {
+        // Validação do positionSlot vindo da rota
+        if (!in_array($positionSlot, ['left', 'right'])) {
+            return response()->json(['status' => false, 'message' => 'Posição de slot inválida.'], 400);
+        }
+
         $user = Auth::user();
         $account = $user->account;
 
@@ -138,14 +144,12 @@ class HiveDecorationController extends Controller
             return response()->json(['status' => false, 'message' => 'Você não possui esta decoração.'], 403);
         }
 
-        // --- ALTERADO AQUI: Usando o ID 2 para 'unequipped' ---
         $unequippedStatusId = 2; // ID para 'unequipped'
-        // --- ALTERADO AQUI: Usando o ID 1 para 'equipped' ---
         $equippedStatusId = 1; // ID para 'equipped'
 
-        // Verifica se a decoração está realmente equipada
-        if ($hiveDecoration->fk_cosmetic_status !== $equippedStatusId) {
-            return response()->json(['status' => false, 'message' => 'Esta decoração não está equipada.'], 400);
+        // Verifica se a decoração está realmente equipada no slot que se está tentando desequipar
+        if ($hiveDecoration->fk_cosmetic_status !== $equippedStatusId || $hiveDecoration->position_hive_decoration !== $positionSlot) {
+            return response()->json(['status' => false, 'message' => 'Esta decoração não está equipada neste slot.'], 400);
         }
 
         // Desequipa a decoração
@@ -178,7 +182,7 @@ class HiveDecorationController extends Controller
             ], 401);
         }
 
-        $userAccount = $user->account; // Acessa a conta da abelha
+        $userAccount = $user->account;
 
         if (!$userAccount) {
             return response()->json([
@@ -189,8 +193,8 @@ class HiveDecorationController extends Controller
 
         // Busca todas as HiveDecorations do usuário, carregando os dados da Decoration e CosmeticStatus
         $hiveDecorations = HiveDecoration::where('fk_account', $userAccount->id_account)
-                                        ->with(['decoration', 'cosmeticStatus']) // Carrega os relacionamentos
-                                        ->get();
+                                         ->with(['decoration', 'cosmeticStatus'])
+                                         ->get();
 
         return response()->json([
             'status' => true,
