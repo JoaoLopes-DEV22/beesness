@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import '../css/components/Pendences.css';
 import { FaArrowTrendUp, FaArrowTrendDown } from "react-icons/fa6";
 import { PiPlusCircleBold, PiMinusCircleBold } from "react-icons/pi";
-import { MdDelete, MdEdit } from "react-icons/md";
-import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import api from '../api';
 
@@ -22,8 +20,8 @@ function Pendences() {
         fk_condition: ''
     });
 
-    const [lastDate, setLastDate] = useState('');
-    const [lastPendences, setLastPendences] = useState([]);
+    const [nearestDate, setNearestDate] = useState('');
+    const [pendences, setPendences] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -40,26 +38,24 @@ function Pendences() {
             }
         };
         fetchData();
-    }, [user?.id]); // Added user.id to dependencies
+    }, [user?.id]);
 
     useEffect(() => {
-        const fetchLastPendences = async () => {
+        const fetchNearestPendences = async () => {
             try {
                 if (!user?.id) return;
 
-                const response = await api.get('/pendences/last', {
+                const response = await api.get('/pendences/nearest', {
                     params: { user_id: user.id }
                 });
-                console.log(response)
-                setLastDate(response.data.last_date || '');
-                setLastPendences(response.data.pendences || []);
-
+                setNearestDate(response.data.nearest_date || '');
+                setPendences(response.data.pendences || []);
             } catch (error) {
-                console.error("Error fetching last pendences:", error);
+                console.error("Error fetching nearest pendences:", error);
             }
         };
 
-        fetchLastPendences();
+        fetchNearestPendences();
     }, [user?.id]);
 
     const handleChange = (e) => {
@@ -92,7 +88,7 @@ function Pendences() {
             await api.post('/pendences', dataToSend);
             setFormData({
                 title_pending: '',
-                deadline_pending: '', // Keep deadline_pending in initial state for reset
+                deadline_pending: '',
                 initial_pending: 0,
                 total_pending: '',
                 fk_type: '',
@@ -102,13 +98,12 @@ function Pendences() {
             setFilteredCategories([]); // Reset filtered categories
             toast.success("Pendência adicionada com sucesso!");
 
-            // Atualiza lista de últimas transações após adicionar uma nova
-            const response = await api.get('/pendences/last', {
+            // Atualiza lista de pendências da data mais próxima após adicionar uma nova
+            const response = await api.get('/pendences/nearest', {
                 params: { user_id: user.id }
             });
-            setLastDate(response.data.last_date || '');
-            setLastPendences(response.data.pendences || []);
-            console.log(response)
+            setNearestDate(response.data.nearest_date || '');
+            setPendences(response.data.pendences || []);
         } catch (error) {
             console.error("Error adding pendences:", error);
             toast.error("Erro ao adicionar pendência.");
@@ -116,7 +111,7 @@ function Pendences() {
     };
 
     const allPendences = () => {
-        window.location.href = '/all-pendences'
+        window.location.href = '/all-pendences';
     }
 
     return (
@@ -124,15 +119,18 @@ function Pendences() {
             <div className="pendences_area">
                 <div className="latest_pendences">
                     <div className="l_pendence_title">
-                        <p>Últimas Pendências</p>
+                        <p>Pendências mais Próximas</p>
                         <div className='pendences_date_btn'>
-                            <input type="date" readOnly value={lastDate} />
+                            <div className="input_date_filter">
+                                <p id='deadline_p'>Prazo:</p>
+                                <input id='deadline_input' type="date" readOnly value={nearestDate} />
+                            </div>
                             <button onClick={allPendences}>Ver Todas</button>
                         </div>
                     </div>
                     <div className="pendences">
-                        {lastPendences.length > 0 ? (
-                            lastPendences.map(pendence => (
+                        {pendences.length > 0 ? (
+                            pendences.map(pendence => (
                                 <div key={pendence.id_pendences} className="pendence_card">
                                     <div className="gc_top">
                                         <div className="gc_top_left">
@@ -142,12 +140,7 @@ function Pendences() {
                                             <div className="gc_top_content">
                                                 <p className="pc_title">{pendence.title_pending}</p>
                                                 <div className="subtitle">
-                                                    <p className="pc_deadline" style={{ textTransform: 'capitalize' }}>{pendence.category.title_category} -</p>
-                                                    <p className="pc_deadline">
-                                                        Prazo: {pendence.deadline_pending
-                                                            ? new Date(pendence.deadline_pending).toLocaleDateString('pt-BR')
-                                                            : 'Sem prazo'}
-                                                    </p>
+                                                    <p className="pc_deadline" style={{ textTransform: 'capitalize' }}>{pendence.category.title_category}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -168,14 +161,10 @@ function Pendences() {
                                             </div>
                                             <div className="progress_bar_total_p">
                                                 <div
-                                                    className={pendence.fk_type === 1 ? "progress_bar_g" : "progress_bar_r"} // Corrected class for progress bar
+                                                    className={pendence.fk_type === 1 ? "progress_bar_g" : "progress_bar_r"}
                                                     style={{ width: `${(pendence.initial_pending / pendence.total_pending) * 100}%` }}
                                                 ></div>
                                             </div>
-                                        </div>
-                                        <div className="gc_edit">
-                                            <MdEdit className="edit_icon_goal" />
-                                            <MdDelete className="delete_icon_goal" />
                                         </div>
                                     </div>
                                 </div>
@@ -199,7 +188,7 @@ function Pendences() {
                                             name="fk_type"
                                             value={type.id_type}
                                             onChange={handleChange}
-                                            checked={formData.fk_type == type.id_type} // Ensure radio button state is tied to formData
+                                            checked={formData.fk_type == type.id_type}
                                             required
                                         />
                                         {type.id_type === 1 ? <PiPlusCircleBold className='icon_receita' /> : <PiMinusCircleBold className='icon_despesa' />}
@@ -265,8 +254,6 @@ function Pendences() {
                         <button type="submit">Adicionar Pendência</button>
                     </form>
                 </div>
-
-
             </div>
             <ToastContainer
                 position="top-right"

@@ -163,6 +163,7 @@ function Goals() {
                 deadline_goal: currentGoal.deadline_goal
             });
 
+
             toast.success('Meta atualizada com sucesso!');
             fetchGoals(); // Recarrega a lista de metas após a atualização
             closeEditModal();
