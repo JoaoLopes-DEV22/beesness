@@ -60,7 +60,7 @@ Route::prefix('pendences')->group(function () {
     Route::get('/annual/charts', [PendingController::class, 'getAnnualChartsData']);
     Route::get('/monthly/evolution', [PendingController::class, 'getMonthlyEvolution']);
     Route::get('/monthly/charts', [PendingController::class, 'getMonthlyChartsData']);
-    Route::get('/last', [PendingController::class, 'getLastPendencesByUser']);
+    Route::get('/nearest', [PendingController::class, 'getNearestPendencesByUser']);
     Route::get('/monthly', [PendingController::class, 'getMonthlyPendences']);
     Route::get('/monthly/type', [PendingController::class, 'getMonthlyPendencesByType']);
     Route::get('/{id}', [PendingController::class, 'show']);

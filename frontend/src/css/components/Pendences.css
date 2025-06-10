@@ -38,6 +38,14 @@ html {
     padding-right: 5px;
 }
 
+#deadline_p {
+    font-weight: bold !important;
+}
+
+#deadline_input {
+    padding: 0 !important;
+}
+
 /* Custom scrollbar */
 .pendences::-webkit-scrollbar {
     width: 6px;
