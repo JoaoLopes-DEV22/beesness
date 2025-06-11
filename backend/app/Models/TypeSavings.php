@@ -21,4 +21,9 @@ class TypeSavings extends Model
         return $this->hasMany(SavingsTransaction::class, 'fk_type_savings', 'id_type_savings');
     }
 
+    public function pendingTransaction()
+    {
+        return $this->hasMany(PendingTransaction::class, 'fk_type_savings', 'id_type_savings');
+    }
+
 }

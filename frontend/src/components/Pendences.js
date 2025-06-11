@@ -161,7 +161,7 @@ function Pendences() {
                                             </div>
                                             <div className="progress_bar_total_p">
                                                 <div
-                                                    className={pendence.fk_type === 1 ? "progress_bar_g" : "progress_bar_r"}
+                                                    className="progress_bar_g"
                                                     style={{ width: `${(pendence.initial_pending / pendence.total_pending) * 100}%` }}
                                                 ></div>
                                             </div>
