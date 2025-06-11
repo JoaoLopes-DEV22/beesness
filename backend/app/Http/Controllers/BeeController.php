@@ -62,6 +62,10 @@ class BeeController extends Controller
         }
 
         $ownedHiveDecorations = HiveDecoration::where('fk_account', $account->id_account)
+            ->with('decoration', 'cosmeticStatus') // Carrega detalhes da Decoration e do Status
+            ->get();
+
+        $equippedHiveDecorations = HiveDecoration::where('fk_account', $account->id_account)
             ->where('fk_cosmetic_status', 1) // Filtra apenas as equipadas
             ->whereIn('position_hive_decoration', ['left', 'right']) // Garante que tem posição
             ->with('decoration', 'cosmeticStatus') // Carrega detalhes da Decoration e do Status
@@ -75,6 +79,7 @@ class BeeController extends Controller
                 'owned_accessories' => $ownedAccessories,
                 'equipped_accessories_display' => $equippedAccessoriesDisplay,
                 'owned_hive_decorations' => $ownedHiveDecorations,
+                'equipped_hive_decorations' => $equippedHiveDecorations,
             ]
         ], 200);
     }

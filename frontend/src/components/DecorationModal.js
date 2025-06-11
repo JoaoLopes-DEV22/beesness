@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api'; // Seu arquivo de instância do Axios
 import '../css/components/DecorationModal.css'; // Seu CSS
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const HiveDecorationModal = ({ isOpen, onClose, selectedSlot, onDecorationEquipped, onDecorationUnequipped }) => {
     const [userDecorations, setUserDecorations] = useState([]);
@@ -36,7 +38,7 @@ const HiveDecorationModal = ({ isOpen, onClose, selectedSlot, onDecorationEquipp
         try {
             const response = await api.put(`/hive-decorations/${hiveDecorationId}/equip/${selectedSlot}`);
             if (response.data.status) {
-                alert(response.data.message);
+                toast.success(response.data.message);
                 onDecorationEquipped(); // Dispara atualização no componente pai
                 fetchUserDecorations(); // Recarrega a lista para atualizar os estados
             } else {
@@ -54,7 +56,7 @@ const HiveDecorationModal = ({ isOpen, onClose, selectedSlot, onDecorationEquipp
                 position_slot: selectedSlot
             });
             if (response.data.status) {
-                alert(response.data.message);
+                toast.success(response.data.message);
                 onDecorationUnequipped(); // Dispara atualização no componente pai
                 fetchUserDecorations(); // Recarrega a lista para atualizar os estados
             } else {
