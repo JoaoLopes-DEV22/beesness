@@ -388,7 +388,7 @@ function MonthlyCharts({ selectedMonth }) {
                         <Pie data={chartData.pieData} options={pieOptions} />
                     </div>
                 </div>
-                <div className="card-dash">
+                <div className="card-dash-pendencies">
                     <h1 className="title-dash">Resumo das pendências</h1>
                     <div className="pendencies">
                         <div className="total">

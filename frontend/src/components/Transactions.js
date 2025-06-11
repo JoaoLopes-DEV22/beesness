@@ -154,7 +154,7 @@ function Transactions() {
             <div className="transactions_area">
                 <div className="latest_transactions">
                     <div className="l_transaction_title">
-                        <p>Últimas Transações</p>
+                        <p className='transactions_title_card'>Últimas Transações</p>
                         <div className='transactions_date_btn'>
                             <input type="date" readOnly value={lastDate} />
                             <button onClick={allTransactions}>Ver Todas</button>

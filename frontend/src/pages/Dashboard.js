@@ -39,8 +39,8 @@ function Dashboard() {
         <Header toggleSidebar={toggleSidebar} />
         <main className="dashboard-main">
           <div className="title_area">
+            <h1 id='h1_title'>Dashboard</h1>
             <div className="data-account">
-              <h1 id='h1_title'>Dashboard</h1>
               <div className="card-data-account">
                 <div className="t_card_group-dash">
                   <div className="switch_filter_account">
@@ -53,28 +53,29 @@ function Dashboard() {
                   </div>
                 </div>
               </div>
+
+
+              {/* Mostra input de mês ou ano conforme o modo selecionado */}
+              {isMonthly ? (
+                <input
+                  className='input_month'
+                  type="month"
+                  value={selectedMonth}
+                  onChange={handleMonthChange}
+                  aria-label="Mês de referência"
+                />
+              ) : (
+                <input
+                  className='input_year'
+                  type="number"
+                  min="2000"
+                  max="2025"
+                  value={selectedYear}
+                  onChange={handleYearChange}
+                  aria-label="Ano de referência"
+                />
+              )}
             </div>
-            
-            {/* Mostra input de mês ou ano conforme o modo selecionado */}
-            {isMonthly ? (
-              <input 
-                className='input_month' 
-                type="month" 
-                value={selectedMonth} 
-                onChange={handleMonthChange} 
-                aria-label="Mês de referência" 
-              />
-            ) : (
-              <input
-                className='input_year'
-                type="number"
-                min="2000"
-                max="2025"
-                value={selectedYear}
-                onChange={handleYearChange}
-                aria-label="Ano de referência"
-              />
-            )}
           </div>
 
           {/* Renderização condicional dos componentes */}
