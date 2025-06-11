@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pending extends Model
 {
-     use HasFactory;
+    use HasFactory;
 
     protected $table = 'pendings';
     protected $primaryKey = 'id_pending';
@@ -43,4 +43,8 @@ class Pending extends Model
         return $this->belongsTo(Condition::class, 'fk_condition', 'id_condition');
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(PendingTransaction::class, 'fk_pending');
+    }
 }

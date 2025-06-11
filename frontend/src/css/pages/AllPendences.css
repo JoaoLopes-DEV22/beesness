@@ -1,0 +1,10 @@
+.transaction-section button {
+    width: 100%;
+    border-radius: 10px !important;
+    color: var(--amarelo-texto) !important;
+}
+
+.transaction-section label {
+    font-size: 14px;
+    font-weight: bold;
+}

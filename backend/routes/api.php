@@ -69,6 +69,8 @@ Route::prefix('pendences')->group(function () {
     Route::delete('/{id}', [PendingController::class, 'destroy']);
 });
 
+
+
 Route::get('/bee', [BeeController::class, 'showBee'])->middleware('auth:sanctum');
 Route::post('/bee/rename', [BeeController::class, 'rename'])->middleware('auth:sanctum');
 Route::get('/accessories', [AccessoryController::class, 'index']);
@@ -117,3 +119,6 @@ Route::put('/goals/{goal}', [GoalController::class, 'update']);
 Route::put('/goals/{goal}/update-value', [GoalController::class, 'updateGoalValue']);
 Route::delete('/goals/{goal}', [GoalController::class, 'destroy']);
 Route::post('/goal-transactions', [GoalController::class, 'storeTransaction']);
+
+Route::post('/pendences/transaction', [PendingController::class, 'storeTransaction']);
+Route::put('/pendences/{id}/update-value', [PendingController::class, 'updatePendingValue']);

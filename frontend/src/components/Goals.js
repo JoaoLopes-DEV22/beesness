@@ -191,7 +191,7 @@ function Goals() {
         if (transactionForm.type === 1) { // Aplicar
             if (currentValue + transactionValue > targetValue) {
                 adjustedValue = targetValue - currentValue; // Ajusta o valor para não ultrapassar o alvo
-                if(adjustedValue <= 0){
+                if (adjustedValue <= 0) {
                     toast.info('Meta já atingiu o valor alvo.');
                     return;
                 }
@@ -199,7 +199,7 @@ function Goals() {
         } else if (transactionForm.type === 2) { // Resgatar
             if (currentValue - transactionValue < 0) {
                 adjustedValue = currentValue; // Não pode resgatar mais do que o valor atual
-                if(adjustedValue <= 0){
+                if (adjustedValue <= 0) {
                     toast.info('Não há valor suficiente para resgatar.');
                     return;
                 }
@@ -493,13 +493,13 @@ function Goals() {
             {/* Modal de Edição */}
             {editModalOpen && currentGoal && (
                 <div className="modal-overlay">
-                    <div className="edit-goal-modal">
+                    <div className="modal-content">
                         <div className="modal-header">
                             <h2>Editar Meta</h2>
                             <MdClose className="close-icon" onClick={closeEditModal} />
                         </div>
 
-                        <form onSubmit={handleSaveGoal}>
+                        <form onSubmit={handleSaveGoal} className="form_transaction">
                             <div className="input_group">
                                 <label>Título</label>
                                 <input
@@ -540,7 +540,7 @@ function Goals() {
                                 />
                             </div>
 
-                            <button type="submit">Salvar Alterações</button>
+                            <button type="submit"  style={{width: '100%'}}>Salvar Alterações</button>
                         </form>
 
                         {/* Seção de Transação da Meta */}
