@@ -3,7 +3,8 @@ import React from 'react';
 import '../css/components/ShopCard.css'; // Reutiliza o CSS para cards de loja
 
 function DecorationCard({ decoration, ownedDecorationData, beeLevel, sunflowers, onBuyDecoration }) {
-    const isOwned = !!ownedDecorationData;
+    const isOwned = ownedDecorationData;
+    const isEquipped = ownedDecorationData?.isEquipped; // Verifica se a decoração está equipada
     const isLevelInsufficient = beeLevel < decoration.level_decoration;
     const isPriceInsufficient = parseFloat(sunflowers) < parseFloat(decoration.price_decoration);
 
@@ -12,8 +13,13 @@ function DecorationCard({ decoration, ownedDecorationData, beeLevel, sunflowers,
     let buttonDisabled = false;
     let buttonClickHandler;
 
-    if (isOwned) {
+    if (isOwned && !isEquipped) {
         buttonText = 'Adquirido';
+        buttonClass = 'acquired_button disabled_button';
+        buttonDisabled = true;
+        buttonClickHandler = null;
+    } else if(isOwned && isEquipped){
+        buttonText = 'Equipado';
         buttonClass = 'acquired_button disabled_button';
         buttonDisabled = true;
         buttonClickHandler = null;

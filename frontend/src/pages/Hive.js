@@ -10,6 +10,8 @@ import api from '../api'; // Seu axios instance configurado
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaArrowAltCircleRight } from "react-icons/fa";
 import { MdModeEdit } from "react-icons/md";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Home() {
     // --- Estados para controle de UI ---
@@ -38,6 +40,7 @@ function Home() {
 
     const [decorations, setDecorations] = useState([]);
     const [ownedDecorationsMap, setOwnedDecorationsMap] = useState(new Map());
+
 
     const [achievements, setAchievements] = useState([]);
     const [userAchievementsMap, setUserAchievementsMap] = useState(new Map());
@@ -212,7 +215,7 @@ function Home() {
         try {
             const response = await api.post('/bee/rename', { new_name: newBeeNameInput });
             if (response.data.status) {
-                alert(response.data.message);
+                toast.success(response.data.message);
                 setBee(prevBee => ({ ...prevBee, name_bee: response.data.new_name }));
                 setIsEditingBeeName(false); // Sai do modo de edição
             } else {
@@ -229,7 +232,7 @@ function Home() {
         try {
             const response = await api.post('/bee-accessories/buy', { fk_accessory: accessoryId });
             if (response.data.status) {
-                alert(response.data.message);
+                toast.success(response.data.message);
                 fetchBee();
                 fetchAccessories(currentPage);
             } else {
@@ -245,7 +248,7 @@ function Home() {
         try {
             const response = await api.put(`/bee-accessories/${beeAccessoryId}/toggle-equip`);
             if (response.data.status) {
-                alert(response.data.message);
+                toast.success(response.data.message);
                 fetchBee();
             } else {
                 alert(`Erro: ${response.data.message}`);
@@ -260,7 +263,7 @@ function Home() {
         try {
             const response = await api.post('/hive-decorations/buy', { fk_decoration: decorationId });
             if (response.data.status) {
-                alert(response.data.message);
+                toast.success(response.data.message);
                 fetchBee();
                 fetchDecorations(currentPage);
             } else {
@@ -277,7 +280,7 @@ function Home() {
             const response = await api.post(`/achievements/${achievementId}/claim`);
 
             if (response.status === 200 && response.data.status) {
-                alert(response.data.message);
+                toast.success(response.data.message);
 
                 setAchievements(prevAchievements =>
                     prevAchievements.map(ach =>
