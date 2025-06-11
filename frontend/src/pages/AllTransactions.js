@@ -280,13 +280,15 @@ function AllTransactions() {
                                     <option value="1">Receita</option>
                                     <option value="2">Despesa</option>
                                 </select>
-                                <div className="input_date_filter">
-                                    <p>Data Inicial:</p>
-                                    <input type="date" value={startDate} onChange={handleStartDateChange} />
-                                </div>
-                                <div className="input_date_filter">
-                                    <p>Data Final:</p>
-                                    <input type="date" value={endDate} onChange={handleEndDateChange} />
+                                <div className="input_date_filter_group">
+                                    <div className="input_date_filter">
+                                        <p>Data Inicial:</p>
+                                        <input type="date" value={startDate} onChange={handleStartDateChange} />
+                                    </div>
+                                    <div className="input_date_filter">
+                                        <p>Data Final:</p>
+                                        <input type="date" value={endDate} onChange={handleEndDateChange} />
+                                    </div>
                                 </div>
                             </div>
                         </div>

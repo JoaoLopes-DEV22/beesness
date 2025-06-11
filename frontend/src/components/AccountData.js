@@ -36,13 +36,15 @@ function AccountData({ selectedMonth }) {
 
     return (
         <div className="financial_cards">
-            <div className="card">
-                <p className="title_card">Receitas</p>
-                <p className="value_card_g">R$ {receitas.toFixed(2).replace('.', ',')}</p>
-            </div>
-            <div className="card">
-                <p className="title_card">Despesas</p>
-                <p className="value_card_r">R$ {despesas.toFixed(2).replace('.', ',')}</p>
+            <div className="receita_despesa_card">
+                <div className="card">
+                    <p className="title_card">Receitas</p>
+                    <p className="value_card_g">R$ {receitas.toFixed(2).replace('.', ',')}</p>
+                </div>
+                <div className="card">
+                    <p className="title_card">Despesas</p>
+                    <p className="value_card_r">R$ {despesas.toFixed(2).replace('.', ',')}</p>
+                </div>
             </div>
             <div className="card" id="balance">
                 <div className="t_card_group">
