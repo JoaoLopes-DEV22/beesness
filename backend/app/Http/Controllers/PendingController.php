@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use App\Models\Pending;
 use App\Models\PendingTransaction;
 use Illuminate\Http\Request;
@@ -9,39 +10,38 @@ use Carbon\Carbon; // Adicionar o uso de Carbon
 
 class PendingController extends Controller
 {
-    public function getMonthlyPendingsData(Request $request)
-    {
-        $userId = $request->query('user_id');
-        $month = $request->query('month');
+public function getMonthlyPendingsData(Request $request)
+{
+    $userId = $request->query('user_id');
+    $month = $request->query('month');
 
-        if (!$userId || !$month) {
-            return response()->json(['message' => 'user_id e month são obrigatórios'], 400);
-        }
-
-        $startDate = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
-        $endDate = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
-
-        $pendings = Pending::where('fk_account', $userId)
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->with('category')
-            ->get();
-
-        // Calcula o total de receitas pendentes (fk_type = 1)
-        $totalReceitasPendentes = $pendings->filter(function ($pending) {
-            return $pending->category && $pending->category->fk_type === 1 && $pending->fk_condition === 1;
-        })->sum('value_pending');
-
-        // Calcula o total de despesas pendentes (fk_type = 2)
-        $totalDespesasPendentes = $pendings->filter(function ($pending) {
-            return $pending->category && $pending->category->fk_type === 2 && $pending->fk_condition === 1;
-        })->sum('value_pending');
-
-        return response()->json([
-            'pendings' => $pendings,
-            'total_receitas_pendentes' => $totalReceitasPendentes,
-            'total_despesas_pendentes' => $totalDespesasPendentes
-        ]);
+    if (!$userId || !$month) {
+        return response()->json(['message' => 'user_id e month são obrigatórios'], 400);
     }
+
+    $startDate = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+    $endDate = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
+
+    $result = Pending::where('pendings.fk_account', $userId) // Especifica a tabela
+        ->where('pendings.fk_condition', 1) // Especifica a tabela
+        ->whereBetween('pendings.created_at', [$startDate, $endDate]) // Especifica a tabela
+        ->join('categories', 'pendings.fk_category', '=', 'categories.id_category')
+        ->selectRaw('SUM(CASE WHEN categories.fk_type = 1 THEN pendings.initial_pending ELSE 0 END) AS total_receitas_pendentes')
+        ->selectRaw('SUM(CASE WHEN categories.fk_type = 2 THEN pendings.initial_pending ELSE 0 END) AS total_despesas_pendentes')
+        ->first();
+
+    // Obter também a lista de pendências para retornar
+    $pendings = Pending::where('fk_account', $userId)
+        ->whereBetween('created_at', [$startDate, $endDate])
+        ->with('category')
+        ->get();
+
+    return response()->json([
+        'pendings' => $pendings,
+        'total_receitas_pendentes' => $result->total_receitas_pendentes ?? 0,
+        'total_despesas_pendentes' => $result->total_despesas_pendentes ?? 0
+    ]);
+}
 
 
     public function store(Request $request)

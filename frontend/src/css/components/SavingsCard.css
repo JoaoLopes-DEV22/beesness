@@ -1,11 +1,11 @@
 .savings_card {
     width: 100%;
-    height: 120px;
+    height: 100px;
     background-color: var(--branco);
     padding: 20px;
     border-radius: 10px;
     display: flex;
-    justify-content: space-between;
+    gap: 40px;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.15);
 }
 
@@ -62,4 +62,64 @@
 
 .edit_icon_savings:hover {
     color: var(--preto);
+}
+
+.dataInicio_rendimento_area, .saldo_receita_area {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.rendimento_lapis_area {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+@media(max-width: 1080px) { 
+    .goals_component {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 20px;
+    }
+    
+}
+
+@media(max-width: 1020px) {
+    .goals_component {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 20px;
+    }
+
+    .savings_card {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        height: 180px;
+    }
+}
+
+@media(max-width: 600px) {
+    .dataInicio_rendimento_area, .saldo_receita_area{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .savings_card {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        height: 325px;
+        align-items: center;
+    }
+
+    .title_card {
+        align-items: center;
+        text-align: center;
+    }
 }

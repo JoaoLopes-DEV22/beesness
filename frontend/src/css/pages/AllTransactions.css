@@ -6,7 +6,9 @@
 .at_title_area_left {
     display: flex;
     width: 68.5%;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: 15px;
 }
 
 .at_title_area_left h1 {
@@ -58,14 +60,17 @@ button {
 }
 
 .all_transactions {
-    max-height: 400px; /* Defina a altura máxima desejada */
+    max-height: 400px;
+    /* Defina a altura máxima desejada */
     padding-right: 5px;
-    overflow-y: auto; /* Adiciona a barra de rolagem vertical */
+    overflow-y: auto;
+    /* Adiciona a barra de rolagem vertical */
 }
 
 /* Para navegadores WebKit (Chrome, Safari) */
 .all_transactions::-webkit-scrollbar {
-    width: 6px; /* Largura da barra de rolagem */
+    width: 6px;
+    /* Largura da barra de rolagem */
 }
 
 .all_transactions::-webkit-scrollbar-track {
@@ -74,15 +79,19 @@ button {
 }
 
 .all_transactions::-webkit-scrollbar-thumb {
-    background-color: var(--cinza-bg); /* Cor do "thumb" da barra de rolagem */
-    border-radius: 10px; /* Arredonda os cantos do "thumb" */
+    background-color: var(--cinza-bg);
+    /* Cor do "thumb" da barra de rolagem */
+    border-radius: 10px;
+    /* Arredonda os cantos do "thumb" */
 }
 
 
 /* Para Firefox */
 .all_transactions {
-    scrollbar-width: thin; /* Largura da barra de rolagem */
-    scrollbar-color: #888 #f1f1f1; /* Cor do "thumb" e do fundo */
+    scrollbar-width: thin;
+    /* Largura da barra de rolagem */
+    scrollbar-color: #888 #f1f1f1;
+    /* Cor do "thumb" e do fundo */
 }
 
 
@@ -92,7 +101,8 @@ button {
     align-items: center;
 }
 
-.latest_transactions button, .form_transaction button {
+.latest_transactions button,
+.form_transaction button {
     padding: 12px 20px;
     background-color: var(--amarelo);
     color: var(--amarelo-texto);
@@ -154,7 +164,7 @@ button {
 }
 
 .type_circle_r {
-        background-color: var(--vermelho-bg-tipo);
+    background-color: var(--vermelho-bg-tipo);
     color: var(--vermelho-despesa);
 }
 
@@ -188,7 +198,8 @@ button {
     align-items: center;
 }
 
-.transactions_filter select, .input_date_filter {
+.transactions_filter select,
+.input_date_filter {
     background-color: var(--cinza-bg);
     border: none;
     border-radius: 10px;
@@ -224,12 +235,14 @@ button {
     gap: 5px;
 }
 
-.edit_icon_transaction, .delete_icon {
+.edit_icon_transaction,
+.delete_icon {
     cursor: pointer;
     transition: 0.3s;
 }
 
-.edit_icon_transaction:hover, .delete_icon:hover {
+.edit_icon_transaction:hover,
+.delete_icon:hover {
     color: var(--preto);
 }
 
@@ -318,7 +331,8 @@ button {
     gap: 5px;
 }
 
-.input_group input, .input_group select {
+.input_group input,
+.input_group select {
     background-color: var(--cinza-bg);
     border: none;
     border-radius: 10px;
@@ -354,7 +368,7 @@ button {
 .confirm-toast {
     background: #fff3e0 !important;
     border-left: 6px solid #ff9800 !important;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
 }
 
 .custom-toast-content {
@@ -416,4 +430,83 @@ button {
 
 .confirm-toast-button.cancel:hover {
     background: #bdbdbd;
+}
+
+.input_date_filter_group {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+/* Media */
+@media(max-width: 1180px) {
+    .transactions_area {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column-reverse;
+        gap: 15px;
+    }
+
+    .new_transaction {
+        width: 100%;
+    }
+}
+
+@media(max-width: 1020px) {
+    .all_transaction_title {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+}
+
+@media(max-width: 780px) {
+    .transactions_filter {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .transactions_filter select,
+    .input_date_filter,
+    .input_date_filter_group {
+        width: 100%;
+    }
+}
+
+@media(max-width: 570px) {
+    .transactions_filter {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .input_date_filter_group {
+        display: flex;
+        flex-direction: column;
+    }
+
+
+    .tran_card_right {
+        display: flex;
+        align-items: center;
+    }
+}
+
+@media(max-width: 500px) {
+    .transaction_card {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tran_card_right {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        justify-content: space-between;
+    }
 }

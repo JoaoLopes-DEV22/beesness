@@ -26,3 +26,28 @@
   font-family: 'Quicksand', sans-serif;
   font-weight: 700;
 }
+
+/* Media */
+@media(max-width: 1180px) {
+  .title_area {
+    gap: 10px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+  }
+
+  .title_area h1 {
+    width: 100%;
+  }
+
+  .title_area select,
+  .title_area input {
+    width: 100%;
+  }
+}
+
+@media(max-width: 770px) {
+  .at_title_area_left {
+    width: 100%;
+  }
+}
