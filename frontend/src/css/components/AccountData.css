@@ -1,7 +1,7 @@
 .financial_cards {
     display: flex;
     justify-content: space-between;
-
+    gap: 25px;
 }
 
 .card {
@@ -19,6 +19,7 @@
 
 #balance {
     gap: 20px !important;
+    width: 100%;
 }
 
 .card .title_card {
@@ -28,6 +29,7 @@
 
 .card:not(#balance) {
     padding-top: 32px !important;
+    width: 100%;
 }
 
 .card .value_card_g,
@@ -75,4 +77,18 @@
 .on {
     background-color: var(--branco);
     border-radius: 3px;
+}
+
+.receita_despesa_card {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 25px;
+}
+
+/* Media */
+@media(max-width: 1080px) {
+    .financial_cards {
+      flex-direction: column;
+    }
 }

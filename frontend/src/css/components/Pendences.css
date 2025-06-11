@@ -137,7 +137,7 @@ html {
     display: flex;
     align-items: flex-start;
     gap: 15px;
-    width: 75%;
+    width: 40%;
 }
 
 .type_circle_g,
@@ -461,5 +461,14 @@ html {
     .pendences_date_btn {
         width: 100%;
         justify-content: space-between;
+    }
+}
+
+@media(max-width: 500px) {
+    .tcard_left {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        width: 100%;
     }
 }

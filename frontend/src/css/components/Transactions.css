@@ -34,8 +34,10 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    max-height: 280px; /* Defina a altura máxima */
-    overflow-y: auto; /* Adiciona a scrollbar quando necessário */
+    max-height: 280px;
+    /* Defina a altura máxima */
+    overflow-y: auto;
+    /* Adiciona a scrollbar quando necessário */
 }
 
 .l_transaction_title {
@@ -58,7 +60,8 @@
     font-weight: bold;
 }
 
-.latest_transactions button, .form_transaction button {
+.latest_transactions button,
+.form_transaction button {
     padding: 12px 20px;
     background-color: var(--amarelo);
     color: var(--amarelo-texto);
@@ -114,8 +117,12 @@
 }
 
 .type_circle_r {
-        background-color: var(--vermelho-bg-tipo);
+    background-color: var(--vermelho-bg-tipo);
     color: var(--vermelho-despesa);
+}
+
+.transactions_title_card {
+    font-size: 22px !important;
 }
 
 .tcontent_title {
@@ -163,7 +170,8 @@
     gap: 5px;
 }
 
-.input_group input, .input_group select {
+.input_group input,
+.input_group select {
     background-color: var(--cinza-bg);
     border: none;
     border-radius: 10px;
@@ -189,4 +197,32 @@
 
 .icon_receita {
     color: var(--verde-receita);
+}
+
+
+/* Media */
+@media(max-width: 1180px) {
+    .latest_transactions{
+        width: 100%;
+    }
+}
+
+@media(max-width: 600px) {
+    .l_transaction_title {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .transactions_date_btn {
+        width: 100%;
+    }
+
+    .transactions_date_btn input {
+        width: 77%;
+    }
+
+    .latest_transactions p {
+        font-size: 15px;
+    }
 }

@@ -358,3 +358,39 @@
     cursor: pointer;
     transition: background-color 0.3s;
 }
+
+@media(max-width: 1080px) {
+    .new_goal {
+        width: 100%;
+    }
+
+    .goals {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .goals_area {
+        width: 100%;
+    }
+}
+
+@media(max-width: 750px) {
+    .goals {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .title_area_goals {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .title_area_goals select {
+        width: 100% !important;
+    }
+
+    .title_area_goals #h1_title {
+        width: 100%;
+        text-align: center;
+        align-self: center;
+    }
+
+}

@@ -3,6 +3,7 @@ import '../css/pages/Signup.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../api';
+import { RiArrowGoBackLine } from "react-icons/ri";
 import { useNavigate } from 'react-router-dom';
 
 function SignUp() {
@@ -55,8 +56,11 @@ function SignUp() {
                 pauseOnHover
                 theme="colored"
             />
+
             <div className="area">
-                <main className="login-container">
+                <a href="/"><RiArrowGoBackLine className='goBack' /></a>
+
+                <main className="login-container singup">
                     <div className="img-area">
                         <img src="/assets/profiles/img_profile.png" alt="Perfil" />
                     </div>
